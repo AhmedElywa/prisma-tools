@@ -1,4 +1,4 @@
-import { GeneratorOptions } from './generator';
+import type { GeneratorOptions } from './generator';
 
 export type RouterType = 'pages' | 'app';
 

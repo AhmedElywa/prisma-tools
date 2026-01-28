@@ -1,4 +1,4 @@
-import { Enums, Field, Model } from './generatedSchema';
+import type { Enums, Field, Model } from './generatedSchema';
 
 export interface AdminSchemaField extends Omit<Field, 'relation' | 'documentation' | 'map'> {
   id: string;

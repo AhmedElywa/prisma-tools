@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'fs';
-import { Field } from '@paljs/types';
-import { log, chalk } from '@paljs/display';
+import { chalk, log } from '@paljs/display';
+import type { Field } from '@paljs/types';
 
 export class PrismaReader {
   data: string;

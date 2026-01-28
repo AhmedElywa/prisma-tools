@@ -1,13 +1,13 @@
-import fs from 'fs-extra';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import fs from 'fs-extra';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function createDistPackageJson() {
   const rootPackageJson = await fs.readJson(path.join(__dirname, '../package.json'));
-  
+
   // Create a modified package.json for the dist folder
   const distPackageJson = {
     ...rootPackageJson,
@@ -19,26 +19,26 @@ async function createDistPackageJson() {
       '.': {
         import: {
           types: './index.d.ts',
-          default: './index.js'
+          default: './index.js',
         },
         require: {
           types: './index.d.cts',
-          default: './index.cjs'
-        }
+          default: './index.cjs',
+        },
       },
-      './style.css': './style.css'
+      './style.css': './style.css',
     },
     // Remove scripts and devDependencies
     scripts: undefined,
     devDependencies: undefined,
     // Remove publishConfig since we're already in dist
     publishConfig: undefined,
-    files: undefined
+    files: undefined,
   };
 
   // Write the modified package.json to dist
   await fs.writeJson(path.join(__dirname, '../dist/package.json'), distPackageJson, { spaces: 2 });
-  
+
   // Copy necessary files
   const filesToCopy = ['README.md', 'LICENSE'];
   for (const file of filesToCopy) {

@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
-
+import type React from 'react';
+import { useState } from 'react';
+import type { Option } from '../components/Select';
 import Spinner from '../components/Spinner';
-import Form from './Form';
-import DynamicTable from './dynamicTable';
-import { queryDocument } from './QueryDocument';
-import { useTableContext } from './Context';
-import { Option } from '../components/Select';
 import { classNames } from '../components/css';
+import { useTableContext } from './Context';
+import Form from './Form';
+import { queryDocument } from './QueryDocument';
+import DynamicTable from './dynamicTable';
 
 interface EditRecordProps {
   model: string;
@@ -30,7 +30,7 @@ const EditRecord: React.FC<EditRecordProps> = ({ model, update, onSave, view }) 
     variables: modelObject
       ? {
           where: {
-            [modelObject.idField]: isField?.type === 'String' ? update || view : parseInt(update || view),
+            [modelObject.idField]: isField?.type === 'String' ? update || view : Number.parseInt(update || view, 10),
           },
         }
       : undefined,
@@ -57,9 +57,9 @@ const EditRecord: React.FC<EditRecordProps> = ({ model, update, onSave, view }) 
 
   const onUpdateCancel =
     onCancelUpdate ||
-    function ({ model }: { model: string }) {
+    (({ model }: { model: string }) => {
       push(pagesPath + model);
-    };
+    });
 
   return loading || !modelObject || !data ? (
     <Spinner />

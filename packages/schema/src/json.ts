@@ -1,4 +1,4 @@
-import { SchemaObject, Model, Enums, Field } from '@paljs/types';
+import type { Enums, Field, Model, SchemaObject } from '@paljs/types';
 import { PrismaReader } from './PrismaReader';
 
 export class ConvertSchemaToObject extends PrismaReader {

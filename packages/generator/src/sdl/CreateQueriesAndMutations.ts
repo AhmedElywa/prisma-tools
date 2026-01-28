@@ -1,5 +1,5 @@
-import { QueriesAndMutations } from '@paljs/types';
-import { GenerateSdl } from '.';
+import type { QueriesAndMutations } from '@paljs/types';
+import type { GenerateSdl } from '.';
 
 export async function createQueriesAndMutations(
   modelName: string,

@@ -28,7 +28,5 @@
     "@paljs/display": "workspace:*",
     "@prisma/internals": "^6.11.1"
   },
-  "files": [
-    "dist"
-  ]
+  "files": ["dist"]
 }

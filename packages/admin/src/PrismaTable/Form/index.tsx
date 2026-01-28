@@ -1,13 +1,12 @@
-/* eslint @typescript-eslint/no-non-null-assertion: 0 */
-import React, { useContext } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
-
+import type React from 'react';
+import { useContext } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import Spinner from '../../components/Spinner';
+import { buttonClasses, classNames } from '../../components/css';
+import type { AdminSchemaModel } from '../../types';
+import { TableContext } from '../Context';
 import { Inputs } from './Inputs';
 import useActions from './useActions';
-import { TableContext } from '../Context';
-import { AdminSchemaModel } from '../../types';
-import { buttonClasses, classNames } from '../../components/css';
 
 export interface FormProps {
   action: 'update' | 'create' | 'view';
@@ -45,7 +44,10 @@ const getDefaultValues = (
           } else if (field.list) {
             return data[field.name].join(',');
           } else if (field.kind === 'object') {
-            const fieldModel = models.find((item) => item.id === field.type)!;
+            const fieldModel = models.find((item) => item.id === field.type);
+            if (!fieldModel) {
+              return data[field.name];
+            }
             return data[field.name][fieldModel?.idField];
           } else {
             return data[field.name];
@@ -86,7 +88,7 @@ const Form: React.FC<FormProps> = ({ action, model: modelName, data, onCancel, o
       style={action === 'create' ? { maxWidth: '1000px', maxHeight: '100vh' } : {}}
     >
       <header className="py-4 px-5 rounded-t border-b border-gray-100 font-bold text-2xl">
-        {lang[action] + ' ' + model.name}
+        {`${lang[action]} ${model.name}`}
       </header>
       <FormProvider {...formMethods}>
         <form onSubmit={formMethods.handleSubmit(onSubmit)} style={{ overflow: 'auto' }}>
@@ -105,27 +107,32 @@ const Form: React.FC<FormProps> = ({ action, model: modelName, data, onCancel, o
                 .sort((a, b) => a.order - b.order)
                 .map((field) => {
                   const options = {
-                    key: field.id,
                     data,
                     field: field,
                     value: data[field.name],
                     disabled: (action === 'update' && !field.update) || action === 'view',
                   };
                   if (field.list) {
-                    return <InputComponents.Default {...options} />;
+                    return <InputComponents.Default key={field.id} {...options} />;
                   }
-                  if (field.kind === 'enum') return <InputComponents.Enum {...options} />;
+                  if (field.kind === 'enum') return <InputComponents.Enum key={field.id} {...options} />;
                   if (field.kind === 'object')
-                    return <InputComponents.Object {...options} value={data[field.name] ? data[field.name] : {}} />;
-                  if (field.editor) return <InputComponents.Editor {...options} />;
-                  if (field.upload) return <InputComponents.Upload {...options} />;
+                    return (
+                      <InputComponents.Object
+                        key={field.id}
+                        {...options}
+                        value={data[field.name] ? data[field.name] : {}}
+                      />
+                    );
+                  if (field.editor) return <InputComponents.Editor key={field.id} {...options} />;
+                  if (field.upload) return <InputComponents.Upload key={field.id} {...options} />;
                   switch (field.type) {
                     case 'Boolean':
-                      return <InputComponents.Boolean {...options} />;
+                      return <InputComponents.Boolean key={field.id} {...options} />;
                     case 'DateTime':
-                      return <InputComponents.Date {...options} />;
+                      return <InputComponents.Date key={field.id} {...options} />;
                     default:
-                      return <InputComponents.Default {...options} />;
+                      return <InputComponents.Default key={field.id} {...options} />;
                   }
                 })}
             </div>

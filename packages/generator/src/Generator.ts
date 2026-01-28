@@ -1,7 +1,7 @@
-import { GeneratorsType, GeneratorOptions } from '@paljs/types';
+import type { GeneratorOptions, GeneratorsType } from '@paljs/types';
+import { GenerateModules } from './graphql-modules';
 import { GenerateNexus } from './nexus';
 import { GenerateSdl } from './sdl';
-import { GenerateModules } from './graphql-modules';
 
 export class Generator {
   generators: Record<GeneratorsType, GenerateNexus | GenerateSdl | GenerateModules>;

@@ -1,11 +1,11 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
+import type React from 'react';
 
-import Spinner from '../components/Spinner';
-import DynamicTable from './dynamicTable';
 import { GET_SCHEMA } from '../SchemaQueries';
-import { ModelTableProps, ContextProps } from '../types';
+import Spinner from '../components/Spinner';
+import type { ContextProps, ModelTableProps } from '../types';
 import { TableContext, defaultSettings, useTableContext } from './Context';
+import DynamicTable from './dynamicTable';
 import defaultLanguage from './language';
 
 const PrismaTable: React.FC<ModelTableProps> = ({ children, language, model, ...rest }) => {
@@ -29,5 +29,5 @@ const PrismaTable: React.FC<ModelTableProps> = ({ children, language, model, ...
 };
 
 export { PrismaTable, TableContext, useTableContext };
-export * from './Table/Filters';
 export * from './Form/Inputs';
+export * from './Table/Filters';

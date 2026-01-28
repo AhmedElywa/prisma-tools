@@ -1,6 +1,6 @@
-import { makeSchema } from 'nexus';
-import { paljs, Settings } from '../src';
 import { printSchema } from 'graphql';
+import { makeSchema } from 'nexus';
+import { type Settings, paljs } from '../src';
 
 export const generateSchema = <
   ModelName extends string = '',

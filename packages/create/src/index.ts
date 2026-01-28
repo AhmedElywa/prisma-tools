@@ -1,13 +1,13 @@
-import spawn from 'cross-spawn';
-import chalk from 'chalk';
-import { readJSONSync, writeJsonSync, copySync } from 'fs-extra';
-import { resolve, join } from 'path';
-import { fetchLatestVersionsFor } from './utils/fetch-latest-version-for';
-import { log } from '@paljs/display';
-import { CliGeneratedExamples } from '@paljs/types';
+import { existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from 'fs';
+import { join, resolve } from 'path';
 import * as path from 'path';
-import { readdirSync, lstatSync, renameSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
+import { log } from '@paljs/display';
+import type { CliGeneratedExamples } from '@paljs/types';
+import chalk from 'chalk';
+import spawn from 'cross-spawn';
+import { copySync, readJSONSync, writeJsonSync } from 'fs-extra';
 import { framework, getPath } from './utils/excludeSettings';
+import { fetchLatestVersionsFor } from './utils/fetch-latest-version-for';
 
 // update to add new FrameWork
 export type Frameworks =

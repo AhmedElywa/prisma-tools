@@ -1,36 +1,34 @@
-import React, { Fragment, useContext, useState, useMemo } from 'react';
+import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
+import { EyeIcon, PencilSquareIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import {
-  useReactTable,
-  getCoreRowModel,
-  getSortedRowModel,
-  getPaginationRowModel,
-  flexRender,
-  PaginationState,
-  SortingState,
-  ColumnFiltersState,
-} from '@tanstack/react-table';
-
-import { columns, type ContextValues } from './Columns';
-import { initPages } from './utils';
-import { TableContext } from '../Context';
-import Spinner from '../../components/Spinner';
-import Checkbox from '../../components/Checkbox';
-import { ListConnect } from './ListConnect';
-import { PencilSquareIcon, EyeIcon, TrashIcon, PlusIcon } from '@heroicons/react/24/outline';
-
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ChevronDoubleLeftIcon,
-  ChevronDoubleRightIcon,
-  MagnifyingGlassCircleIcon,
   ArrowDownIcon,
   ArrowUpIcon,
+  ChevronDoubleLeftIcon,
+  ChevronDoubleRightIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  MagnifyingGlassCircleIcon,
 } from '@heroicons/react/24/solid';
-import { Filter } from './Filters';
+import {
+  type ColumnFiltersState,
+  type PaginationState,
+  type SortingState,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
+import React, { useContext, useMemo, useState } from 'react';
+import Checkbox from '../../components/Checkbox';
+import Spinner from '../../components/Spinner';
 import { buttonClasses, classNames } from '../../components/css';
-import { Popover, PopoverButton, PopoverPanel, Transition } from '@headlessui/react';
-import { TableParentRecord } from '../..';
+import type { TableParentRecord } from '../../types';
+import { TableContext } from '../Context';
+import { type ContextValues, columns } from './Columns';
+import { Filter } from './Filters';
+import { ListConnect } from './ListConnect';
+import { initPages } from './utils';
 
 interface TableProps {
   getData: () => void;
@@ -81,17 +79,17 @@ export const Table: React.FC<TableProps> = ({
   } = useContext(TableContext);
   const model = models.find((item) => item.id === modelName);
 
-  const contextValues: ContextValues = {
-    lang,
-    schema: { models },
-    push,
-    pagesPath,
-  };
-
-  const columnList = useMemo(
-    () => columns(model, tableColumns, contextValues),
-    [model, tableColumns, lang, models, push, pagesPath],
+  const contextValues: ContextValues = useMemo(
+    () => ({
+      lang,
+      schema: { models },
+      push,
+      pagesPath,
+    }),
+    [lang, models, push, pagesPath],
   );
+
+  const columnList = useMemo(() => columns(model, tableColumns, contextValues), [model, tableColumns, contextValues]);
 
   // State for pagination
   const [pagination, setPagination] = useState<PaginationState>({
@@ -146,7 +144,7 @@ export const Table: React.FC<TableProps> = ({
       newValues = [...selected, id];
       setSelected(newValues);
     }
-    void (onSelect && onSelect(newValues));
+    void onSelect?.(newValues);
   };
 
   React.useEffect(() => {
@@ -244,19 +242,12 @@ export const Table: React.FC<TableProps> = ({
                 <span className="rounded-full bg-yellow-400 px-2 rtl:mr-2 ltr:ml-2">{filters.length}</span>
               )}
             </PopoverButton>
-            <Transition
-              as={Fragment}
-              enter="transition ease-out duration-200"
-              enterFrom="opacity-0 translate-y-1"
-              enterTo="opacity-100 translate-y-0"
-              leave="transition ease-in duration-150"
-              leaveFrom="opacity-100 translate-y-0"
-              leaveTo="opacity-0 translate-y-1"
+            <PopoverPanel
+              transition
+              className="absolute z-10 mt-1 transition duration-200 ease-out data-[closed]:translate-y-1 data-[closed]:opacity-0"
             >
-              <PopoverPanel className="absolute z-10 mt-1">
-                {model && <Filter filters={filters} setAllFilters={setAllFilters} model={model} />}
-              </PopoverPanel>
-            </Transition>
+              {model && <Filter filters={filters} setAllFilters={setAllFilters} model={model} />}
+            </PopoverPanel>
           </Popover>
         </div>
         <div className="overflow-hidden">

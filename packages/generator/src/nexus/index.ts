@@ -1,9 +1,9 @@
-import { DMMF } from '@paljs/types';
-import { writeFileSync, existsSync, readFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { join } from 'path';
+import type { DMMF } from '@paljs/types';
+import { getInputType } from '@paljs/utils';
 import { Generators } from '../Generators';
 import { getCrud } from './templates';
-import { join } from 'path';
-import { getInputType } from '@paljs/utils';
 
 export class GenerateNexus extends Generators {
   generatedText: {

@@ -1,9 +1,9 @@
-import { Mutation, GeneratorOptions, Query, DMMF, ReadonlyDeep } from '@paljs/types';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { format, Options as PrettierOptions } from 'prettier';
-import pkgDir from 'pkg-dir';
 import { join } from 'path';
-import { getInputType, getDMMF } from '@paljs/utils';
+import type { DMMF, GeneratorOptions, Mutation, Query, ReadonlyDeep } from '@paljs/types';
+import { getDMMF, getInputType } from '@paljs/utils';
+import pkgDir from 'pkg-dir';
+import { type Options as PrettierOptions, format } from 'prettier';
 const projectRoot = pkgDir.sync() || process.cwd();
 
 export class Generators {

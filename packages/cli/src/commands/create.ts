@@ -1,9 +1,9 @@
-import { Command, Flags } from '@oclif/core';
-import { AppGenerator, AppGeneratorOptions, Frameworks } from '@paljs/create';
-import { prompt } from 'enquirer';
-import { CliGeneratedExamples } from '@paljs/types';
-import { log, chalk } from '@paljs/display';
 import { existsSync, readdirSync } from 'fs';
+import { Command, Flags } from '@oclif/core';
+import { AppGenerator, type AppGeneratorOptions, type Frameworks } from '@paljs/create';
+import { chalk, log } from '@paljs/display';
+import type { CliGeneratedExamples } from '@paljs/types';
+import { prompt } from 'enquirer';
 
 const examples: CliGeneratedExamples[] = [
   'full-stack-nextjs',

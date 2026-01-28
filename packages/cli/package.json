@@ -43,26 +43,16 @@
   "engines": {
     "node": ">=12.0.0"
   },
-  "files": [
-    "/bin",
-    "/dist",
-    "/npm-shrinkwrap.json",
-    "/oclif.manifest.json"
-  ],
+  "files": ["/bin", "/dist", "/npm-shrinkwrap.json", "/oclif.manifest.json"],
   "homepage": "https://paljs.com",
-  "keywords": [
-    "oclif"
-  ],
+  "keywords": ["oclif"],
   "license": "MIT",
   "main": "dist/index.js",
   "oclif": {
     "bin": "pal",
     "dirname": "paljs",
     "commands": "./dist/commands",
-    "plugins": [
-      "@oclif/plugin-help",
-      "@oclif/plugin-plugins"
-    ]
+    "plugins": ["@oclif/plugin-help", "@oclif/plugin-plugins"]
   },
   "repository": "paljs/prisma-tools",
   "scripts": {

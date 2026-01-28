@@ -1,13 +1,13 @@
-import React from 'react'
-import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react'
+import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
+import type React from 'react';
 
 interface ModalProps {
-  on: boolean
-  toggle: () => void
+  on: boolean;
+  toggle: () => void;
 }
 
 const Modal: React.FC<React.PropsWithChildren<ModalProps>> = ({ children, on, toggle }) => {
-  if (!on) return <></>
+  if (!on) return <></>;
   return (
     <Transition as={Dialog} className="relative z-50" show={on} onClose={toggle}>
       <TransitionChild
@@ -38,7 +38,7 @@ const Modal: React.FC<React.PropsWithChildren<ModalProps>> = ({ children, on, to
         </div>
       </div>
     </Transition>
-  )
-}
+  );
+};
 
-export default Modal
+export default Modal;

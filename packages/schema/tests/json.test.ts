@@ -1,5 +1,5 @@
-import { ConvertSchemaToObject } from '../src';
 import { join } from 'path';
+import { ConvertSchemaToObject } from '../src';
 
 test('generate Json object from prisma schema', () => {
   const generate = new ConvertSchemaToObject(join(__dirname, './schemas/schema.prisma')).run();

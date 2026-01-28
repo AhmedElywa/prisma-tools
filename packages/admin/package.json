@@ -18,9 +18,7 @@
     },
     "./style.css": "./dist/style.css"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "repository": {
     "type": "git",
     "url": "git@github.com:paljs/prisma-tools.git",
@@ -31,7 +29,7 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "tsup && pnpm build:css && pnpm postbuild",
+    "build": "tsup && bun run build:css && bun run postbuild",
     "build:css": "cross-env NODE_ENV=production tailwindcss -i ./src/tailwind.css -o ./dist/style.css --minify",
     "postbuild": "node ./scripts/postbuild.js",
     "dev": "concurrently \"tsup --watch\" \"tailwindcss -i ./src/tailwind.css -o ./dist/style.css --watch\"",
@@ -47,7 +45,6 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
-    "@paljs/types": "8.2.1",
     "@tanstack/react-table": "^8.20.6",
     "clsx": "^2.1.1",
     "react-hook-form": "*",

@@ -1,6 +1,6 @@
-import { createFile } from './createFile';
-import { SchemaObject, GeneratorOptions } from '@paljs/types';
+import type { GeneratorOptions, SchemaObject } from '@paljs/types';
 import { format } from 'prettier';
+import { createFile } from './createFile';
 
 export async function createGraphql(schemaObject: SchemaObject, options: GeneratorOptions) {
   const generatedText: Record<string, string> = {};

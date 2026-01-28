@@ -1,6 +1,6 @@
-import { asNexusMethod } from 'nexus';
 import * as DecimalJs from 'decimal.js';
 import { GraphQLScalarType, Kind } from 'graphql';
+import { asNexusMethod } from 'nexus';
 
 export const Decimal = asNexusMethod(
   /**

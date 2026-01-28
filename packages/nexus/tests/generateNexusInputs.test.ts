@@ -1,5 +1,5 @@
-import { generateSchema } from './nexusSchema';
 import { join } from 'path';
+import { generateSchema } from './nexusSchema';
 
 describe('test generate Nexus inputs', () => {
   it('should inputs as string', () => {

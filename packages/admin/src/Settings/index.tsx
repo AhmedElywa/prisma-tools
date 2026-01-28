@@ -1,30 +1,16 @@
-import React, { useRef, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { ChevronUpIcon, ChevronDownIcon, Bars3Icon } from '@heroicons/react/24/solid';
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-} from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-  useSortable,
-} from '@dnd-kit/sortable';
+import { DndContext, type DragEndEvent, closestCenter } from '@dnd-kit/core';
+import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-
-import UpdateModel from './UpdateModel';
-import UpdateField from './UpdateField';
-import Select from '../components/Select';
+import { Bars3Icon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid';
+import React, { useRef, useState } from 'react';
 import { GET_SCHEMA, UPDATE_MODEL } from '../SchemaQueries';
-import { ContextProps, AdminSchemaModel, AdminSchemaField } from '../types';
+import Select from '../components/Select';
 import { classNames } from '../components/css';
+import { useDndSensors } from '../lib/dnd';
+import type { AdminSchemaField, AdminSchemaModel, ContextProps } from '../types';
+import UpdateField from './UpdateField';
+import UpdateModel from './UpdateModel';
 
 const defaultLanguage = {
   dir: 'ltr',
@@ -113,20 +99,19 @@ const SortableItem: React.FC<SortableItemProps> = ({
         onClick={onToggle}
       >
         <div className={classNames('flex items-center space-x-2.5', dir === 'rtl' ? 'space-x-reverse' : '')}>
-          <div
+          <button
+            type="button"
             {...attributes}
             {...listeners}
             className="cursor-grab"
-            role="button"
             aria-label="Drag to reorder"
-            aria-grabbed={isDragging}
-            tabIndex={0}
+            aria-pressed={isDragging}
           >
-            <Bars3Icon className="w-5 h-5 text-blue-700" />
-          </div>
+            <Bars3Icon className="h-5 w-5 text-blue-700" />
+          </button>
           <span>{field.title}</span>
         </div>
-        {isOpen ? <ChevronUpIcon className="w-5 h-5" /> : <ChevronDownIcon className="w-5 h-5" />}
+        {isOpen ? <ChevronUpIcon className="h-5 w-5" /> : <ChevronDownIcon className="h-5 w-5" />}
       </div>
 
       <div
@@ -137,7 +122,7 @@ const SortableItem: React.FC<SortableItemProps> = ({
         style={
           isOpen
             ? {
-                maxHeight: accordionRef.current[index]?.scrollHeight + 'px',
+                maxHeight: `${accordionRef.current[index]?.scrollHeight}px`,
               }
             : {}
         }
@@ -161,12 +146,7 @@ export const Settings: React.FC<{
   const accordionRef = useRef<(HTMLDivElement | null)[]>([]);
   const [openedField, setOpenedField] = useState('');
 
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  );
+  const sensors = useDndSensors();
 
   if (!currentModel && models.length > 0) setCurrentModel(models[0]);
 

@@ -1,4 +1,4 @@
-import { DMMF } from '@paljs/types';
+import type { DMMF } from '@paljs/types';
 
 export const getInputType = (
   field: DMMF.SchemaArg,

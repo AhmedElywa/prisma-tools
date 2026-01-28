@@ -1,5 +1,5 @@
-import { GraphQLResolveInfo } from 'graphql';
-import { DMMF } from '@paljs/types';
+import type { DMMF } from '@paljs/types';
+import type { GraphQLResolveInfo } from 'graphql';
 import { parseResolveInfo } from 'graphql-parse-resolve-info';
 
 export interface PrismaSelectOptions<

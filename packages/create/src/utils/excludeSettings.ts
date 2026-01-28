@@ -1,4 +1,4 @@
-import { Frameworks } from '../index';
+import type { Frameworks } from '../index';
 
 // update to add new FrameWork
 const adminExclude = {

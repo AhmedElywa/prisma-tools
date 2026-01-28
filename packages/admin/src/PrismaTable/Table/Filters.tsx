@@ -1,13 +1,12 @@
-/* eslint  @typescript-eslint/no-non-null-assertion: 0 */
-import React, { useContext, useState, useEffect } from 'react';
-
-import Select from '../../components/Select';
-import { useFilter } from './useFilter';
-import { useEnum, useModel } from '../useSchema';
-import { AdminSchemaField, AdminSchemaModel } from '../../types';
-import { TableContext } from '../Context';
 import { MagnifyingGlassCircleIcon, TrashIcon } from '@heroicons/react/24/solid';
+import type React from 'react';
+import { useContext, useEffect, useState } from 'react';
+import Select from '../../components/Select';
 import { buttonClasses, classNames, inputClasses } from '../../components/css';
+import type { AdminSchemaField, AdminSchemaModel } from '../../types';
+import { TableContext } from '../Context';
+import { useEnum, useModel } from '../useSchema';
+import { useFilter } from './useFilter';
 import { randString } from './utils';
 
 interface Option {
@@ -100,15 +99,20 @@ const FilterRow: React.FC<FilterRowProps> = ({ model, filter, setFilter, index, 
     .map((f) => ({ id: f.name, name: f.title }));
   const { dir } = useContext(TableContext);
 
-  const [option, setOption] = useState<Option>(!filter ? options[0] : options.find((item) => item.id === filter.id)!);
+  const [option, setOption] = useState<Option>(
+    !filter ? options[0] : (options.find((item) => item.id === filter.id) ?? options[0]),
+  );
 
-  const getField = model.fields.find((f) => f.name === option.id)!;
+  const getField = model.fields.find((f) => f.name === option.id);
+  if (!getField) {
+    throw new Error(`Field not found for name: ${option.id}`);
+  }
   const props: FilterComponentsProps = {
     field: getField,
     filterValue: getField.name === filter?.id ? filter.value : undefined,
     setFilter: (value) => setFilter({ id: option.id, value }),
   };
-  let filterComponent;
+  let filterComponent: React.ReactNode;
   if (getField.kind === 'enum') {
     filterComponent = <EnumFilter key={getField.name + index} {...props} />;
   } else if (getField.kind === 'object') {
@@ -159,8 +163,7 @@ const DefaultFilter: React.FC<FilterComponentsProps> = ({ filterValue, setFilter
   const getName = (name: string): any => {
     return (
       <div className="flex items-center">
-        <span>{name}</span>{' '}
-        {filterValue && filterValue[name] && <MagnifyingGlassCircleIcon className="h-5 w-5 text-green-500" />}
+        <span>{name}</span> {filterValue?.[name] && <MagnifyingGlassCircleIcon className="h-5 w-5 text-green-500" />}
       </div>
     );
   };
@@ -177,7 +180,7 @@ const DefaultFilter: React.FC<FilterComponentsProps> = ({ filterValue, setFilter
     );
   }
   const [option, setOption] = useState<Option>(
-    filterValue ? options.find((item) => !!filterValue[item.id])! : options[0],
+    filterValue ? (options.find((item) => !!filterValue[item.id]) ?? options[0]) : options[0],
   );
 
   const inputProps =
@@ -252,7 +255,10 @@ export const EnumFilter: React.FC<FilterComponentsProps> = ({ field, filterValue
 
 const ObjectFilter: React.FC<FilterComponentsProps> = ({ field, filterValue, setFilter }) => {
   const { dir } = useContext(TableContext);
-  const model = useModel(field.type)!;
+  const model = useModel(field.type);
+  if (!model) {
+    throw new Error(`Model not found for field type: ${field.type}`);
+  }
   const filter = filterValue ? (field.list ? filterValue.some : filterValue.is) : {};
   const options = model.fields
     .filter((item) => item.filter && item.kind !== 'object' && !item.list && item.type !== 'Json')
@@ -268,10 +274,13 @@ const ObjectFilter: React.FC<FilterComponentsProps> = ({ field, filterValue, set
     }));
 
   const [currentField, setCurrentField] = useState<Option>(
-    filterValue ? options.find((item) => !!filter[item.id])! : options[0],
+    filterValue ? (options.find((item) => !!filter[item.id]) ?? options[0]) : options[0],
   );
 
-  const getField = model.fields.find((item) => item.name === currentField.id)!;
+  const getField = model.fields.find((item) => item.name === currentField.id);
+  if (!getField) {
+    throw new Error(`Field not found for name: ${currentField.id}`);
+  }
 
   const props: FilterComponentsProps | null = getField
     ? {
@@ -293,14 +302,14 @@ const ObjectFilter: React.FC<FilterComponentsProps> = ({ field, filterValue, set
     : null;
 
   useEffect(() => {
-    setCurrentField(filterValue ? options.find((item) => !!filter[item.id])! : options[0]);
-  }, [field]);
+    setCurrentField(filterValue ? (options.find((item) => !!filter[item.id]) ?? options[0]) : options[0]);
+  }, [filterValue, filter, options]);
 
   if (!props) {
     return null;
   }
 
-  let filterComponent;
+  let filterComponent: React.ReactNode;
   if (getField.kind === 'enum') {
     filterComponent = <EnumFilter {...props} />;
   } else {

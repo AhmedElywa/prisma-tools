@@ -1,20 +1,17 @@
-/* eslint @typescript-eslint/no-non-null-assertion: 0 */
-import { useContext, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { MagnifyingGlassIcon, XCircleIcon } from '@heroicons/react/24/outline';
-
+import { useContext, useState } from 'react';
+import { useController, useFormContext } from 'react-hook-form';
+import Checkbox from '../../components/Checkbox';
 import Modal from '../../components/Modal';
-import { useEnum } from '../useSchema';
+import Select from '../../components/Select';
+import { buttonClasses, classNames, inputClasses } from '../../components/css';
+import type { AdminSchemaField, FormInputs, ModelTableProps, PrismaRecord } from '../../types';
+import { TableContext } from '../Context';
+import { queryDocument } from '../QueryDocument';
 import { getDisplayName } from '../Table/utils';
 import DynamicTable from '../dynamicTable';
-import { queryDocument } from '../QueryDocument';
-import { TableContext } from '../Context';
-import { FormInputs, ModelTableProps, PrismaRecord } from '../../types';
-import Select from '../../components/Select';
-import Checkbox from '../../components/Checkbox';
-import { buttonClasses, classNames, inputClasses } from '../../components/css';
-import { AdminSchemaField } from '@paljs/types';
-import { useController, useFormContext } from 'react-hook-form';
+import { useEnum } from '../useSchema';
 
 interface Option {
   id: any;
@@ -23,7 +20,7 @@ interface Option {
 
 const getFieldValidation = (field: AdminSchemaField, inputValidation: ModelTableProps['inputValidation']) => {
   const modelName = field.id.split('.')[0];
-  return inputValidation && modelName ? (inputValidation[modelName] ? inputValidation[modelName]?.[field.name] || {} : {}) : {};
+  return inputValidation ? (inputValidation[modelName] ? inputValidation[modelName][field.name] || {} : {}) : {};
 };
 
 const defaultInputs: Omit<FormInputs, 'Upload' | 'Editor'> = {
@@ -40,20 +37,20 @@ const defaultInputs: Omit<FormInputs, 'Upload' | 'Editor'> = {
         : value,
     };
     if (field.list) {
-      options['type'] = 'text';
+      options.type = 'text';
     } else {
       switch (field.type) {
         case 'Int':
         case 'BigInt':
-          options['type'] = 'number';
+          options.type = 'number';
           break;
         case 'Float':
         case 'Decimal':
-          options['type'] = 'number';
-          options['step'] = 'any';
+          options.type = 'number';
+          options.step = 'any';
           break;
         case 'String':
-          options['type'] = 'text';
+          options.type = 'text';
           break;
       }
     }
@@ -123,7 +120,10 @@ const defaultInputs: Omit<FormInputs, 'Upload' | 'Editor'> = {
       schema: { models },
       lang,
     } = useContext(TableContext);
-    const model = models.find((item) => item.id === field.type)!;
+    const model = models.find((item) => item.id === field.type);
+    if (!model) {
+      throw new Error(`Model not found for field type: ${field.type}`);
+    }
     const [modal, setModal] = useState(false);
     const [state, setSate] = useState(value);
 

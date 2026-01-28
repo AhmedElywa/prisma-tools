@@ -1,5 +1,5 @@
-import { CamelCase } from '../src';
 import { join } from 'path';
+import { CamelCase } from '../src';
 
 test('convert prisma schema from lower case to camel case', async () => {
   const generate = new CamelCase(join(__dirname, './schemas/lowerCaseSchema.prisma')).convert(true);

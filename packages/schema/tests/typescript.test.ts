@@ -1,5 +1,5 @@
-import { GenerateTypeScript } from '../src';
 import { join } from 'path';
+import { GenerateTypeScript } from '../src';
 
 test('generate typescript types from prisma schema', () => {
   const generate = new GenerateTypeScript(join(__dirname, './schemas/schema.prisma')).run();

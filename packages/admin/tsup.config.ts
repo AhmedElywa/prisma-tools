@@ -1,4 +1,4 @@
-import { defineConfig } from 'tsup'
+import { defineConfig } from 'tsup';
 
 export default defineConfig({
   entry: ['src/index.ts'],
@@ -9,20 +9,14 @@ export default defineConfig({
   clean: true,
   treeshake: true,
   target: 'es2020',
-  external: [
-    'react',
-    'react-dom',
-    '@apollo/client',
-    'graphql',
-    'graphql-tag',
-  ],
+  external: ['react', 'react-dom', '@apollo/client', 'graphql', 'graphql-tag'],
   esbuildOptions(options) {
-    options.jsx = 'automatic'
+    options.jsx = 'automatic';
   },
   outExtension({ format }) {
     return {
       js: format === 'cjs' ? '.cjs' : '.js',
       dts: format === 'cjs' ? '.d.cts' : '.d.ts',
-    }
+    };
   },
-})
+});

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { TableContext } from '../Context';
 
 const filterMemo = (modelName: string, filter: any, models: any[]) => {
@@ -14,7 +14,7 @@ const filterMemo = (modelName: string, filter: any, models: any[]) => {
           const isField = fieldModel.fields.find((field: any) => field.name === fieldModel.idField);
           const filterValue = {
             [fieldModel.idField]: {
-              equals: isField?.type === 'String' ? filter[key] : parseInt(filter[key]),
+              equals: isField?.type === 'String' ? filter[key] : Number.parseInt(filter[key], 10),
             },
           };
           const value = field?.list ? { some: filterValue } : { is: filterValue };
@@ -29,7 +29,7 @@ const filterMemo = (modelName: string, filter: any, models: any[]) => {
           initialValue.push({
             id: key,
             value: {
-              equals: fieldByName.type === 'String' ? filter[key] : parseInt(filter[key]),
+              equals: fieldByName.type === 'String' ? filter[key] : Number.parseInt(filter[key], 10),
             },
           });
         }
@@ -97,30 +97,33 @@ export const useFilterAndSort = (model: string, filter?: any, defaultOrder?: Ord
   const [where, setWhere] = useState<any>(handleFilter(initialFilter));
   const [orderBy, setOrderBy] = useState<OrderBy[] | undefined>(defaultOrder);
 
-  const filterHandler = (filters: { id: string; value: any }[]) => {
+  const filterHandler = useCallback((filters: { id: string; value: any }[]) => {
     setWhere(handleFilter(JSON.parse(JSON.stringify(filters))));
-  };
+  }, []);
 
-  const sortByHandler = (sortBy: { id: string; desc: boolean }[]) => {
-    if (sortBy.length > 0) {
-      const newOrderBy: OrderBy[] = [];
-      sortBy.forEach((item) => {
-        const field = item.id.split('.')[0];
-        const modelObject = models.find((item) => item.id === model);
-        const fieldModel = modelObject?.fields.find((item) => item.name === field);
-        newOrderBy.push({
-          [field as string]: fieldModel?.required
-            ? item.desc
-              ? 'desc'
-              : 'asc'
-            : { sort: item.desc ? 'desc' : 'asc', nulls: 'last' },
+  const sortByHandler = useCallback(
+    (sortBy: { id: string; desc: boolean }[]) => {
+      if (sortBy.length > 0) {
+        const newOrderBy: OrderBy[] = [];
+        sortBy.forEach((item) => {
+          const field = item.id.split('.')[0];
+          const modelObject = models.find((item) => item.id === model);
+          const fieldModel = modelObject?.fields.find((item) => item.name === field);
+          newOrderBy.push({
+            [field]: fieldModel?.required
+              ? item.desc
+                ? 'desc'
+                : 'asc'
+              : { sort: item.desc ? 'desc' : 'asc', nulls: 'last' },
+          });
         });
-      });
-      setOrderBy(newOrderBy);
-    } else if (orderBy) {
-      setOrderBy(defaultOrder);
-    }
-  };
+        setOrderBy(newOrderBy);
+      } else {
+        setOrderBy(defaultOrder);
+      }
+    },
+    [models, model, defaultOrder],
+  );
 
   return {
     where,

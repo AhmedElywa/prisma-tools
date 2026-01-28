@@ -1,4 +1,4 @@
-import { AdminSchemaModel } from '../../types';
+import type { AdminSchemaModel } from '../../types';
 
 export const initPages = (pagesCount: number, page: number, showPagesCount = 4) => {
   showPagesCount = pagesCount < showPagesCount ? pagesCount : showPagesCount;

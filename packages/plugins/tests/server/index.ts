@@ -1,12 +1,12 @@
+import { join } from 'path';
+import { ApolloServer, type GraphQLRequest } from '@apollo/server';
+import type { ExecuteOperationOptions, VariableValues } from '@apollo/server/dist/esm/externalTypes/graphql';
+import { Generators } from '@paljs/generator/src/Generators';
+import { getDMMFBySchemaPath } from '@paljs/utils';
+import type { DocumentNode, TypedQueryDocumentNode } from 'graphql';
+import { parseResolveInfo } from 'graphql-parse-resolve-info';
 import gql from 'graphql-tag';
 import { PrismaSelect } from '../../src';
-import { parseResolveInfo } from 'graphql-parse-resolve-info';
-import { getDMMFBySchemaPath } from '@paljs/utils';
-import { join } from 'path';
-import { ApolloServer, GraphQLRequest } from '@apollo/server';
-import { Generators } from '@paljs/generator/src/Generators';
-import { ExecuteOperationOptions, VariableValues } from '@apollo/server/dist/esm/externalTypes/graphql';
-import { DocumentNode, TypedQueryDocumentNode } from 'graphql';
 
 const typeDefs = gql`
   type User {

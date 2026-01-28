@@ -1,16 +1,16 @@
-import findUnique from './findUnique';
+import type { QueriesAndMutations } from '@paljs/types';
+import type { GenerateNexus } from '..';
+import aggregate from './aggregate';
+import createOne from './createOne';
+import deleteMany from './deleteMany';
+import deleteOne from './deleteOne';
+import findCount from './findCount';
 import findFirst from './findFirst';
 import findMany from './findMany';
-import findCount from './findCount';
-import createOne from './createOne';
-import updateOne from './updateOne';
-import deleteOne from './deleteOne';
-import upsertOne from './upsertOne';
-import deleteMany from './deleteMany';
+import findUnique from './findUnique';
 import updateMany from './updateMany';
-import aggregate from './aggregate';
-import { QueriesAndMutations } from '@paljs/types';
-import { GenerateNexus } from '..';
+import updateOne from './updateOne';
+import upsertOne from './upsertOne';
 
 const crud: Record<QueriesAndMutations, string> = {
   findUnique,

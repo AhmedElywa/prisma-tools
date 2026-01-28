@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
-
-import { AdminSchemaField } from '../types';
+import type React from 'react';
+import { useState } from 'react';
 import { UPDATE_FIELD } from '../SchemaQueries';
-import { SettingLanguage } from './index';
 import Checkbox from '../components/Checkbox';
 import { inputClasses } from '../components/css';
+import type { AdminSchemaField } from '../types';
+import type { SettingLanguage } from './index';
 
 type Fields = 'read' | 'create' | 'update' | 'filter' | 'sort' | 'editor' | 'upload';
 
@@ -45,7 +45,7 @@ const UpdateField: React.FC<{
     if (title.typingTimeout) clearTimeout(title.typingTimeout);
     setTitle({
       value: newValue,
-      typingTimeout: setTimeout(function () {
+      typingTimeout: setTimeout(() => {
         onChangeHandler('title', newValue);
       }, 1000),
     });

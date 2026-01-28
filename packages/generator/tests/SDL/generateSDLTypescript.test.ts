@@ -1,6 +1,6 @@
 import { join } from 'path';
-import { GenerateTypes } from '../../src/sdl/GenerateTypes';
 import { getDMMFBySchemaPath } from '@paljs/utils';
+import { GenerateTypes } from '../../src/sdl/GenerateTypes';
 
 describe('Generate SDL Typescript', () => {
   const schemaPath = join(__dirname, '../schemas/schema.prisma');

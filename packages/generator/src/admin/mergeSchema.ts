@@ -1,6 +1,6 @@
-/* eslint  @typescript-eslint/no-non-null-assertion: 0 */
-import { SchemaObject, Model, Field, AdminSchema, AdminSchemaModel, AdminSchemaField } from '@paljs/types';
 import { existsSync, readFileSync } from 'fs';
+/* eslint  @typescript-eslint/no-non-null-assertion: 0 */
+import type { AdminSchema, AdminSchemaField, AdminSchemaModel, Field, Model, SchemaObject } from '@paljs/types';
 
 export function parseSchema(path: string): AdminSchema {
   return existsSync(path)

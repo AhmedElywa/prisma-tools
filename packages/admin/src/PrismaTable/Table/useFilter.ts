@@ -20,9 +20,9 @@ export const useFilter = (init: any, setFilter: (value: any) => void, number?: b
           search = {};
         }
         if (['in', 'notIn'].includes(key)) {
-          search[key] = (newValue[key] as string).split(',').map((item) => (number ? parseFloat(item) : item));
+          search[key] = (newValue[key] as string).split(',').map((item) => (number ? Number.parseFloat(item) : item));
         } else {
-          search[key] = number ? parseFloat(newValue[key]) : newValue[key];
+          search[key] = number ? Number.parseFloat(newValue[key]) : newValue[key];
         }
       }
     });
@@ -44,7 +44,7 @@ export const useFilter = (init: any, setFilter: (value: any) => void, number?: b
       setState({
         value: newValue,
         typingTimeout: setTimeout(
-          function () {
+          () => {
             onChangeHandler(newValue);
           },
           !wait ? 1 : 1000,

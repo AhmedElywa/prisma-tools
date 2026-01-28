@@ -1,11 +1,11 @@
-import { Command, Flags } from '@oclif/core';
-import { ConvertSchemaToObject, CamelCase, GenerateTypeScript } from '@paljs/schema';
+import { mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { SchemaObject } from '@paljs/types';
-import { format, Options } from 'prettier';
-import { writeFileSync, mkdirSync } from 'fs';
+import { Command, Flags } from '@oclif/core';
 import { log } from '@paljs/display';
+import { CamelCase, ConvertSchemaToObject, GenerateTypeScript } from '@paljs/schema';
+import type { SchemaObject } from '@paljs/types';
 import { getSchemaPath } from '@paljs/utils';
+import { type Options, format } from 'prettier';
 
 type Output = 'js' | 'ts' | 'json';
 
@@ -44,7 +44,8 @@ export const schema: SchemaObject = ${JSON.stringify(schema)}`,
 };
 
 export default class Schema extends Command {
-  static description = `Prisma schema file converter to: 1- json object. 2- change Snack case to Camel case. 3- TypeScript type definitions. `;
+  static description =
+    `Prisma schema file converter to: 1- json object. 2- change Snack case to Camel case. 3- TypeScript type definitions. `;
 
   static flags = {
     help: Flags.help({ char: 'h' }),

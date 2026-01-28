@@ -1,7 +1,7 @@
 import { writeFileSync } from 'fs';
-import { PrismaReader } from './PrismaReader';
-import { formatSchema } from '@paljs/utils';
 import os from 'os';
+import { formatSchema } from '@paljs/utils';
+import { PrismaReader } from './PrismaReader';
 
 export class CamelCase extends PrismaReader {
   async convert(returnString = false): Promise<string | void> {

@@ -1,4 +1,4 @@
-import { DMMF } from './dmmf';
+import type { DMMF } from './dmmf';
 
 export type Query = 'findUnique' | 'findFirst' | 'findMany' | 'findCount' | 'aggregate';
 export type Mutation = 'createOne' | 'updateOne' | 'upsertOne' | 'deleteOne' | 'updateMany' | 'deleteMany';

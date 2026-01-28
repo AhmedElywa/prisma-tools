@@ -1,15 +1,14 @@
+import { type ApolloError, useLazyQuery, useMutation } from '@apollo/client';
+import type { LazyQueryExecFunction } from '@apollo/client/react/types/types';
 import React, { useContext, useEffect, useState } from 'react';
-import { ApolloError, useLazyQuery, useMutation } from '@apollo/client';
-
 import Modal from '../components/Modal';
-import { Table } from './Table';
-import { useFilterAndSort } from './Table/useFilterAndSort';
-import Form from './Form';
+import type { ContextProps, TableParentRecord } from '../types';
 import { TableContext } from './Context';
 import EditRecord from './EditRecord';
+import Form from './Form';
 import { mutationDocument, queryDocument } from './QueryDocument';
-import { ContextProps, TableParentRecord } from '../types';
-import { LazyQueryExecFunction } from '@apollo/client/react/types/types';
+import { Table } from './Table';
+import { useFilterAndSort } from './Table/useFilterAndSort';
 
 interface OperationVariables {
   where: any;
@@ -115,7 +114,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     return () => {
       clearTimeout(timeOut);
     };
-  }, [data, loading, query]);
+  }, [data, loading, query, error, getData, inEdit]);
 
   const fetchMoreHandler = (pageSize: number, pageIndex: number) => {
     if (pageSize !== page.take || pageSize * pageIndex !== page.skip) {
@@ -154,34 +153,33 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
 
   const onCreateCancel =
     onCancelCreate ||
-    function () {
+    (() => {
       setCreate(false);
-    };
+    });
 
   const onCreateSave =
     onSaveCreate ||
-    function () {
+    (() => {
       setCreate(false);
-      void (parent?.updateRecord && parent.updateRecord());
+      void parent?.updateRecord?.();
       getData();
-    };
+    });
 
   const onUpdateSave =
     onSaveUpdate ||
-    function () {
+    (() => {
       push(pagesPath + model);
       getData();
-    };
+    });
 
   const parentName = modelObject?.fields.find((item) => item.type === parent?.name)?.name;
   const _data: any[] = data ? data[`findMany${model}`] : [];
   return (
     <>
-      {children &&
-        children({
-          context,
-          query: { variables, data, getData, loading, error },
-        })}
+      {children?.({
+        context,
+        query: { variables, data, getData, loading, error },
+      })}
       <Modal on={create} toggle={() => setCreate(!create)}>
         <Form
           model={model}

@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { classNames } from './css';
 
 const Spinner: React.FC<{ h?: string; w?: string }> = ({ h, w }) => {

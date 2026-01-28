@@ -1,7 +1,7 @@
-import { executeOperation } from './server';
+import assert from 'assert';
 import gql from 'graphql-tag';
 import { PrismaSelect } from '../src';
-import assert from 'assert';
+import { executeOperation } from './server';
 
 const userQuery = gql`
   query user {

@@ -1,6 +1,6 @@
-import { GeneratorOptions, DMMF } from '@paljs/types';
-import { format } from 'prettier';
+import type { DMMF, GeneratorOptions } from '@paljs/types';
 import { getInputType } from '@paljs/utils';
+import { format } from 'prettier';
 
 export class GenerateTypes {
   code: string[] = [

@@ -1,5 +1,5 @@
-import { AdminSchemaModel } from '../types';
 import tag from 'graphql-tag';
+import type { AdminSchemaModel } from '../types';
 
 const getFields = (models: AdminSchemaModel[], modelName: string, update = false) => {
   const model = models.find((item) => item.id === modelName);

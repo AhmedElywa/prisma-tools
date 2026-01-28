@@ -1,10 +1,10 @@
 import { writeFileSync } from 'fs';
+import { ConvertSchemaToObject } from '@paljs/schema';
+import type { AdminPagesOptions, GeneratorOptions, SchemaObject } from '@paljs/types';
 import { format } from 'prettier';
-import { GeneratorOptions, AdminPagesOptions, SchemaObject } from '@paljs/types';
+import { createFile } from './createFile';
 import { createGraphql } from './createGraphql';
 import { mergeSchema } from './mergeSchema';
-import { ConvertSchemaToObject } from '@paljs/schema';
-import { createFile } from './createFile';
 
 const defaultOptions: GeneratorOptions = {
   prismaName: 'prisma',

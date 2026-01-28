@@ -1,7 +1,7 @@
-import chalk from 'chalk';
-import ora from 'ora';
 import readline from 'readline';
+import chalk from 'chalk';
 import debug from 'debug';
+import ora from 'ora';
 
 const debugName = 'paljs';
 

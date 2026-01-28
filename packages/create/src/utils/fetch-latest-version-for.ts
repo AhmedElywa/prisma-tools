@@ -1,5 +1,5 @@
+import type { Fallbackable } from './fallbackable';
 import { getLatestVersion } from './get-latest-version';
-import { Fallbackable } from './fallbackable';
 
 function fromEntries<K extends number | string, V>(entries: [K, V][]): Record<K, V> {
   return entries.reduce<Record<K, V>>(

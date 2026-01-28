@@ -1,8 +1,8 @@
-import { getDMMF, getSchemaWithPath } from '@prisma/internals';
 import { readFileSync } from 'fs';
 import { relative } from 'path';
 import { chalk, log } from '@paljs/display';
-import { DMMF } from '@paljs/types';
+import type { DMMF } from '@paljs/types';
+import { getDMMF, getSchemaWithPath } from '@prisma/internals';
 
 export const getSchemaPath = async (path?: string): Promise<string> => {
   const schema = await getSchemaWithPath(path);

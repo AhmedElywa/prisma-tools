@@ -30,9 +30,7 @@
     "rimraf": "^3.0.2",
     "typescript": "^5.7.2"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "publishConfig": {
     "access": "public"
   },

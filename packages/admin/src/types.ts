@@ -1,12 +1,52 @@
-import React from 'react';
-import { ColumnDef } from '@tanstack/react-table';
-import { AdminSchema, AdminSchemaField, AdminSchemaModel } from '@paljs/types';
-import Language from './PrismaTable/language';
-import { DynamicTableProps } from './PrismaTable/dynamicTable';
-import { RegisterOptions } from 'react-hook-form/dist/types/validator';
+import type { ColumnDef } from '@tanstack/react-table';
+import type React from 'react';
+import type { RegisterOptions } from 'react-hook-form';
 import type { OrderBy } from './PrismaTable/Table/useFilterAndSort';
+import type { DynamicTableProps } from './PrismaTable/dynamicTable';
+import type Language from './PrismaTable/language';
 
-export type { AdminSchema, AdminSchemaField, AdminSchemaModel };
+// Type definitions previously from @paljs/types
+export interface AdminSchemaField {
+  id: string;
+  name: string;
+  title: string;
+  type: string;
+  list: boolean;
+  kind: 'scalar' | 'object' | 'enum';
+  read: boolean;
+  required: boolean;
+  isId: boolean;
+  unique: boolean;
+  create: boolean;
+  order: number;
+  update: boolean;
+  sort: boolean;
+  filter: boolean;
+  editor?: boolean;
+  upload?: boolean;
+  relationField?: boolean;
+}
+
+export interface AdminSchemaModel {
+  id: string;
+  name: string;
+  create: boolean;
+  delete: boolean;
+  update: boolean;
+  idField: string;
+  displayFields: string[];
+  fields: AdminSchemaField[];
+}
+
+export interface AdminSchemaEnum {
+  name: string;
+  fields: string[];
+}
+
+export interface AdminSchema {
+  models: AdminSchemaModel[];
+  enums: AdminSchemaEnum[];
+}
 
 // Generic type for Prisma model data
 export type PrismaRecord = Record<string, unknown>;
@@ -18,18 +58,7 @@ export type Columns = Record<
 >;
 
 // Type for field values based on field kind and type
-export type FieldValue =
-  | string
-  | number
-  | boolean
-  | Date
-  | null
-  | undefined
-  | PrismaRecord // for object relations
-  | PrismaRecord[] // for list relations
-  | string[] // for scalar lists
-  | number[] // for number lists
-  | boolean[]; // for boolean lists
+export type FieldValue = any;
 
 export interface InputProps {
   field: AdminSchemaField;
@@ -69,26 +98,15 @@ export type QueryParams = Record<string, string | number | boolean | undefined>;
 export type OrderByInput = Record<string, 'asc' | 'desc'>;
 
 // Type for handler functions
-export type SaveHandler = (data: PrismaRecord) => void | Promise<void>;
-export type CancelHandler = (args?: { model: string; setCreateModal?: (value: boolean) => void }) => void;
-export type ValueHandler = (value: FieldValue, field?: AdminSchemaField, isCreate?: boolean) => FieldValue;
-export type SelectHandler = (values: (string | number)[]) => void;
-
-// Legacy callback types for backward compatibility
-export type LegacyOnSaveCreate = (options: {
+export type CreateSaveHandler = (args: {
   model: string;
-  setCreateModal: (state: boolean) => void;
-  refetchTable: (options?: any) => void;
-}) => void;
-
-export type LegacyOnSaveUpdate = (options: { 
-  model: string; 
-  refetchTable: (options?: any) => void;
-}) => void;
-
-export type LegacyOnCancelUpdate = (options: { model: string }) => void;
-
-export type LegacyValueHandler = (value: string, field?: AdminSchemaField, create?: boolean) => any;
+  setCreateModal: (value: boolean) => void;
+  refetchTable: () => void;
+}) => void | Promise<void>;
+export type UpdateSaveHandler = (args: { model: string; refetchTable: () => void }) => void | Promise<void>;
+export type CancelHandler = (args: { model: string; setCreateModal?: (value: boolean) => void }) => void;
+export type ValueHandler = (value: FieldValue, field?: AdminSchemaField, isCreate?: boolean) => FieldValue;
+export type SelectHandler = (values: string[]) => void;
 
 interface SameProps {
   actions?: ('create' | 'update' | 'delete')[];
@@ -98,18 +116,14 @@ interface SameProps {
   inputValidation?: Record<string, Record<string, RegisterOptions>>;
   push: (url: string) => void;
   query: QueryParams;
-  onSelect?: SelectHandler | ((values: any[]) => void);
-  actionButtons?: ActionButton | {
-    Add?: React.FC;
-    Update?: React.FC<{ id: any }>;
-    Delete?: React.FC<{ id: any }>;
-  };
+  onSelect?: SelectHandler;
+  actionButtons?: ActionButton;
   onCancelCreate?: CancelHandler;
-  onSaveCreate?: SaveHandler | LegacyOnSaveCreate;
-  onSaveUpdate?: SaveHandler | LegacyOnSaveUpdate;
-  onCancelUpdate?: CancelHandler | LegacyOnCancelUpdate;
-  defaultOrderBy?: Record<string, OrderBy[]> | Record<string, Record<string, 'asc' | 'desc' | { sort: 'asc' | 'desc'; nulls: 'last' | 'first' }>[]>;
-  valueHandler?: ValueHandler | LegacyValueHandler;
+  onSaveCreate?: CreateSaveHandler;
+  onSaveUpdate?: UpdateSaveHandler;
+  onCancelUpdate?: CancelHandler;
+  defaultOrderBy?: Record<string, OrderBy[]>;
+  valueHandler?: ValueHandler;
 }
 
 export interface EditPageProps extends SameProps {
@@ -159,14 +173,14 @@ export type DynamicTableChildrenFunction = (options: {
       take: number;
       skip: number;
     };
-    data?: PrismaRecord;
+    data?: any;
     loading: boolean;
     error?: Error;
     getData: () => void;
   };
 }) => React.ReactNode;
 
-export interface ModelTableProps extends Partial<Omit<RequireContextProps, 'lang'>>, SameProps {
+export interface ModelTableProps extends SameProps, Partial<Omit<RequireContextProps, 'lang'>> {
   model: string;
   children?: DynamicTableChildrenFunction;
   language?: Partial<typeof Language>;

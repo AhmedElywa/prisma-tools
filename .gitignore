@@ -1,10 +1,11 @@
 node_modules
 .idea
-yarn.lock
 dist
 .DS_Store
 coverage
 
+# Bun
+bun.lockb
+
 # Prisma
 prisma-client
-

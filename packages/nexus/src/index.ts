@@ -1,12 +1,12 @@
 import { PrismaSelect } from '@paljs/plugins';
 import { objectType, plugin } from 'nexus';
-import { NexusAcceptedTypeDef } from 'nexus/dist/builder';
+import type { NexusAcceptedTypeDef } from 'nexus/dist/builder';
+import type { AllNexusOutputTypeDefs } from 'nexus/dist/definitions/wrapping';
 import { adminNexusSchemaSettings } from './admin';
-import type { Settings } from './settings';
 import { getScalars } from './defaultScalar';
-import { AllNexusOutputTypeDefs } from 'nexus/dist/definitions/wrapping';
+import type { Settings } from './settings';
 
-export { Settings };
+export type { Settings };
 
 export const paljs = <
   ModelName extends string = '',

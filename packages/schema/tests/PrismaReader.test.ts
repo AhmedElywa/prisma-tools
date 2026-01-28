@@ -1,5 +1,5 @@
-import { PrismaReader } from '../src';
 import { join } from 'path';
+import { PrismaReader } from '../src';
 
 describe('test the Prisma Reader class', () => {
   const prismaReader = new PrismaReader(join(__dirname, './schemas/schema.prisma'));

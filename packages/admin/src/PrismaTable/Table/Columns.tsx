@@ -1,15 +1,13 @@
-import React from 'react'
-import { CellContext, ColumnDef } from '@tanstack/react-table'
-
-import { getDisplayName } from './utils'
-import { AdminSchemaField, AdminSchemaModel, GetColumnsPartial, PrismaRecord, Columns } from '../../types'
-import { buttonClasses, classNames } from '../../components/css'
+import type { CellContext, ColumnDef } from '@tanstack/react-table';
+import { buttonClasses, classNames } from '../../components/css';
+import type { AdminSchemaField, AdminSchemaModel, Columns, GetColumnsPartial, PrismaRecord } from '../../types';
+import { getDisplayName } from './utils';
 
 export interface ContextValues {
-  lang: any
-  schema: { models: AdminSchemaModel[] }
-  push: (path: string) => void
-  pagesPath: string
+  lang: any;
+  schema: { models: AdminSchemaModel[] };
+  push: (path: string) => void;
+  pagesPath: string;
 }
 
 const columnsObject = (
@@ -23,8 +21,8 @@ const columnsObject = (
     enableColumnFilter: field.filter && !field.list,
     enableSorting: field.sort,
     cell: ({ getValue }: CellContext<PrismaRecord, unknown>) => {
-      const value = getValue() as boolean | boolean[]
-      return field.list ? (value as boolean[]).join(',') : value ? context.lang.yes : context.lang.no
+      const value = getValue() as boolean | boolean[];
+      return field.list ? (value as boolean[]).join(',') : value ? context.lang.yes : context.lang.no;
     },
   },
   number: {
@@ -33,8 +31,8 @@ const columnsObject = (
     enableColumnFilter: field.filter && !field.list,
     enableSorting: field.sort,
     cell: ({ getValue }: CellContext<PrismaRecord, unknown>) => {
-      const value = getValue() as number | number[]
-      return field.list ? (value as number[]).join(',') : value
+      const value = getValue() as number | number[];
+      return field.list ? (value as number[]).join(',') : value;
     },
   },
   enum: {
@@ -43,8 +41,8 @@ const columnsObject = (
     enableColumnFilter: field.filter && !field.list,
     enableSorting: field.sort,
     cell: ({ getValue }: CellContext<PrismaRecord, unknown>) => {
-      const value = getValue() as string | string[]
-      return field.list ? (value as string[]).join(',') : value
+      const value = getValue() as string | string[];
+      return field.list ? (value as string[]).join(',') : value;
     },
   },
   DateTime: {
@@ -54,8 +52,8 @@ const columnsObject = (
     enableColumnFilter: false,
     enableSorting: field.sort,
     cell: ({ getValue }: CellContext<PrismaRecord, unknown>) => {
-      const value = getValue() as string
-      return value ? new Date(value).toLocaleString() : ''
+      const value = getValue() as string;
+      return value ? new Date(value).toLocaleString() : '';
     },
   },
   object: {
@@ -64,9 +62,9 @@ const columnsObject = (
     enableColumnFilter: false,
     enableSorting: false,
     cell: ({ getValue }: CellContext<PrismaRecord, unknown>) => {
-      const value = getValue() as Record<string, any>
-      const objectModel = context.schema.models.find((item) => item.id === field.type)
-      if (!objectModel || !value) return <></>
+      const value = getValue() as Record<string, any>;
+      const objectModel = context.schema.models.find((item) => item.id === field.type);
+      if (!objectModel || !value) return <></>;
       return (
         <button
           onClick={() =>
@@ -86,7 +84,7 @@ const columnsObject = (
         >
           {getDisplayName(value, objectModel)}
         </button>
-      )
+      );
     },
   },
   string: {
@@ -95,8 +93,8 @@ const columnsObject = (
     enableColumnFilter: field.filter && !field.list,
     enableSorting: field.sort,
     cell: ({ getValue }: CellContext<PrismaRecord, unknown>) => {
-      const value = getValue() as string | string[]
-      return field.list ? (value as string[]).join(',') : value
+      const value = getValue() as string | string[];
+      return field.list ? (value as string[]).join(',') : value;
     },
   },
   json: {
@@ -105,8 +103,8 @@ const columnsObject = (
     enableColumnFilter: false,
     enableSorting: false,
     cell: ({ getValue }: CellContext<PrismaRecord, unknown>) => {
-      const value = getValue()
-      return value ? JSON.stringify(value) : value
+      const value = getValue();
+      return value ? JSON.stringify(value) : value;
     },
   },
   list: {
@@ -115,8 +113,8 @@ const columnsObject = (
     enableColumnFilter: false,
     enableSorting: false,
     cell: ({ row }: CellContext<PrismaRecord, unknown>) => {
-      if (!model) return <></>
-      const id = row.original[model.idField]
+      if (!model) return <></>;
+      const id = row.original[model.idField];
       return (
         <button
           className={classNames(
@@ -127,37 +125,29 @@ const columnsObject = (
         >
           {context.lang.show}
         </button>
-      )
+      );
     },
   },
-})
+});
 
 export const columns = (
   model?: AdminSchemaModel,
   customColumns?: GetColumnsPartial,
   context?: ContextValues,
 ): ColumnDef<PrismaRecord>[] => {
-  // Provide default context values if context is not provided
-  const defaultContext: ContextValues = {
-    lang: { table: { Row: 'Row' } },
-    push: () => {
-      console.log('push')
-    },
-    pagesPath: '/admin/models/',
-    schema: { models: [] },
+  if (!context) {
+    throw new Error('Context is required for columns function');
   }
 
-  const contextToUse = context || defaultContext
-
   const getColumn = (field: AdminSchemaField) => {
-    const baseColumns = columnsObject(field, model, contextToUse)
+    const baseColumns = columnsObject(field, model, context);
     return typeof customColumns !== 'undefined'
       ? {
           ...baseColumns,
           ...customColumns(field, model),
         }
-      : baseColumns
-  }
+      : baseColumns;
+  };
 
   return model
     ? model.fields
@@ -165,27 +155,28 @@ export const columns = (
         .sort((a, b) => a.order - b.order)
         .filter((field) => field.read)
         .map((field) => {
+          const column = getColumn(field);
           if (field.list && field.kind === 'object') {
-            return getColumn(field).list
+            return column.list;
           }
           if (field.kind !== 'scalar') {
-            return getColumn(field)[field.kind]
+            return column[field.kind] || column.string;
           }
           switch (field.type) {
             case 'Int':
             case 'Float':
-              return getColumn(field).number
+              return column.number || column.string;
             case 'Boolean':
-              return getColumn(field).boolean
+              return column.boolean || column.string;
             case 'DateTime':
-              return getColumn(field).DateTime
+              return column.DateTime || column.string;
             case 'String':
-              return getColumn(field).string
+              return column.string;
             case 'Json':
-              return getColumn(field).json
+              return column.json || column.string;
             default:
-              return getColumn(field).string
+              return column.string;
           }
         })
-    : []
-}
+    : [];
+};

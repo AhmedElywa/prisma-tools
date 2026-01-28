@@ -1,13 +1,12 @@
-/* eslint @typescript-eslint/no-non-null-assertion: 0 */
-import React, { useRef, useState } from 'react';
 import { useMutation } from '@apollo/client';
-
-import { AdminSchemaModel } from '../types';
+import type React from 'react';
+import { useRef, useState } from 'react';
 import { UPDATE_MODEL } from '../SchemaQueries';
-import { SettingLanguage } from './index';
-import Select from '../components/Select';
 import Checkbox from '../components/Checkbox';
+import Select from '../components/Select';
 import { inputClasses } from '../components/css';
+import type { AdminSchemaModel } from '../types';
+import type { SettingLanguage } from './index';
 
 type Fields = 'delete' | 'create' | 'update';
 interface Option {
@@ -54,7 +53,7 @@ const UpdateModel: React.FC<{
     if (title.typingTimeout) clearTimeout(title.typingTimeout);
     setTitle({
       value: newValue,
-      typingTimeout: setTimeout(function () {
+      typingTimeout: setTimeout(() => {
         onChangeHandler('name', newValue);
       }, 1000),
     });
@@ -77,7 +76,7 @@ const UpdateModel: React.FC<{
       .forEach((item) => {
         if (item.kind !== 'object') {
           const option = {
-            id: parent ? parent + '.' + item.name : item.name,
+            id: parent ? `${parent}.${item.name}` : item.name,
             name: item.title,
           };
           if (modelObject.displayFields.includes(option.id)) {
@@ -86,7 +85,7 @@ const UpdateModel: React.FC<{
           void (parent ? options.push(option) : allOptions.push(option));
         } else {
           if (item.type !== model.id && !parent) {
-            getOptions(models.find((item2) => item2.id === item.type)!, parent ? parent + '.' + item.name : item.name);
+            getOptions(models.find((item2) => item2.id === item.type)!, parent ? `${parent}.${item.name}` : item.name);
           }
         }
       });
@@ -102,11 +101,9 @@ const UpdateModel: React.FC<{
 
   getOptions(modelObject);
 
-  const onChangeMultiSelect = (option: Option) => {
-    const isFound = !!values.find((v) => v.id === option.id);
-    const value = isFound
-      ? values.filter((v) => v.id !== option.id).map((v) => v.id)
-      : [...values, option].map((v) => v.id);
+  // HeadlessUI v2 multiple mode passes the entire new selection array
+  const onChangeMultiSelect = (selectedOptions: Option[]) => {
+    const value = selectedOptions.map((v) => v.id);
     if (value && value.length > 0) {
       onChangeHandler('displayFields', value);
     }
@@ -156,6 +153,7 @@ const UpdateModel: React.FC<{
           value={values}
           onChange={onChangeMultiSelect}
           options={allOptions}
+          multiple
         />
       </div>
       <div className="flex w-full items-center">

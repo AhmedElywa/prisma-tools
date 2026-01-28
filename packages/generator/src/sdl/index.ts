@@ -1,8 +1,8 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs';
-import { createQueriesAndMutations } from './CreateQueriesAndMutations';
-import { Generators } from '../Generators';
-import { GenerateTypes } from './GenerateTypes';
 import { getInputType } from '@paljs/utils';
+import { Generators } from '../Generators';
+import { createQueriesAndMutations } from './CreateQueriesAndMutations';
+import { GenerateTypes } from './GenerateTypes';
 
 export class GenerateSdl extends Generators {
   generatedText: {

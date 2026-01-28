@@ -1,4 +1,4 @@
-import { PrismaSelectOptions } from '@paljs/plugins';
+import type { PrismaSelectOptions } from '@paljs/plugins';
 
 export interface Settings<
   ModelName extends string = '',

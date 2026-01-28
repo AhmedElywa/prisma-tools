@@ -1,11 +1,9 @@
-/* eslint @typescript-eslint/no-non-null-assertion: 0 */
 import { useMutation } from '@apollo/client';
 import { useContext } from 'react';
-
+import type { AdminSchemaField, AdminSchemaModel } from '../../types';
 import { TableContext } from '../Context';
-import { FormProps } from './index';
 import { mutationDocument } from '../QueryDocument';
-import { AdminSchemaModel, AdminSchemaField } from '../../types';
+import type { FormProps } from './index';
 
 interface GetValueOptions {
   value: string;
@@ -27,12 +25,12 @@ export const getValueByType = ({ value, field, useSet = true, useEquals }: GetVa
     switch (field.type) {
       case 'Int':
         result.forEach((value1, index) => {
-          result[index] = parseInt(value1);
+          result[index] = Number.parseInt(value1, 10);
         });
         break;
       case 'Float':
         result.forEach((value1, index) => {
-          result[index] = parseFloat(value1);
+          result[index] = Number.parseFloat(value1);
         });
         break;
       case 'Boolean':
@@ -44,9 +42,9 @@ export const getValueByType = ({ value, field, useSet = true, useEquals }: GetVa
     return result;
   } else {
     const result = ['BigInt', 'Int'].includes(field.type)
-      ? parseInt(value)
+      ? Number.parseInt(value, 10)
       : ['Float', 'Decimal'].includes(field.type)
-        ? parseFloat(value)
+        ? Number.parseFloat(value)
         : value;
     return !useSet || useEquals ? (useEquals ? { equals: result } : result) : { set: result };
   }
@@ -71,8 +69,14 @@ const useActions = (model: AdminSchemaModel, data: any, action: FormProps['actio
       const field = getField(key);
       if (field?.update) {
         if (field.kind === 'object') {
-          const fieldModel = models.find((item) => item.id === field.type)!;
-          const editField = fieldModel.fields.find((item) => item.name === fieldModel.idField)!;
+          const fieldModel = models.find((item) => item.id === field.type);
+          if (!fieldModel) {
+            return;
+          }
+          const editField = fieldModel.fields.find((item) => item.name === fieldModel.idField);
+          if (!editField) {
+            return;
+          }
           if ((newData[key] && !data[key]) || (newData[key] && newData[key] !== data[key][fieldModel.idField])) {
             updateData[key] = {
               connect: {
@@ -121,8 +125,14 @@ const useActions = (model: AdminSchemaModel, data: any, action: FormProps['actio
     Object.keys(newData).forEach((key) => {
       const field = getField(key);
       if (field?.kind === 'object') {
-        const fieldModel = models.find((item) => item.id === field.type)!;
-        const editField = fieldModel.fields.find((item) => item.name === fieldModel.idField)!;
+        const fieldModel = models.find((item) => item.id === field.type);
+        if (!fieldModel) {
+          return;
+        }
+        const editField = fieldModel.fields.find((item) => item.name === fieldModel.idField);
+        if (!editField) {
+          return;
+        }
         if (newData[key] && typeof newData[key] !== 'object') {
           createData[key] = {
             connect: {

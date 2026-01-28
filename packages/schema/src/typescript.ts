@@ -1,4 +1,4 @@
-import { Field, SchemaObject } from '@paljs/types';
+import type { Field, SchemaObject } from '@paljs/types';
 import { ConvertSchemaToObject } from './json';
 
 export class GenerateTypeScript {

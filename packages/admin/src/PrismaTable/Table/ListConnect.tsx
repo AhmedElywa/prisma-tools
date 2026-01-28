@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
-
-import { AdminSchemaModel, TableParentRecord } from '../../types';
-import { useListConnectToOne } from '../useListConnectToOne';
+import type React from 'react';
+import { useContext } from 'react';
 import Spinner from '../../components/Spinner';
-import { TableContext } from '../Context';
 import { buttonClasses, classNames } from '../../components/css';
+import type { AdminSchemaModel, TableParentRecord } from '../../types';
+import { TableContext } from '../Context';
+import { useListConnectToOne } from '../useListConnectToOne';
 
 interface ListConnectProps {
   parent: TableParentRecord;

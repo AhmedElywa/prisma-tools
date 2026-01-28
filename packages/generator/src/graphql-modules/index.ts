@@ -1,8 +1,8 @@
-import { GeneratorOptions, DMMF } from '@paljs/types';
-import { writeFileSync, readFileSync, existsSync } from 'fs';
-import { createQueriesAndMutations } from './CreateQueriesAndMutations';
-import { Generators } from '../Generators';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
+import type { DMMF, GeneratorOptions } from '@paljs/types';
 import { getInputType } from '@paljs/utils';
+import { Generators } from '../Generators';
+import { createQueriesAndMutations } from './CreateQueriesAndMutations';
 
 export class GenerateModules extends Generators {
   generatedText: {

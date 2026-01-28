@@ -1,0 +1,9 @@
+# Lefthook configuration - replaces husky + lint-staged
+# https://github.com/evilmartians/lefthook
+
+pre-commit:
+  commands:
+    lint:
+      glob: "*.{js,jsx,ts,tsx,json,css,yml}"
+      run: bunx biome check --write {staged_files}
+      stage_fixed: true

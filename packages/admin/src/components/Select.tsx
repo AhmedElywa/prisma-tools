@@ -1,6 +1,5 @@
-import React from 'react';
-import { ArrowsUpDownIcon, CheckIcon } from '@heroicons/react/24/solid';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react';
+import { ArrowsUpDownIcon, CheckIcon } from '@heroicons/react/24/solid';
 import { classNames } from './css';
 
 export interface Option {
@@ -9,17 +8,28 @@ export interface Option {
   unavailable?: boolean;
 }
 
-interface SelectProps {
+// Generic props - TValue can be Option or Option[]
+interface SelectProps<TValue extends Option | Option[]> {
   options: Option[];
-  value?: Option | Option[];
-  onChange: (option: Option) => void;
+  value?: TValue;
+  onChange: (value: TValue) => void;
   disabled?: boolean;
   className?: string;
   dir?: string;
   popupFullWidth?: boolean;
+  multiple?: TValue extends Option[] ? true : false;
 }
 
-const Select: React.FC<SelectProps> = ({ options, value, className, onChange, disabled, dir, popupFullWidth }) => {
+function Select<TValue extends Option | Option[]>({
+  options,
+  value,
+  className,
+  onChange,
+  disabled,
+  dir,
+  popupFullWidth,
+  multiple,
+}: SelectProps<TValue>) {
   return (
     <Listbox
       as="div"
@@ -28,6 +38,7 @@ const Select: React.FC<SelectProps> = ({ options, value, className, onChange, di
       value={value}
       onChange={onChange}
       disabled={disabled}
+      multiple={multiple}
     >
       {({ open }) => (
         <>
@@ -52,7 +63,7 @@ const Select: React.FC<SelectProps> = ({ options, value, className, onChange, di
                 static
                 className={classNames(
                   popupFullWidth ? 'w-full' : '',
-                  'mt-1 min-w-[120px] z-50 absolute rounded-md bg-white shadow-lg max-h-60 py-1 text-base leading-6 shadow-xs overflow-auto focus:outline-none sm:text-sm sm:leading-5',
+                  'mt-1 min-w-[120px] z-50 absolute rounded-md bg-white max-h-60 py-1 text-base leading-6 shadow-xs overflow-auto focus:outline-none sm:text-sm sm:leading-5',
                 )}
               >
                 {options.map((item) => (
@@ -97,6 +108,6 @@ const Select: React.FC<SelectProps> = ({ options, value, className, onChange, di
       )}
     </Listbox>
   );
-};
+}
 
 export default Select;

@@ -1,20 +1,20 @@
-import { AdminSchema } from '@paljs/types';
 import { existsSync } from 'fs';
+import { join } from 'path';
+import type { AdminSchema } from '@paljs/types';
 import { LowSync } from 'lowdb';
 import { JSONFileSync } from 'lowdb/node';
 import { enumType, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
-import { NexusAcceptedTypeDef } from 'nexus/dist/builder';
-import { join } from 'path';
+import type { NexusAcceptedTypeDef } from 'nexus/dist/builder';
 
 export function adminNexusSchemaSettings(path = 'adminSettings.json') {
   if (existsSync(join(process.cwd(), path)) || existsSync(path)) {
     const adapter = new JSONFileSync<AdminSchema>(path);
     const defaultData: AdminSchema = { models: [], enums: [] };
     const db = new LowSync<AdminSchema>(adapter, defaultData);
-    
+
     // Read the data
     db.read();
-    
+
     // Ensure data has models and enums arrays
     if (!db.data) {
       db.data = defaultData;
@@ -37,7 +37,7 @@ export function adminNexusSchemaSettings(path = 'adminSettings.json') {
               // Ensure we always return data with models and enums arrays
               return {
                 models: db.data?.models || [],
-                enums: db.data?.enums || []
+                enums: db.data?.enums || [],
               };
             },
           });
@@ -56,25 +56,25 @@ export function adminNexusSchemaSettings(path = 'adminSettings.json') {
             resolve(_, { id, modelId, data }) {
               // Read current data
               db.read();
-              
+
               // Find the model
-              const model = db.data.models?.find(m => m.id === modelId);
+              const model = db.data.models?.find((m) => m.id === modelId);
               if (!model) {
                 throw new Error(`Model with id ${modelId} not found`);
               }
-              
+
               // Find the field
-              const field = model.fields?.find(f => f.id === id);
+              const field = model.fields?.find((f) => f.id === id);
               if (!field) {
                 throw new Error(`Field with id ${id} not found in model ${modelId}`);
               }
-              
+
               // Update the field
               Object.assign(field, data);
-              
+
               // Write the changes
               db.write();
-              
+
               return field;
             },
           });
@@ -87,19 +87,19 @@ export function adminNexusSchemaSettings(path = 'adminSettings.json') {
             resolve(_, { id, data }) {
               // Read current data
               db.read();
-              
+
               // Find the model
-              const model = db.data.models?.find(m => m.id === id);
+              const model = db.data.models?.find((m) => m.id === id);
               if (!model) {
                 throw new Error(`Model with id ${id} not found`);
               }
-              
+
               // Update the model
               Object.assign(model, data);
-              
+
               // Write the changes
               db.write();
-              
+
               return model;
             },
           });
