@@ -33,13 +33,8 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 interface AdminLayoutProps {
 	children: React.ReactNode;
-	models: Array<{
-		id: string;
-		name: string;
-		[key: string]: any;
-	}>;
+	models: Array<{ id: string; name: string }>;
 }
-
 
 export function AdminLayout({ children, models }: AdminLayoutProps) {
 	const pathname = usePathname();
@@ -57,7 +52,7 @@ export function AdminLayout({ children, models }: AdminLayoutProps) {
 			<div
 				className={cn(
 					"relative flex flex-col bg-card border-r transition-all duration-300",
-					sidebarCollapsed ? "w-16" : "w-64"
+					sidebarCollapsed ? "w-16" : "w-64",
 				)}
 			>
 				{/* Logo/Header */}
@@ -84,7 +79,7 @@ export function AdminLayout({ children, models }: AdminLayoutProps) {
 						className={cn(
 							"flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
 							"hover:bg-accent hover:text-accent-foreground",
-							pathname === "/admin" && "bg-accent text-accent-foreground"
+							pathname === "/admin" && "bg-accent text-accent-foreground",
 						)}
 					>
 						<LayoutDashboard className="h-5 w-5 shrink-0" />
@@ -100,7 +95,7 @@ export function AdminLayout({ children, models }: AdminLayoutProps) {
 					)}
 
 					{models.map((model) => {
-						const href = `/admin/${model.id.toLowerCase()}`;
+						const href = `/admin/models/${model.id}`;
 						return (
 							<Link
 								key={model.id}
@@ -108,7 +103,7 @@ export function AdminLayout({ children, models }: AdminLayoutProps) {
 								className={cn(
 									"flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
 									"hover:bg-accent hover:text-accent-foreground",
-									pathname === href && "bg-accent text-accent-foreground"
+									pathname === href && "bg-accent text-accent-foreground",
 								)}
 							>
 								<Database className="h-5 w-5 shrink-0" />
@@ -123,7 +118,8 @@ export function AdminLayout({ children, models }: AdminLayoutProps) {
 							className={cn(
 								"flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
 								"hover:bg-accent hover:text-accent-foreground",
-								pathname === "/admin/settings" && "bg-accent text-accent-foreground"
+								pathname === "/admin/settings" &&
+									"bg-accent text-accent-foreground",
 							)}
 						>
 							<Settings className="h-5 w-5 shrink-0" />
@@ -139,7 +135,7 @@ export function AdminLayout({ children, models }: AdminLayoutProps) {
 						onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
 						className={cn(
 							"w-full justify-start",
-							sidebarCollapsed && "justify-center px-2"
+							sidebarCollapsed && "justify-center px-2",
 						)}
 					>
 						{mounted ? (
@@ -152,7 +148,9 @@ export function AdminLayout({ children, models }: AdminLayoutProps) {
 							<div className="h-5 w-5 shrink-0" />
 						)}
 						{!sidebarCollapsed && mounted && (
-							<span className="ml-3">{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
+							<span className="ml-3">
+								{theme === "dark" ? "Light Mode" : "Dark Mode"}
+							</span>
 						)}
 					</Button>
 				</div>
@@ -165,7 +163,10 @@ export function AdminLayout({ children, models }: AdminLayoutProps) {
 					<div className="flex items-center gap-4">
 						<h1 className="text-lg font-semibold">
 							{pathname === "/admin" && "Dashboard"}
-							{models.find(m => pathname === `/admin/${m.id.toLowerCase()}`)?.name}
+							{
+								models.find((m) => pathname === `/admin/models/${m.id}`)
+									?.name
+							}
 							{pathname === "/admin/settings" && "Settings"}
 						</h1>
 					</div>
@@ -179,7 +180,13 @@ export function AdminLayout({ children, models }: AdminLayoutProps) {
 								</Button>
 							</SheetTrigger>
 							<SheetContent side="left" className="w-64 p-0">
-								<MobileNav models={models} pathname={pathname} theme={theme} setTheme={setTheme} mounted={mounted} />
+								<MobileNav
+									models={models}
+									pathname={pathname}
+									theme={theme}
+									setTheme={setTheme}
+									mounted={mounted}
+								/>
 							</SheetContent>
 						</Sheet>
 
@@ -196,7 +203,7 @@ export function AdminLayout({ children, models }: AdminLayoutProps) {
 						{/* Notifications */}
 						<Button variant="ghost" size="icon" className="relative">
 							<Bell className="h-5 w-5" />
-							<Badge 
+							<Badge
 								className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center"
 								variant="destructive"
 							>
@@ -245,13 +252,13 @@ export function AdminLayout({ children, models }: AdminLayoutProps) {
 }
 
 // Mobile Navigation Component
-function MobileNav({ 
-	models, 
-	pathname, 
-	theme, 
+function MobileNav({
+	models,
+	pathname,
+	theme,
 	setTheme,
-	mounted 
-}: { 
+	mounted,
+}: {
 	models: Array<{
 		id: string;
 		name: string;
@@ -278,7 +285,7 @@ function MobileNav({
 					className={cn(
 						"flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
 						"hover:bg-accent hover:text-accent-foreground",
-						pathname === "/admin" && "bg-accent text-accent-foreground"
+						pathname === "/admin" && "bg-accent text-accent-foreground",
 					)}
 				>
 					<LayoutDashboard className="h-5 w-5" />
@@ -292,7 +299,7 @@ function MobileNav({
 				</div>
 
 				{models.map((model) => {
-					const href = `/admin/${model.id.toLowerCase()}`;
+					const href = `/admin/models/${model.id}`;
 					return (
 						<Link
 							key={model.id}
@@ -300,7 +307,7 @@ function MobileNav({
 							className={cn(
 								"flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
 								"hover:bg-accent hover:text-accent-foreground",
-								pathname === href && "bg-accent text-accent-foreground"
+								pathname === href && "bg-accent text-accent-foreground",
 							)}
 						>
 							<Database className="h-5 w-5" />
@@ -315,7 +322,8 @@ function MobileNav({
 						className={cn(
 							"flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
 							"hover:bg-accent hover:text-accent-foreground",
-							pathname === "/admin/settings" && "bg-accent text-accent-foreground"
+							pathname === "/admin/settings" &&
+								"bg-accent text-accent-foreground",
 						)}
 					>
 						<Settings className="h-5 w-5" />
@@ -341,7 +349,9 @@ function MobileNav({
 						<div className="h-5 w-5" />
 					)}
 					{mounted && (
-						<span className="ml-3">{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
+						<span className="ml-3">
+							{theme === "dark" ? "Light Mode" : "Dark Mode"}
+						</span>
 					)}
 				</Button>
 			</div>

@@ -1,5 +1,5 @@
 /* eslint @typescript-eslint/no-non-null-assertion: 0 */
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { MagnifyingGlassIcon, XCircleIcon } from '@heroicons/react/24/outline';
 
@@ -23,7 +23,7 @@ interface Option {
 
 const getFieldValidation = (field: AdminSchemaField, inputValidation: ModelTableProps['inputValidation']) => {
   const modelName = field.id.split('.')[0];
-  return inputValidation ? (inputValidation[modelName] ? inputValidation[modelName][field.name] || {} : {}) : {};
+  return inputValidation && modelName ? (inputValidation[modelName] ? inputValidation[modelName]?.[field.name] || {} : {}) : {};
 };
 
 const defaultInputs: Omit<FormInputs, 'Upload' | 'Editor'> = {

@@ -1,15 +1,30 @@
-import { stringArg, objectType, enumType, inputObjectType, extendType, nonNull } from 'nexus';
-import low from 'lowdb';
-import FileSync from 'lowdb/adapters/FileSync';
-import { NexusAcceptedTypeDef } from 'nexus/dist/builder';
 import { AdminSchema } from '@paljs/types';
 import { existsSync } from 'fs';
+import { LowSync } from 'lowdb';
+import { JSONFileSync } from 'lowdb/node';
+import { enumType, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
+import { NexusAcceptedTypeDef } from 'nexus/dist/builder';
 import { join } from 'path';
 
 export function adminNexusSchemaSettings(path = 'adminSettings.json') {
   if (existsSync(join(process.cwd(), path)) || existsSync(path)) {
-    const adapter = new FileSync<AdminSchema>(path);
-    const db = low(adapter);
+    const adapter = new JSONFileSync<AdminSchema>(path);
+    const defaultData: AdminSchema = { models: [], enums: [] };
+    const db = new LowSync<AdminSchema>(adapter, defaultData);
+    
+    // Read the data
+    db.read();
+    
+    // Ensure data has models and enums arrays
+    if (!db.data) {
+      db.data = defaultData;
+    }
+    if (!db.data.models) {
+      db.data.models = [];
+    }
+    if (!db.data.enums) {
+      db.data.enums = [];
+    }
     const nexusSchemaInputs: NexusAcceptedTypeDef[] = [
       extendType({
         type: 'Query',
@@ -17,7 +32,13 @@ export function adminNexusSchemaSettings(path = 'adminSettings.json') {
           t.field('getSchema', {
             type: nonNull('Schema'),
             resolve() {
-              return db.value();
+              // Read fresh data
+              db.read();
+              // Ensure we always return data with models and enums arrays
+              return {
+                models: db.data?.models || [],
+                enums: db.data?.enums || []
+              };
             },
           });
         },
@@ -33,7 +54,28 @@ export function adminNexusSchemaSettings(path = 'adminSettings.json') {
               data: nonNull('UpdateFieldInput'),
             },
             resolve(_, { id, modelId, data }) {
-              return db.get('models').find({ id: modelId }).get('fields').find({ id }).assign(data).write();
+              // Read current data
+              db.read();
+              
+              // Find the model
+              const model = db.data.models?.find(m => m.id === modelId);
+              if (!model) {
+                throw new Error(`Model with id ${modelId} not found`);
+              }
+              
+              // Find the field
+              const field = model.fields?.find(f => f.id === id);
+              if (!field) {
+                throw new Error(`Field with id ${id} not found in model ${modelId}`);
+              }
+              
+              // Update the field
+              Object.assign(field, data);
+              
+              // Write the changes
+              db.write();
+              
+              return field;
             },
           });
           t.field('updateModel', {
@@ -43,7 +85,22 @@ export function adminNexusSchemaSettings(path = 'adminSettings.json') {
               data: nonNull('UpdateModelInput'),
             },
             resolve(_, { id, data }) {
-              return db.get('models').find({ id }).assign(data).write();
+              // Read current data
+              db.read();
+              
+              // Find the model
+              const model = db.data.models?.find(m => m.id === id);
+              if (!model) {
+                throw new Error(`Model with id ${id} not found`);
+              }
+              
+              // Update the model
+              Object.assign(model, data);
+              
+              // Write the changes
+              db.write();
+              
+              return model;
             },
           });
         },

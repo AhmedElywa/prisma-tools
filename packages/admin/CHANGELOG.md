@@ -1,5 +1,17 @@
 # @paljs/admin
 
+## 9.0.0-beta.3
+
+### Patch Changes
+
+- Fix critical TypeScript type definition bugs:
+  - Restored `ModelTableProps` inheritance from `Partial<Omit<RequireContextProps, 'lang'>>` to allow passing `pagesPath`, `pageSize`, etc.
+  - Removed incorrectly added `action` and `id` properties from `ModelTableProps`
+  - Added backward compatibility for legacy callback signatures (`onSaveCreate`, `onSaveUpdate`, etc.)
+  - Fixed column context validation to provide default values instead of throwing errors
+- Added comprehensive MIGRATION.md guide for users upgrading from v8
+- Maintained all improvements from beta.2 while fixing breaking changes
+
 ## 9.0.0-beta.2
 
 ### Patch Changes

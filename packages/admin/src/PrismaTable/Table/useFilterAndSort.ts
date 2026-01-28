@@ -109,7 +109,7 @@ export const useFilterAndSort = (model: string, filter?: any, defaultOrder?: Ord
         const modelObject = models.find((item) => item.id === model);
         const fieldModel = modelObject?.fields.find((item) => item.name === field);
         newOrderBy.push({
-          [field]: fieldModel?.required
+          [field as string]: fieldModel?.required
             ? item.desc
               ? 'desc'
               : 'asc'

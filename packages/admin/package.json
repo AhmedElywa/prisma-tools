@@ -1,9 +1,26 @@
 {
   "name": "@paljs/admin",
-  "version": "9.0.0-beta.2",
-  "main": "index.js",
-  "module": "./esm/index.js",
-  "types": "index.d.ts",
+  "version": "9.0.0-beta.3",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./style.css": "./dist/style.css"
+  },
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git@github.com:paljs/prisma-tools.git",
@@ -14,18 +31,15 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "pnpm build:types && pnpm build:cjs && pnpm build:esm && pnpm build:copy-files && pnpm build:css",
-    "build:cjs": "node ./scripts/build cjs",
-    "build:esm": "node ./scripts/build esm",
-    "build:es": "node ./scripts/build es",
-    "build:copy-files": "node ./scripts/copyFiles",
-    "build:types": "tsc -p tsconfig.build.json",
-    "build:css": "cross-env NODE_ENV=production ./node_modules/.bin/tailwindcss -i ./src/tailwind.css -o ./dist/style.css --minify",
-    "watch": "concurrently \"pnpm:watch:*\"",
-    "watch:types": "tsc -p tsconfig.build.json --watch",
-    "watch:js": "chokidar \"src/**/*.{ts,tsx}\" -c \"pnpm build:cjs && pnpm build:esm\" --initial",
-    "watch:css": "./node_modules/.bin/tailwindcss -i ./src/tailwind.css -o ./dist/style.css --watch",
-    "watch:files": "chokidar \"src/**/*.{json,css}\" \"README.md\" \"package.json\" -c \"pnpm build:copy-files\" --initial"
+    "build": "tsup && pnpm build:css && pnpm postbuild",
+    "build:css": "cross-env NODE_ENV=production tailwindcss -i ./src/tailwind.css -o ./dist/style.css --minify",
+    "postbuild": "node ./scripts/postbuild.js",
+    "dev": "concurrently \"tsup --watch\" \"tailwindcss -i ./src/tailwind.css -o ./dist/style.css --watch\"",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -35,36 +49,37 @@
     "@heroicons/react": "^2.2.0",
     "@paljs/types": "8.2.1",
     "@tanstack/react-table": "^8.20.6",
-    "react-hook-form": "*"
+    "clsx": "^2.1.1",
+    "react-hook-form": "*",
+    "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
     "@apollo/client": "3.13.8",
-    "@babel/cli": "^7.26.5",
-    "@babel/core": "^7.26.5",
-    "@babel/node": "^7.26.5",
-    "@babel/plugin-transform-object-assign": "^7.26.5",
-    "@babel/plugin-transform-react-constant-elements": "^7.26.5",
-    "@babel/preset-env": "^7.26.5",
-    "@babel/preset-react": "^7.26.5",
-    "@babel/preset-typescript": "^7.26.5",
+    "@swc/core": "^1.13.0",
     "@tailwindcss/cli": "^4.1.11",
     "@tailwindcss/forms": "^0.5.10",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/react-hooks": "^8.0.1",
     "@types/node": "22.10.6",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.20",
-    "babel-plugin-module-resolver": "^5.0.2",
     "chokidar-cli": "^3.0.0",
     "concurrently": "^9.2.0",
     "cross-env": "^7.0.3",
     "fs-extra": "^11.3.0",
     "glob": "^11.0.3",
     "graphql-tag": "2.12.6",
+    "jsdom": "^26.1.0",
     "postcss": "^8.5.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "tailwindcss": "4.1.11",
+    "tsup": "^8.5.0",
     "typescript": "5.8.3",
+    "vitest": "^3.2.4",
     "yargs": "^17.7.2"
   },
   "peerDependencies": {

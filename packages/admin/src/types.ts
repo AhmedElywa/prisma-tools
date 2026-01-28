@@ -74,6 +74,22 @@ export type CancelHandler = (args?: { model: string; setCreateModal?: (value: bo
 export type ValueHandler = (value: FieldValue, field?: AdminSchemaField, isCreate?: boolean) => FieldValue;
 export type SelectHandler = (values: (string | number)[]) => void;
 
+// Legacy callback types for backward compatibility
+export type LegacyOnSaveCreate = (options: {
+  model: string;
+  setCreateModal: (state: boolean) => void;
+  refetchTable: (options?: any) => void;
+}) => void;
+
+export type LegacyOnSaveUpdate = (options: { 
+  model: string; 
+  refetchTable: (options?: any) => void;
+}) => void;
+
+export type LegacyOnCancelUpdate = (options: { model: string }) => void;
+
+export type LegacyValueHandler = (value: string, field?: AdminSchemaField, create?: boolean) => any;
+
 interface SameProps {
   actions?: ('create' | 'update' | 'delete')[];
   useSet?: boolean;
@@ -82,14 +98,18 @@ interface SameProps {
   inputValidation?: Record<string, Record<string, RegisterOptions>>;
   push: (url: string) => void;
   query: QueryParams;
-  onSelect?: SelectHandler;
-  actionButtons?: ActionButton;
+  onSelect?: SelectHandler | ((values: any[]) => void);
+  actionButtons?: ActionButton | {
+    Add?: React.FC;
+    Update?: React.FC<{ id: any }>;
+    Delete?: React.FC<{ id: any }>;
+  };
   onCancelCreate?: CancelHandler;
-  onSaveCreate?: SaveHandler;
-  onSaveUpdate?: SaveHandler;
-  onCancelUpdate?: CancelHandler;
-  defaultOrderBy?: Record<string, OrderBy[]>;
-  valueHandler?: ValueHandler;
+  onSaveCreate?: SaveHandler | LegacyOnSaveCreate;
+  onSaveUpdate?: SaveHandler | LegacyOnSaveUpdate;
+  onCancelUpdate?: CancelHandler | LegacyOnCancelUpdate;
+  defaultOrderBy?: Record<string, OrderBy[]> | Record<string, Record<string, 'asc' | 'desc' | { sort: 'asc' | 'desc'; nulls: 'last' | 'first' }>[]>;
+  valueHandler?: ValueHandler | LegacyValueHandler;
 }
 
 export interface EditPageProps extends SameProps {
@@ -146,10 +166,8 @@ export type DynamicTableChildrenFunction = (options: {
   };
 }) => React.ReactNode;
 
-export interface ModelTableProps extends SameProps {
+export interface ModelTableProps extends Partial<Omit<RequireContextProps, 'lang'>>, SameProps {
   model: string;
-  action?: 'create' | 'update';
-  id?: string | number;
   children?: DynamicTableChildrenFunction;
   language?: Partial<typeof Language>;
 }

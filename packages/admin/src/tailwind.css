@@ -1,1 +1,40 @@
 @import 'tailwindcss';
+
+@layer base {
+  :root {
+    --paljs-primary: #3b82f6;
+    --paljs-primary-hover: #2563eb;
+    --paljs-primary-foreground: #ffffff;
+    --paljs-secondary: #6366f1;
+    --paljs-secondary-hover: #4f46e5;
+    --paljs-secondary-foreground: #ffffff;
+    --paljs-background: #ffffff;
+    --paljs-foreground: #0f172a;
+    --paljs-muted: #f1f5f9;
+    --paljs-muted-foreground: #64748b;
+    --paljs-border: #e2e8f0;
+    --paljs-input: #e2e8f0;
+    --paljs-ring: #3b82f6;
+    --paljs-destructive: #ef4444;
+    --paljs-destructive-foreground: #ffffff;
+    --paljs-radius: 0.5rem;
+  }
+
+  .dark {
+    --paljs-primary: #3b82f6;
+    --paljs-primary-hover: #60a5fa;
+    --paljs-primary-foreground: #ffffff;
+    --paljs-secondary: #6366f1;
+    --paljs-secondary-hover: #818cf8;
+    --paljs-secondary-foreground: #ffffff;
+    --paljs-background: #0f172a;
+    --paljs-foreground: #f8fafc;
+    --paljs-muted: #1e293b;
+    --paljs-muted-foreground: #94a3b8;
+    --paljs-border: #334155;
+    --paljs-input: #334155;
+    --paljs-ring: #3b82f6;
+    --paljs-destructive: #dc2626;
+    --paljs-destructive-foreground: #ffffff;
+  }
+}

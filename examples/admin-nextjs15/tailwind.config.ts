@@ -5,8 +5,12 @@ const config: Config = {
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-    // Include @paljs/admin components
+    // Include @paljs/admin source files for development
     '../../packages/admin/src/**/*.{js,ts,jsx,tsx}',
+    // Include @paljs/admin dist files for production
+    './node_modules/@paljs/admin/**/*.{js,jsx,ts,tsx}',
+    // Include the built admin package dist directory
+    '../../packages/admin/dist/**/*.{js,jsx}',
   ],
   theme: {
     extend: {
