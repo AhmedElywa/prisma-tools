@@ -64,7 +64,7 @@
 		"date-fns": "^4.1.0",
 		"graphql": "^16.11.0",
 		"graphql-yoga": "^5.15.1",
-		"lodash": "^4.17.21",
+		"lodash": "^4.17.23",
 		"lucide-react": "^0.478.0",
 		"next": "^15.3.5",
 		"next-themes": "^0.4.6",
