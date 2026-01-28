@@ -1,10 +1,3 @@
 #!/bin/sh
 
-# Source nvm to make node available
-[ -s "$HOME/.nvm/nvm.sh" ] && \. "$HOME/.nvm/nvm.sh"
-
-# Add common node paths to PATH
-export PATH="$HOME/.nvm/versions/node/v24.3.0/bin:$PATH"
-export PATH="./node_modules/.bin:$PATH"
-
 pnpm lint-staged
