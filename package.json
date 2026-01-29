@@ -9,7 +9,7 @@
     "lint": "biome lint .",
     "check": "biome check .",
     "check:fix": "biome check --write .",
-    "test": "bun test packages/ tests/setup.test.ts tests/e2e/integration.test.ts",
+    "test": "bun test packages/generator/ packages/nexus/ packages/schema/ packages/utils/ tests/setup.test.ts tests/e2e/integration.test.ts",
     "test:e2e": "bun test tests/e2e/ examples/generator-test/",
     "test:all": "bun test packages/ tests/ examples/generator-test/",
     "test:watch": "bun test --watch",
