@@ -1,13 +1,19 @@
 # PalJS v9 Release Plan
 
-## Current State
+## Current State (Updated 2026-01-29)
 
-- **463 tests pass, 63 fail** (E2E generator tests + a few unit tests)
-- **Beta packages partially published**: `@paljs/admin@9.0.0-beta.1` on npm, `@paljs/generator@9.0.0-beta.1` NOT on npm yet
+- **563 tests pass, 0 fail** locally (402 in CI — E2E tests excluded, need bun runtime)
+- **All beta packages published on npm:**
+  - `@paljs/generator@9.0.0-beta.2`
+  - `@paljs/nexus@9.0.0-beta.3`
+  - `@paljs/plugins@9.0.0-beta.3`
+  - `@paljs/admin@9.0.0-beta.3`
+  - `@paljs/types@9.0.0-beta.0`
+  - `@paljs/utils@9.0.0-beta.0`
+- **CI**: GitHub Actions passing (bun-based workflow)
 - **Changeset pre-release mode**: active (`beta` tag)
-- **Docs site**: fully rewritten for v9 at `../prisma-tools-docs/`, builds successfully
-- **Packages at v9 beta**: generator, admin, nexus, plugins
-- **Packages still at v8.2.1**: types, utils, schema (schema is legacy-only)
+- **Docs site**: deployed at `prisma-tools-docs`, auto-deploys via GitHub Actions
+- **Phases 1-6 complete**, Phase 7 (stable release) pending beta feedback
 
 ---
 

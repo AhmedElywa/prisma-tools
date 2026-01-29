@@ -6,12 +6,15 @@
   <p><strong>A comprehensive toolkit for building modern GraphQL APIs with Prisma</strong></p>
 
   <p>
-    <a href="https://www.npmjs.com/org/paljs"><img src="https://img.shields.io/npm/v/@paljs/generator?label=version&style=flat-square" alt="Version" /></a>
+    <a href="https://www.npmjs.com/org/paljs"><img src="https://img.shields.io/npm/v/@paljs/generator?label=stable&style=flat-square" alt="Stable Version" /></a>
+    <a href="https://www.npmjs.com/package/@paljs/generator/v/beta"><img src="https://img.shields.io/npm/v/@paljs/generator/beta?label=beta&style=flat-square&color=orange" alt="Beta Version" /></a>
     <a href="https://github.com/paljs/prisma-tools/blob/main/LICENSE"><img src="https://img.shields.io/github/license/paljs/prisma-tools?style=flat-square" alt="License" /></a>
     <a href="https://github.com/paljs/prisma-tools/stargazers"><img src="https://img.shields.io/github/stars/paljs/prisma-tools?style=flat-square" alt="Stars" /></a>
     <a href="https://discord.gg/X7yWXrM"><img src="https://img.shields.io/discord/768907308789235752?style=flat-square&logo=discord" alt="Discord" /></a>
   </p>
 </div>
+
+> **v9 Beta Available!** PalJS v9 is a major rewrite featuring a native Prisma 7 generator, React 19 admin UI with Tailwind CSS 4, and typed PrismaSelect. [Try the beta](#try-the-v9-beta) | [Migration Guide](./docs/MIGRATION-v9.md)
 
 ## Table of Contents
 
@@ -349,6 +352,73 @@ The new approach:
 - No separate CLI installation needed
 - Configuration via `paljs.config.ts` instead of `pal.config.js`
 - Same output, better integration
+
+---
+
+# Try the v9 Beta
+
+PalJS v9 is a ground-up rewrite. Here's what's new and how to try it.
+
+## What's New in v9
+
+- **Native Prisma 7 Generator** — Runs as part of `prisma generate`, no separate CLI
+- **Typed PrismaSelect** — Generated `ModelsObject` type eliminates `any` casts
+- **React 19 Admin UI** — Rebuilt with Tailwind CSS 4 and modern React patterns
+- **`defineConfig()` API** — Type-safe configuration with `paljs.config.ts`
+- **Unified Output** — All generated code in one directory (`dmmf/`, `types/`, `nexus/`, `admin/`)
+
+## What's Removed
+
+- `@paljs/cli` — Replaced by the native Prisma generator
+- `@paljs/create` — Use `create-next-app` and add PalJS packages manually
+- `@paljs/display` — No longer needed
+- SDL and GraphQL Modules generators — Nexus code-first only
+
+## Install the Beta
+
+```bash
+# Install the generator
+npm install -D @paljs/generator@beta prisma
+
+# Install runtime packages
+npm install @paljs/plugins@beta @paljs/nexus@beta @paljs/admin@beta
+```
+
+## Quick Setup
+
+1. Add the generator to your Prisma schema:
+
+```prisma
+generator paljs {
+  provider = "paljs-generator"
+  output   = "../generated/paljs"
+}
+```
+
+2. Create `paljs.config.ts` next to your schema:
+
+```typescript
+import { defineConfig } from '@paljs/generator/config';
+
+export default defineConfig({
+  generateGraphQL: true,
+  generateTypes: true,
+  generateAdmin: { enabled: true, output: './admin', routerType: 'app' },
+  excludeFields: ['password'],
+});
+```
+
+3. Run generation:
+
+```bash
+npx prisma generate
+```
+
+See the full [Migration Guide](./docs/MIGRATION-v9.md) for upgrading from v8.
+
+## Report Issues
+
+This is a beta release. Please report any issues at [GitHub Issues](https://github.com/paljs/prisma-tools/issues) with the `v9-beta` label.
 
 ---
 
