@@ -29,11 +29,13 @@ describe('test the Prisma Reader class', () => {
 
     expect(prismaReader.dataSource).toMatchInlineSnapshot(`
       [
-        "datasource db {
+        
+      "datasource db {
         provider = "postgresql"
         url      = "file:./dev.db"
       }
-      ",
+      "
+      ,
       ]
     `);
   });

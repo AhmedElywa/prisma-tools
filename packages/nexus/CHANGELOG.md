@@ -1,5 +1,30 @@
 # @paljs/nexus
 
+## 9.0.0-beta.3
+
+### Patch Changes
+
+- Fix workspace protocol references in published packages
+- Updated dependencies
+  - @paljs/plugins@9.0.0-beta.3
+
+## 9.0.0-beta.2
+
+### Major Changes
+
+- Major update: Prisma 7 DMMF compatibility
+
+  - **BREAKING**: Updated for Prisma 7 DMMF format
+  - Updated PrismaSelect plugin for typed field selection
+
+### Patch Changes
+
+- Updated dependencies
+- Updated dependencies
+  - @paljs/plugins@9.0.0-beta.2
+  - @paljs/types@9.0.0-beta.0
+  - @paljs/utils@9.0.0-beta.0
+
 ## 8.2.1
 
 ### Patch Changes

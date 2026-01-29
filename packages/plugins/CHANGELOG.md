@@ -1,5 +1,26 @@
 # @paljs/plugins
 
+## 9.0.0-beta.3
+
+### Patch Changes
+
+- Fix workspace protocol references in published packages
+
+## 9.0.0-beta.2
+
+### Major Changes
+
+- Major update: Typed PrismaSelect for Prisma 7
+
+  - **BREAKING**: Updated for Prisma 7 compatibility
+  - Typed PrismaSelect for query optimization
+
+### Patch Changes
+
+- Updated dependencies
+  - @paljs/types@9.0.0-beta.0
+  - @paljs/utils@9.0.0-beta.0
+
 ## 8.2.1
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 const fieldFragment = gql`
-  fragment Field on Field {
+  fragment Field on AdminField {
     id
     name
     title
@@ -24,7 +24,7 @@ const fieldFragment = gql`
 `;
 
 const modelFragment = gql`
-  fragment Model on Model {
+  fragment Model on AdminModel {
     id
     name
     create

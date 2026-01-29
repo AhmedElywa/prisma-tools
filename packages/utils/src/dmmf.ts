@@ -1,24 +1,17 @@
 import { readFileSync } from 'fs';
-import { relative } from 'path';
-import { chalk, log } from '@paljs/display';
 import type { DMMF } from '@paljs/types';
 import { getDMMF, getSchemaWithPath } from '@prisma/internals';
 
 export const getSchemaPath = async (path?: string): Promise<string> => {
   const schema = await getSchemaWithPath(path);
   if (!schema) {
-    log.throwError(
-      `Could not find a ${chalk.bold(
-        'schema.prisma',
-      )} file that is required for this command.\nYou can either provide it with ${chalk.greenBright(
-        '--schema',
-      )}, set it as \`prisma.schema\` in your package.json or put it into the default location ${chalk.greenBright(
-        './prisma/schema.prisma',
-      )} https://pris.ly/d/prisma-schema-location`,
+    throw new Error(
+      `Could not find a 'schema.prisma' file that is required for this command.\n` +
+        `You can either provide it with --schema, set it as 'prisma.schema' in your package.json ` +
+        `or put it into the default location ./prisma/schema.prisma https://pris.ly/d/prisma-schema-location`,
     );
   }
 
-  log.d(chalk.dim(`Prisma Schema loaded from ${relative(process.cwd(), schema?.schemaPath)}`));
   return schema?.schemaPath;
 };
 

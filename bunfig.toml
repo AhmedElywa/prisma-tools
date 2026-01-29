@@ -1,0 +1,3 @@
+[test]
+# Exclude Playwright E2E specs (run via `npx playwright test` instead)
+ignore = ["examples/admin-test/e2e/**"]

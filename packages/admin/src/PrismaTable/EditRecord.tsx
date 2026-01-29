@@ -1,6 +1,6 @@
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client/react';
 import type React from 'react';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { Option } from '../components/Select';
 import Spinner from '../components/Spinner';
 import { classNames } from '../components/css';
@@ -26,14 +26,18 @@ const EditRecord: React.FC<EditRecordProps> = ({ model, update, onSave, view }) 
   } = useTableContext();
   const modelObject = models.find((item) => item.id === model);
   const isField = modelObject?.fields.find((field) => field.name === modelObject?.idField);
-  const [getRecord, { data, loading, error, refetch }] = useLazyQuery(queryDocument(models, model, true, true), {
-    variables: modelObject
-      ? {
-          where: {
-            [modelObject.idField]: isField?.type === 'String' ? update || view : Number.parseInt(update || view, 10),
-          },
-        }
-      : undefined,
+  const queryVars = useMemo(
+    () =>
+      modelObject
+        ? {
+            where: {
+              [modelObject.idField]: isField?.type === 'String' ? update || view : Number.parseInt(update || view, 10),
+            },
+          }
+        : undefined,
+    [modelObject, isField, update, view],
+  );
+  const [execGetRecord, { data, loading, error, refetch }] = useLazyQuery(queryDocument(models, model, true, true), {
     fetchPolicy: 'network-only',
   });
 
@@ -42,9 +46,11 @@ const EditRecord: React.FC<EditRecordProps> = ({ model, update, onSave, view }) 
   const [option, setOption] = useState(options[0]);
   const relationField = tabs?.find((t) => t.id === option.id);
 
-  if (modelObject && !data && !loading && !error) {
-    getRecord();
-  }
+  useEffect(() => {
+    if (modelObject && !data && !loading && !error) {
+      execGetRecord({ variables: queryVars });
+    }
+  }, [modelObject, data, loading, error, execGetRecord, queryVars]);
 
   const record = data ? data[`findUnique${model}`] : {};
 

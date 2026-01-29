@@ -1,38 +1,59 @@
 {
   "name": "@paljs/generator",
-  "version": "8.2.1",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "version": "9.0.0-beta.2",
+  "description": "Prisma generator for PalJS - generates types, GraphQL schemas, and admin UI for Prisma 7",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "paljs-generator": "./bin/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./config": {
+      "types": "./dist/config/define.d.ts",
+      "default": "./dist/config/define.js"
+    },
+    "./dmmf": {
+      "types": "./dist/writers/dmmf.d.ts",
+      "default": "./dist/writers/dmmf.js"
+    }
+  },
+  "files": ["dist", "bin"],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch",
+    "clean": "rm -rf dist",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@paljs/utils": "^9.0.0-beta.0",
+    "@prisma/generator-helper": "^7.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.6",
+    "prisma": "^7.3.0",
+    "typescript": "^5.8.3"
+  },
+  "peerDependencies": {
+    "prisma": ">=6.0.0 || >=7.0.0"
+  },
+  "peerDependenciesMeta": {
+    "prisma": {
+      "optional": true
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:paljs/prisma-tools.git",
     "directory": "packages/generator"
   },
-  "homepage": "https://paljs.com/",
+  "homepage": "https://paljs.com",
   "author": "Ahmed Elywa",
   "license": "MIT",
-  "private": false,
-  "scripts": {
-    "build": "pnpm run clean && tsc -p tsconfig.build.json",
-    "clean": "rimraf dist node_modules/.cache"
-  },
-  "dependencies": {
-    "@paljs/types": "workspace:*",
-    "@paljs/schema": "workspace:*",
-    "@paljs/utils": "workspace:*",
-    "pkg-dir": "^5.0.0",
-    "pluralize": "^8.0.0",
-    "prettier": "^2.8.8"
-  },
-  "devDependencies": {
-    "@types/node": "20.12.12",
-    "@types/pluralize": "^0.0.33",
-    "rimraf": "^3.0.2",
-    "typescript": "^5.7.2"
-  },
-  "files": ["dist"],
-  "publishConfig": {
-    "access": "public"
-  },
-  "gitHead": "3d5f31c5d025953338ec694c513894b6a4112e70"
+  "keywords": ["prisma", "generator", "graphql", "nexus", "admin", "paljs", "prisma-7"]
 }

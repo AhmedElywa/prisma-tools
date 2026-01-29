@@ -1,6 +1,6 @@
 {
   "name": "@paljs/schema",
-  "version": "8.2.1",
+  "version": "8.2.2-beta.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": {
@@ -20,7 +20,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@paljs/display": "workspace:*",
     "@paljs/types": "workspace:*",
     "@paljs/utils": "workspace:*"
   },

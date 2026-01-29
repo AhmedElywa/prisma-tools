@@ -28,7 +28,6 @@ pnpm add @paljs/utils
 This package includes the following dependencies:
 
 - `@paljs/types` - Type definitions
-- `@paljs/display` - Logging utilities
 - `@prisma/internals` - Prisma internal utilities
 
 # Usage
@@ -323,41 +322,37 @@ await analyzeSchema();
 
 ```typescript
 import { getDMMFBySchemaPath, sdlInputs } from '@paljs/utils';
-import { log } from '@paljs/display';
 
-async function generateWithProgress() {
-  const spinner = log.spinner('Loading Prisma schema...').start();
+async function generateCode() {
+  console.log('Loading Prisma schema...');
 
   try {
     // Load schema
     const dmmf = await getDMMFBySchemaPath();
-    spinner.succeed('Schema loaded successfully');
+    console.log('Schema loaded successfully');
 
     // Generate types
-    log.progress('Generating GraphQL input types...');
+    console.log('Generating GraphQL input types...');
     const inputTypes = sdlInputs(dmmf);
 
     // Save generated types
-    log.progress('Writing generated files...');
+    console.log('Writing generated files...');
     // ... save logic here
 
-    log.success('Code generation completed!');
-    log.meta(`Generated types for ${dmmf.datamodel.models.length} models`);
+    console.log(`Code generation completed! Generated types for ${dmmf.datamodel.models.length} models`);
   } catch (error) {
-    spinner.fail('Generation failed');
-    log.error(error.message);
+    console.error('Generation failed:', error.message);
     throw error;
   }
 }
 
-await generateWithProgress();
+await generateCode();
 ```
 
 ### Error Handling and Validation
 
 ```typescript
 import { getSchemaPath, getDMMFBySchemaPath } from '@paljs/utils';
-import { log } from '@paljs/display';
 
 async function validateAndProcess(customPath?: string) {
   try {
@@ -369,7 +364,7 @@ async function validateAndProcess(customPath?: string) {
 
     // Validate schema content
     if (dmmf.datamodel.models.length === 0) {
-      log.warning('No models found in schema');
+      console.warn('No models found in schema');
       return;
     }
 
@@ -380,20 +375,20 @@ async function validateAndProcess(customPath?: string) {
     );
 
     if (missingModels.length > 0) {
-      log.warning(`Missing required models: ${missingModels.join(', ')}`);
+      console.warn(`Missing required models: ${missingModels.join(', ')}`);
     }
 
-    log.success('Schema validation passed');
+    console.log('Schema validation passed');
     return dmmf;
   } catch (error) {
     if (error.message.includes('schema.prisma')) {
-      log.error('Schema file not found');
-      log.meta('Make sure your schema file exists and is accessible');
+      console.error('Schema file not found');
+      console.error('Make sure your schema file exists and is accessible');
     } else if (error.message.includes('Parse error')) {
-      log.error('Schema syntax error');
-      log.meta('Check your Prisma schema for syntax errors');
+      console.error('Schema syntax error');
+      console.error('Check your Prisma schema for syntax errors');
     } else {
-      log.error(`Unexpected error: ${error.message}`);
+      console.error(`Unexpected error: ${error.message}`);
     }
 
     throw error;

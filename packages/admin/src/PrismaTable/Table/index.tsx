@@ -250,161 +250,155 @@ export const Table: React.FC<TableProps> = ({
             </PopoverPanel>
           </Popover>
         </div>
-        <div className="overflow-hidden">
-          <div className="-my-2 overflow-auto sm:-mx-6 lg:-mx-8">
-            <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-              <div className="overflow-hidden relative">
-                {loading && <Spinner />}
-                <table className="min-w-full divide-y divide-gray-200 border-b border-t border-gray-200">
-                  <thead className="bg-gray-100">
-                    {tableInstance.getHeaderGroups().map((headerGroup) => (
-                      <React.Fragment key={headerGroup.id}>
-                        <tr>
-                          {isSelect && (
-                            <th scope="col" className={thClasses}>
-                              <Checkbox
-                                onChange={(e) => onSelectHandler(e.target.checked)}
-                                checked={data.length > 0 && selected.length === data.length}
-                                indeterminate={selected.length > 0 && selected.length !== data.length}
-                              />
-                            </th>
-                          )}
-                          <th scope="col" className={thClasses} colSpan={2}>
-                            {lang.actions}
-                          </th>
-                          {fieldUpdate && parent && (
-                            <th scope="col" className={thClasses}>
-                              <button
-                                className={classNames(
-                                  buttonClasses,
-                                  'bg-transparent text-blue-600 hover:bg-blue-100 hover:bg-opacity-25',
-                                )}
-                                onClick={() => {
-                                  if (hasFilters) {
-                                    setAllFilters([]);
-                                  } else {
-                                    setAllFilters(initialFilter);
-                                  }
-                                }}
-                              >
-                                {hasFilters ? lang.viewAll : lang.viewRelated}
-                              </button>
-                            </th>
-                          )}
-                          {headerGroup.headers.map((header) => {
-                            return (
-                              <th
-                                scope="col"
-                                className={thClasses}
-                                key={header.id}
-                                {...(header.column.getCanSort()
-                                  ? {
-                                      onClick: header.column.getToggleSortingHandler(),
-                                      style: { cursor: 'pointer' },
-                                    }
-                                  : {})}
-                              >
-                                <div className="flex justify-center items-center">
-                                  {header.isPlaceholder
-                                    ? null
-                                    : flexRender(header.column.columnDef.header, header.getContext())}
-                                  <span>
-                                    {header.column.getIsSorted() ? (
-                                      header.column.getIsSorted() === 'desc' ? (
-                                        <ArrowDownIcon className="h-5 w-5" />
-                                      ) : (
-                                        <ArrowUpIcon className="h-5 w-5" />
-                                      )
-                                    ) : (
-                                      ''
-                                    )}
-                                  </span>
-                                  {filters.filter(Boolean).find((item) => item.id === header.column.id) ? (
-                                    <MagnifyingGlassCircleIcon className="h-5 w-5 text-green-500" />
-                                  ) : (
-                                    ''
-                                  )}
-                                </div>
-                              </th>
-                            );
-                          })}
-                        </tr>
-                      </React.Fragment>
-                    ))}
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {tableInstance.getRowModel().rows.map((row) => {
-                      return (
-                        <tr className="hover:bg-gray-100 even:bg-gray-50" key={row.id}>
-                          {isSelect && (
-                            <td className={tdClasses}>
-                              <Checkbox
-                                onChange={(e) =>
-                                  onSelectHandler(e.target.checked, model && row.original[model.idField])
-                                }
-                                checked={!!(model && selected.includes(row.original[model.idField]))}
-                              />
-                            </td>
-                          )}
-                          {connect && (
-                            <td colSpan={2} className={tdClasses}>
-                              <button
-                                type="button"
-                                className={classNames(
-                                  buttonClasses,
-                                  'bg-transparent text-green-600 hover:bg-green-100 hover:bg-opacity-25',
-                                )}
-                                disabled={model && connect[model.idField] === row.original[model.idField]}
-                                onClick={() =>
-                                  onAction(
-                                    'connect',
-                                    data.find((item) => model && item[model.idField] === row.original[model.idField]),
-                                  )
-                                }
-                              >
-                                {model && connect[model.idField] === row.original[model.idField]
-                                  ? lang.connected
-                                  : lang.connect}
-                              </button>
-                            </td>
-                          )}
-                          {!connect && (
-                            <td
-                              className={tdClasses}
-                              title={actions.update ? lang.editRow : lang.viewRow}
-                              colSpan={actions.delete ? 1 : 2}
-                            >
-                              <ActionButtons.Update id={model ? row.original[model.idField] : 0} />
-                            </td>
-                          )}
-                          {actions.delete && !connect && (
-                            <td className={tdClasses} title={lang.deleteRow} colSpan={1}>
-                              <ActionButtons.Delete id={model ? row.original[model.idField] : 0} />
-                            </td>
-                          )}
-                          {parent && model && fieldUpdate && (
-                            <ListConnect getData={getData} parent={parent} row={row} model={model} />
-                          )}
-                          {row.getVisibleCells().map((cell) => {
-                            return (
-                              <td style={{ maxWidth: '9rem' }} className={tdClasses} key={cell.id}>
-                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                              </td>
-                            );
-                          })}
-                        </tr>
-                      );
-                    })}
+        <div className="overflow-x-auto">
+          <div className="relative">
+            {loading && <Spinner />}
+            <table className="min-w-full divide-y divide-gray-200 border-b border-t border-gray-200">
+              <thead className="bg-gray-100">
+                {tableInstance.getHeaderGroups().map((headerGroup) => (
+                  <React.Fragment key={headerGroup.id}>
                     <tr>
-                      <td className={tdClasses} colSpan={10000}>
-                        {lang.showing} {tableInstance.getRowModel().rows.length} {lang.of} ~
-                        {controlledPageCount * pagination.pageSize} {lang.results}
-                      </td>
+                      {isSelect && (
+                        <th scope="col" className={thClasses}>
+                          <Checkbox
+                            onChange={(e) => onSelectHandler(e.target.checked)}
+                            checked={data.length > 0 && selected.length === data.length}
+                            indeterminate={selected.length > 0 && selected.length !== data.length}
+                          />
+                        </th>
+                      )}
+                      <th scope="col" className={thClasses} colSpan={2}>
+                        {lang.actions}
+                      </th>
+                      {fieldUpdate && parent && (
+                        <th scope="col" className={thClasses}>
+                          <button
+                            className={classNames(
+                              buttonClasses,
+                              'bg-transparent text-blue-600 hover:bg-blue-100 hover:bg-opacity-25',
+                            )}
+                            onClick={() => {
+                              if (hasFilters) {
+                                setAllFilters([]);
+                              } else {
+                                setAllFilters(initialFilter);
+                              }
+                            }}
+                          >
+                            {hasFilters ? lang.viewAll : lang.viewRelated}
+                          </button>
+                        </th>
+                      )}
+                      {headerGroup.headers.map((header) => {
+                        return (
+                          <th
+                            scope="col"
+                            className={thClasses}
+                            key={header.id}
+                            {...(header.column.getCanSort()
+                              ? {
+                                  onClick: header.column.getToggleSortingHandler(),
+                                  style: { cursor: 'pointer' },
+                                }
+                              : {})}
+                          >
+                            <div className="flex justify-center items-center">
+                              {header.isPlaceholder
+                                ? null
+                                : flexRender(header.column.columnDef.header, header.getContext())}
+                              <span>
+                                {header.column.getIsSorted() ? (
+                                  header.column.getIsSorted() === 'desc' ? (
+                                    <ArrowDownIcon className="h-5 w-5" />
+                                  ) : (
+                                    <ArrowUpIcon className="h-5 w-5" />
+                                  )
+                                ) : (
+                                  ''
+                                )}
+                              </span>
+                              {filters.filter(Boolean).find((item) => item.id === header.column.id) ? (
+                                <MagnifyingGlassCircleIcon className="h-5 w-5 text-green-500" />
+                              ) : (
+                                ''
+                              )}
+                            </div>
+                          </th>
+                        );
+                      })}
                     </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                  </React.Fragment>
+                ))}
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {tableInstance.getRowModel().rows.map((row) => {
+                  return (
+                    <tr className="hover:bg-gray-100 even:bg-gray-50" key={row.id}>
+                      {isSelect && (
+                        <td className={tdClasses}>
+                          <Checkbox
+                            onChange={(e) => onSelectHandler(e.target.checked, model && row.original[model.idField])}
+                            checked={!!(model && selected.includes(row.original[model.idField]))}
+                          />
+                        </td>
+                      )}
+                      {connect && (
+                        <td colSpan={2} className={tdClasses}>
+                          <button
+                            type="button"
+                            className={classNames(
+                              buttonClasses,
+                              'bg-transparent text-green-600 hover:bg-green-100 hover:bg-opacity-25',
+                            )}
+                            disabled={model && connect[model.idField] === row.original[model.idField]}
+                            onClick={() =>
+                              onAction(
+                                'connect',
+                                data.find((item) => model && item[model.idField] === row.original[model.idField]),
+                              )
+                            }
+                          >
+                            {model && connect[model.idField] === row.original[model.idField]
+                              ? lang.connected
+                              : lang.connect}
+                          </button>
+                        </td>
+                      )}
+                      {!connect && (
+                        <td
+                          className={tdClasses}
+                          title={actions.update ? lang.editRow : lang.viewRow}
+                          colSpan={actions.delete ? 1 : 2}
+                        >
+                          <ActionButtons.Update id={model ? row.original[model.idField] : 0} />
+                        </td>
+                      )}
+                      {actions.delete && !connect && (
+                        <td className={tdClasses} title={lang.deleteRow} colSpan={1}>
+                          <ActionButtons.Delete id={model ? row.original[model.idField] : 0} />
+                        </td>
+                      )}
+                      {parent && model && fieldUpdate && (
+                        <ListConnect getData={getData} parent={parent} row={row} model={model} />
+                      )}
+                      {row.getVisibleCells().map((cell) => {
+                        return (
+                          <td style={{ maxWidth: '9rem' }} className={tdClasses} key={cell.id}>
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
+                <tr>
+                  <td className={tdClasses} colSpan={10000}>
+                    {lang.showing} {tableInstance.getRowModel().rows.length} {lang.of} ~
+                    {controlledPageCount * pagination.pageSize} {lang.results}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
         <div className={classNames('flex flex-wrap md:justify-between justify-center w-full', tdClasses)}>

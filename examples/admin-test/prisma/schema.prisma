@@ -1,0 +1,395 @@
+// Comprehensive test schema with SQLite
+// Tests all relation types, field types, and edge cases
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+generator paljs {
+  provider = "paljs-generator"
+  output   = "../src/generated/paljs"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum Role {
+  USER
+  ADMIN
+  MODERATOR
+  GUEST
+}
+
+enum Status {
+  DRAFT
+  PENDING
+  PUBLISHED
+  ARCHIVED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+// ============================================
+// USER & AUTH MODELS (1:1, 1:N relations)
+// ============================================
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  username  String   @unique
+  firstName String?
+  lastName  String?
+  password  String
+  role      Role     @default(USER)
+  isActive  Boolean  @default(true)
+  balance   Float    @default(0)
+  metadata  String?  // JSON stored as string in SQLite
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // 1:1 relation
+  profile Profile?
+
+  // 1:N relations
+  posts       Post[]
+  comments    Comment[]
+  orders      Order[]
+  reviews     Review[]
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
+
+  // N:M through explicit join table
+  followedBy UserFollow[] @relation("Following")
+  following  UserFollow[] @relation("FollowedBy")
+
+  // N:M through implicit join table
+  likedPosts Post[] @relation("UserLikedPosts")
+  groups     Group[] @relation("GroupMembers")
+}
+
+model Profile {
+  id        Int      @id @default(autoincrement())
+  bio       String?
+  avatar    String?
+  website   String?
+  location  String?
+  birthDate DateTime?
+  phone     String?
+
+  // 1:1 relation
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int  @unique
+}
+
+// Self-referential N:M relation (User follows User)
+model UserFollow {
+  id          Int      @id @default(autoincrement())
+  follower    User     @relation("Following", fields: [followerId], references: [id], onDelete: Cascade)
+  followerId  Int
+  following   User     @relation("FollowedBy", fields: [followingId], references: [id], onDelete: Cascade)
+  followingId Int
+  createdAt   DateTime @default(now())
+
+  @@unique([followerId, followingId])
+}
+
+// ============================================
+// CONTENT MODELS (1:N, N:M, self-referential)
+// ============================================
+
+model Post {
+  id          Int      @id @default(autoincrement())
+  title       String
+  slug        String   @unique
+  content     String?
+  excerpt     String?
+  status      Status   @default(DRAFT)
+  featured    Boolean  @default(false)
+  viewCount   Int      @default(0)
+  readTime    Float?   // minutes
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // 1:N relations
+  author     User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  authorId   Int?
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId Int?
+
+  comments Comment[]
+
+  // N:M relations
+  tags    Tag[]  @relation("PostTags")
+  likedBy User[] @relation("UserLikedPosts")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  approved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  author   User? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  authorId Int?
+  post     Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId   Int
+
+  // Self-referential relation (comment replies)
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  parentId Int?
+  replies  Comment[] @relation("CommentReplies")
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  color       String?  @default("#000000")
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // 1:N relation
+  posts Post[]
+
+  // Self-referential relation (category tree)
+  parent     Category?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  parentId   Int?
+  children   Category[] @relation("CategoryTree")
+}
+
+model Tag {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  slug      String   @unique
+  createdAt DateTime @default(now())
+
+  // N:M relation
+  posts Post[] @relation("PostTags")
+}
+
+// ============================================
+// E-COMMERCE MODELS
+// ============================================
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  sku         String   @unique
+  description String?
+  price       Float
+  comparePrice Float?
+  costPrice   Float?
+  quantity    Int      @default(0)
+  weight      Float?
+  isActive    Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  brand      Brand?   @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  brandId    Int?
+
+  orderItems OrderItem[]
+  reviews    Review[]
+  productCategories ProductCategory[]
+}
+
+model Brand {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  slug        String   @unique
+  logo        String?
+  description String?
+  website     String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  products Product[]
+}
+
+model ProductCategory {
+  id        Int      @id @default(autoincrement())
+  name      String
+  slug      String   @unique
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  // Self-referential
+  parent   ProductCategory?  @relation("ProductCategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  parentId Int?
+  children ProductCategory[] @relation("ProductCategoryTree")
+
+  // N:M with Product through this explicit join
+  products Product[]
+}
+
+model Order {
+  id            Int         @id @default(autoincrement())
+  orderNumber   String      @unique
+  status        Status      @default(PENDING)
+  subtotal      Float
+  tax           Float       @default(0)
+  shipping      Float       @default(0)
+  total         Float
+  notes         String?
+  shippingAddress String?
+  billingAddress  String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relations
+  customer   User? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  customerId Int?
+
+  items OrderItem[]
+}
+
+model OrderItem {
+  id        Int   @id @default(autoincrement())
+  quantity  Int
+  price     Float
+  total     Float
+
+  // Relations
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+  productId Int
+
+  @@unique([orderId, productId])
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  rating    Int      // 1-5
+  title     String?
+  content   String?
+  approved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  author    User?   @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  authorId  Int?
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
+
+  @@unique([authorId, productId])
+}
+
+// ============================================
+// MESSAGING & COLLABORATION
+// ============================================
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  subject   String?
+  content   String
+  read      Boolean  @default(false)
+  priority  Priority @default(MEDIUM)
+  createdAt DateTime @default(now())
+
+  // Relations
+  sender     User? @relation("SentMessages", fields: [senderId], references: [id], onDelete: SetNull)
+  senderId   Int?
+  receiver   User? @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: SetNull)
+  receiverId Int?
+}
+
+model Group {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  isPrivate   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // N:M relation
+  members User[] @relation("GroupMembers")
+}
+
+// ============================================
+// TASK MANAGEMENT
+// ============================================
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  startDate   DateTime?
+  endDate     DateTime?
+  budget      Float?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tasks Task[]
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  status      Status   @default(DRAFT)
+  priority    Priority @default(MEDIUM)
+  dueDate     DateTime?
+  completedAt DateTime?
+  estimatedHours Float?
+  actualHours    Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId Int?
+
+  // Self-referential (subtasks)
+  parent   Task?  @relation("TaskSubtasks", fields: [parentId], references: [id], onDelete: Cascade)
+  parentId Int?
+  subtasks Task[] @relation("TaskSubtasks")
+}
+
+// ============================================
+// SETTINGS & CONFIGURATION
+// ============================================
+
+model Setting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String
+  type      String   @default("string") // string, number, boolean, json
+  group     String   @default("general")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  action    String
+  entity    String
+  entityId  String
+  oldValue  String?
+  newValue  String?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+}

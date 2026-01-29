@@ -11,7 +11,7 @@ This example demonstrates how to use `@paljs/admin` with Next.js 15, TypeScript,
 - **GraphQL Yoga** for GraphQL server
 - **Nexus** for schema generation
 - **@paljs/admin** for admin UI components
-- **@paljs/cli** for code generation
+- **@paljs/generator** for code generation (via `prisma generate`)
 - **Prisma** for database ORM
 - **Dark Mode** support with next-themes
 

@@ -1,11 +1,11 @@
 import { join } from 'path';
 import { ApolloServer, type GraphQLRequest } from '@apollo/server';
 import type { ExecuteOperationOptions, VariableValues } from '@apollo/server/dist/esm/externalTypes/graphql';
-import { Generators } from '@paljs/generator/src/Generators';
 import { getDMMFBySchemaPath } from '@paljs/utils';
 import type { DocumentNode, TypedQueryDocumentNode } from 'graphql';
 import { parseResolveInfo } from 'graphql-parse-resolve-info';
 import gql from 'graphql-tag';
+import { Generators } from '../../../generator-legacy/dist';
 import { PrismaSelect } from '../../src';
 
 const typeDefs = gql`

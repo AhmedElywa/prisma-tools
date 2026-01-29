@@ -1,0 +1,4 @@
+@import "tailwindcss";
+@import "@paljs/admin/style.css";
+
+@source "../../../../packages/admin/src/**/*.{js,ts,jsx,tsx}";

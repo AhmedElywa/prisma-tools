@@ -3,13 +3,16 @@
   "private": true,
   "workspaces": ["packages/*", "examples/*"],
   "scripts": {
-    "build": "bun run --filter @paljs/utils --filter @paljs/types --filter @paljs/schema --filter @paljs/plugins --filter @paljs/nexus --filter @paljs/display --filter @paljs/generator --filter @paljs/create --filter @paljs/cli --filter @paljs/admin build",
+    "build": "bun run --filter @paljs/utils --filter @paljs/types --filter @paljs/plugins --filter @paljs/nexus --filter @paljs/generator --filter @paljs/admin build",
     "format": "biome format --write .",
     "format:ci": "biome format .",
     "lint": "biome lint .",
     "check": "biome check .",
     "check:fix": "biome check --write .",
-    "test": "jest --coverage",
+    "test": "bun test packages/ tests/ examples/generator-test/",
+    "test:watch": "bun test --watch",
+    "test:coverage": "bun test --coverage",
+    "test:legacy": "jest --coverage",
     "docs:gen": "bun run docgen.js",
     "prepare": "lefthook install"
   },

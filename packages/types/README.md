@@ -515,8 +515,6 @@ const config: GeneratorOptions<keyof MyModels, MyModels> = {
 This package provides types used throughout the PalJS ecosystem:
 
 - **@paljs/generator** - Uses `GeneratorOptions`, `QueriesAndMutations`
-- **@paljs/cli** - Uses `CliGeneratedExamples`, `ConfigFile`
-- **@paljs/create** - Uses CLI types for project scaffolding
 - **@paljs/admin** - Uses admin schema types for UI generation
 - **@paljs/schema** - Uses DMMF types for schema manipulation
 

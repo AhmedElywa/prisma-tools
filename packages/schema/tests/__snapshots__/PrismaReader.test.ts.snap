@@ -1,46 +1,9 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`test the Prisma Reader class read prisma datasource 1`] = `
-[
-  "datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-",
-]
-`;
-
-exports[`test the Prisma Reader class read prisma enums 1`] = `
-[
-  "
-enum Role {
-  ADMIN
-  USER
-}
-",
-]
-`;
-
-exports[`test the Prisma Reader class read prisma generators 1`] = `
-[
-  "
-generator client {
-  provider = "prisma-client-js"
-}
-",
-  "
-generator pothos {
-  provider = "prisma-pothos-types"
-}
-",
-]
-`;
-
-exports[`test the Prisma Reader class read prisma model documentation 1`] = `"// User modal documentation"`;
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
 
 exports[`test the Prisma Reader class read prisma models 1`] = `
 [
-  "
+  
+"
 model User {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
@@ -52,8 +15,10 @@ model User {
   permissions Json     @default("{}")
   posts       Post[]
 }
-",
-  "
+"
+,
+  
+"
 model Post {
   id        Int      @id @default(autoincrement())
   published Boolean  @default(false)
@@ -63,6 +28,53 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-",
+"
+,
+]
+`;
+
+exports[`test the Prisma Reader class read prisma enums 1`] = `
+[
+  
+"
+enum Role {
+  ADMIN
+  USER
+}
+"
+,
+]
+`;
+
+exports[`test the Prisma Reader class read prisma model documentation 1`] = `"// User modal documentation"`;
+
+exports[`test the Prisma Reader class read prisma datasource 1`] = `
+[
+  
+"datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+"
+,
+]
+`;
+
+exports[`test the Prisma Reader class read prisma generators 1`] = `
+[
+  
+"
+generator client {
+  provider = "prisma-client-js"
+}
+"
+,
+  
+"
+generator pothos {
+  provider = "prisma-pothos-types"
+}
+"
+,
 ]
 `;

@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { useContext } from 'react';
 
 import type { AdminSchemaModel, TableParentRecord } from '../types';

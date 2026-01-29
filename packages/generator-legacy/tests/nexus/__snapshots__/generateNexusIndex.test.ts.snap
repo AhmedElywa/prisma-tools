@@ -1,0 +1,7 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`Generate Nexus Index Should back with all models Index 1`] = `
+"export * from './Post'
+export * from './User'
+"
+`;

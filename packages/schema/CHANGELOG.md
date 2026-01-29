@@ -1,5 +1,13 @@
 # @paljs/schema
 
+## 8.2.2-beta.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @paljs/types@9.0.0-beta.0
+  - @paljs/utils@9.0.0-beta.0
+
 ## 8.2.1
 
 ### Patch Changes

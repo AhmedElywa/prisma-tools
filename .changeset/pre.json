@@ -3,15 +3,23 @@
   "tag": "beta",
   "initialVersions": {
     "@paljs/admin": "8.2.1",
-    "@paljs/cli": "8.2.1",
-    "@paljs/create": "8.2.1",
-    "@paljs/display": "8.2.1",
     "@paljs/generator": "8.2.1",
     "@paljs/nexus": "8.2.1",
     "@paljs/plugins": "8.2.1",
     "@paljs/schema": "8.2.1",
     "@paljs/types": "8.2.1",
-    "@paljs/utils": "8.2.1"
+    "@paljs/utils": "8.2.1",
+    "admin-nextjs15-example": "0.0.1",
+    "admin-test": "1.0.0",
+    "@paljs/example-generator-test": "1.0.0",
+    "@paljs/generator-legacy": "8.2.1"
   },
-  "changesets": ["admin-react-19-beta"]
+  "changesets": [
+    "admin-react-19-beta",
+    "fix-workspace-refs",
+    "generator-v9-beta",
+    "nexus-v9-beta",
+    "plugins-v9-beta",
+    "types-utils-v9-beta"
+  ]
 }

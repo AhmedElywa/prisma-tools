@@ -1,5 +1,16 @@
 # @paljs/utils
 
+## 9.0.0-beta.0
+
+### Major Changes
+
+- Bump to v9 for Prisma 7 compatibility
+
+### Patch Changes
+
+- Updated dependencies
+  - @paljs/types@9.0.0-beta.0
+
 ## 8.2.1
 
 ### Patch Changes

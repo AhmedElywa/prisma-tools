@@ -1,570 +1,177 @@
 # @paljs/generator
 
-## Table of Contents
+A true Prisma generator that runs during `prisma generate` to generate types, Nexus GraphQL schemas, and admin UI configurations. Supports Prisma 6 and 7.
 
-- [Introduction](#introduction)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Features](#features)
-- [Configuration](#configuration)
-- [License](#license)
-
-# Introduction
-
-A powerful code generation package that creates GraphQL schemas, resolvers, and admin interfaces from Prisma schema definitions. Supports multiple GraphQL architectures including Nexus, SDL-first, and GraphQL Modules.
-
-# Installation
+## Installation
 
 ```bash
-npm install @paljs/generator
+npm install @paljs/generator --save-dev
 # or
-yarn add @paljs/generator
+pnpm add @paljs/generator -D
 # or
-pnpm add @paljs/generator
+bun add @paljs/generator -d
 ```
 
-# Usage
+## Quick Start
 
-## Main Classes
+### 1. Add generator to schema.prisma
 
-### Generator
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
-The main class that orchestrates code generation based on the specified generator type.
+generator client {
+  provider = "prisma-client-js"
+}
 
-```typescript
-import { Generator } from '@paljs/generator';
-
-const generator = new Generator(
-  {
-    name: 'nexus', // 'nexus' | 'sdl' | 'graphql-modules'
-    schemaPath: './prisma/schema.prisma',
-  },
-  {
-    output: './src/graphql',
-    excludeFields: ['password'],
-    // ... other options
-  },
-);
-
-await generator.run();
+generator paljs {
+  provider = "paljs-generator"
+  output   = "./generated/paljs"
+}
 ```
 
-**Constructor Parameters:**
-
-- `generator` - Configuration object with generator name and schema path
-- `options` - Optional generator options for customization
-
-**Methods:**
-
-- `run()` - Execute the code generation process
-
-### GenerateNexus
-
-Generates Nexus GraphQL schema with type-safe resolvers and input types.
+### 2. Create paljs.config.ts (optional)
 
 ```typescript
-import { GenerateNexus } from '@paljs/generator';
+import { defineConfig } from '@paljs/generator/config';
 
-const nexusGenerator = new GenerateNexus('./prisma/schema.prisma', {
-  output: './src/graphql',
-  prismaName: 'prisma',
+export default defineConfig({
+  generateTypes: true,
+  generateGraphQL: true,
+  generateAdmin: {
+    enabled: true,
+    routerType: 'app',
+  },
   excludeFields: ['password', 'hash'],
-});
-
-await nexusGenerator.run();
-```
-
-**Generated Files:**
-
-- `types.ts` - Nexus object type definitions
-- `inputs.ts` - Input type definitions
-- `queries.ts` - Query field definitions
-- `mutations.ts` - Mutation field definitions
-- `index.ts` - Combined exports
-
-**Key Methods:**
-
-- `run()` - Generate all Nexus files
-- `createTypes()` - Generate object types
-- `createInputs()` - Generate input types
-- `createQueries()` - Generate query fields
-- `createMutations()` - Generate mutation fields
-
-### GenerateSdl
-
-Generates Schema Definition Language (SDL) files with resolver functions.
-
-```typescript
-import { GenerateSdl } from '@paljs/generator';
-
-const sdlGenerator = new GenerateSdl('./prisma/schema.prisma', {
-  output: './src/graphql',
-  javaScript: false,
-});
-
-await sdlGenerator.run();
-```
-
-**Generated Files:**
-
-- `typeDefs.ts` - GraphQL type definitions
-- `resolvers.ts` - Resolver implementations
-- `index.ts` - Combined exports
-
-**Key Methods:**
-
-- `run()` - Generate all SDL files
-- `createTypes()` - Generate type definitions
-- `createResolvers()` - Generate resolver functions
-- `createMaster()` - Create index files
-
-### GenerateModules
-
-Generates GraphQL Modules architecture with modular schema organization.
-
-```typescript
-import { GenerateModules } from '@paljs/generator';
-
-const modulesGenerator = new GenerateModules('./prisma/schema.prisma', {
-  output: './src/graphql',
-});
-
-await modulesGenerator.run();
-```
-
-**Generated Files:**
-
-- `modules/` - Individual model modules
-- `inputs/` - Shared input types
-- `app.ts` - Application module configuration
-
-**Key Methods:**
-
-- `run()` - Generate all module files
-- `createModules()` - Generate individual modules
-- `createInputs()` - Generate input types
-- `createApp()` - Generate application module
-
-### UIGenerator
-
-Generates admin UI components and pages for Prisma models.
-
-```typescript
-import { UIGenerator } from '@paljs/generator';
-
-const uiGenerator = new UIGenerator('./prisma/schema.prisma');
-
-await uiGenerator.generateAdminPages({
-  models: ['User', 'Post', 'Category'],
-  output: './src/admin/pages',
-});
-```
-
-**Key Methods:**
-
-- `generateAdminPages()` - Generate admin interface pages
-- `mergeSchemas()` - Merge multiple schemas for multi-database support
-
-## Basic Nexus Generation
-
-```typescript
-import { Generator } from '@paljs/generator';
-
-const generator = new Generator(
-  { name: 'nexus', schemaPath: './prisma/schema.prisma' },
-  {
-    output: './src/graphql',
-    prismaName: 'prisma',
-    excludeFields: ['password', 'hash'],
-    excludeModels: [{ name: 'Log', queries: true, mutations: true }],
-  },
-);
-
-await generator.run();
-```
-
-## SDL Generation with Custom Configuration
-
-```typescript
-import { GenerateSdl } from '@paljs/generator';
-
-const generator = new GenerateSdl('./prisma/schema.prisma', {
-  output: './src/graphql',
-  javaScript: false,
-  excludeQueriesAndMutations: ['deleteMany', 'updateMany'],
-  excludeFieldsByModel: {
-    User: ['password', 'hash'],
-    Post: ['internalNotes'],
-  },
-});
-
-await generator.run();
-```
-
-## GraphQL Modules Generation
-
-```typescript
-import { GenerateModules } from '@paljs/generator';
-
-const generator = new GenerateModules('./prisma/schema.prisma', {
-  output: './src/graphql',
-  models: ['User', 'Post', 'Comment'],
-  disableQueries: false,
-  disableMutations: false,
-});
-
-await generator.run();
-```
-
-## Admin UI Generation
-
-```typescript
-import { UIGenerator } from '@paljs/generator';
-
-const uiGenerator = new UIGenerator('./prisma/schema.prisma');
-
-// Generate admin pages for Next.js Pages Router (default)
-await uiGenerator.generateAdminPages({
-  models: ['User', 'Post', 'Category'],
-  outPut: './src/pages/admin/models/',
-  routerType: 'pages', // Default: generates pages/admin/models/[Model].tsx
-});
-
-// Generate admin pages for Next.js App Router
-await uiGenerator.generateAdminPages({
-  models: ['User', 'Post', 'Category'],
-  outPut: './src/app/admin/models/',
-  routerType: 'app', // Generates app/admin/models/[Model]/page.tsx + layouts
-});
-
-// Custom page template
-await uiGenerator.generateAdminPages({
-  models: ['User', 'Post'],
-  outPut: './src/admin/pages',
-  pageContent: `
-import React from 'react';
-import CustomTable from 'components/CustomTable';
-
-export default function #{id}Page() {
-  return <CustomTable model="#{id}" />;
-}
-  `,
-  routerType: 'app',
-});
-
-// Generate GraphQL queries for frontend
-await uiGenerator.generateGraphqlQueries({
-  output: './src/graphql/queries',
-  models: ['User', 'Post'],
-});
-```
-
-### Router Types
-
-The generator supports both Next.js routing patterns:
-
-#### Pages Router (`routerType: 'pages'`)
-
-- **Output**: `pages/admin/models/[Model].tsx`
-- **Structure**: Traditional Next.js pages directory
-- **Component**: React functional component with default export
-
-#### App Router (`routerType: 'app'`)
-
-- **Output**: `app/admin/models/[Model]/page.tsx`
-- **Structure**: Next.js 13+ app directory with automatic layouts
-- **Component**: Default exported function component
-- **Layouts**: Automatically generates `layout.tsx` files for admin structure
-
-## Multi-Schema Support
-
-```typescript
-import { UIGenerator } from '@paljs/generator';
-
-const schemas = ['./prisma/user.prisma', './prisma/blog.prisma', './prisma/ecommerce.prisma'];
-
-const uiGenerator = new UIGenerator(schemas);
-
-await uiGenerator.generateAdminPages({
-  models: ['User', 'Post', 'Product'],
-  output: './src/admin/pages',
-});
-```
-
-## Custom Templates
-
-You can provide custom templates for generated code:
-
-```typescript
-const generator = new GenerateNexus('./prisma/schema.prisma', {
-  output: './src/graphql',
-  templates: {
-    query: './templates/custom-query.template',
-    mutation: './templates/custom-mutation.template',
-  },
-});
-```
-
-## Conditional Field Exclusion
-
-```typescript
-const generator = new Generator(
-  { name: 'nexus', schemaPath: './prisma/schema.prisma' },
-  {
-    output: './src/graphql',
-    filterInputs: (input) => {
-      // Custom logic to filter input fields
-      return input.args.filter((arg) => !arg.name.includes('internal'));
-    },
-  },
-);
-```
-
-## JavaScript Output
-
-```typescript
-const generator = new GenerateSdl('./prisma/schema.prisma', {
-  output: './src/graphql',
-  javaScript: true, // Generate .js files instead of .ts
-});
-```
-
-## Return as Text
-
-```typescript
-const generator = new GenerateNexus('./prisma/schema.prisma', {
-  backAsText: true, // Return generated code as string instead of writing files
-});
-
-const generatedCode = await generator.run();
-console.log(generatedCode);
-```
-
-## Integration with Build Tools
-
-### Webpack Plugin
-
-```javascript
-const { Generator } = require('@paljs/generator');
-
-class PalJSGeneratorPlugin {
-  apply(compiler) {
-    compiler.hooks.beforeCompile.tapAsync('PalJSGenerator', async (params, callback) => {
-      const generator = new Generator(
-        { name: 'nexus', schemaPath: './prisma/schema.prisma' },
-        { output: './src/graphql' },
-      );
-      await generator.run();
-      callback();
-    });
-  }
-}
-
-module.exports = PalJSGeneratorPlugin;
-```
-
-### Rollup Plugin
-
-```javascript
-import { Generator } from '@paljs/generator';
-
-export function paljs(options = {}) {
-  return {
-    name: 'paljs-generator',
-    buildStart: async () => {
-      const generator = new Generator({ name: 'nexus', schemaPath: './prisma/schema.prisma' }, options);
-      await generator.run();
-    },
-  };
-}
-```
-
-## Error Handling
-
-```typescript
-import { Generator } from '@paljs/generator';
-
-try {
-  const generator = new Generator({ name: 'nexus', schemaPath: './prisma/schema.prisma' }, { output: './src/graphql' });
-
-  await generator.run();
-  console.log('Generation completed successfully');
-} catch (error) {
-  console.error('Generation failed:', error.message);
-
-  if (error.code === 'SCHEMA_NOT_FOUND') {
-    console.error('Prisma schema file not found');
-  } else if (error.code === 'INVALID_MODEL') {
-    console.error('Invalid model configuration');
-  }
-}
-```
-
-## Performance Optimization
-
-### Incremental Generation
-
-```typescript
-const generator = new Generator(
-  { name: 'nexus', schemaPath: './prisma/schema.prisma' },
-  {
-    output: './src/graphql',
-    models: ['User'], // Generate only specific models
-    incremental: true, // Only update changed files
-  },
-);
-```
-
-### Parallel Generation
-
-```typescript
-import { GenerateNexus, GenerateSdl } from '@paljs/generator';
-
-const [nexusResult, sdlResult] = await Promise.all([
-  new GenerateNexus('./prisma/schema.prisma', { output: './src/nexus' }).run(),
-  new GenerateSdl('./prisma/schema.prisma', { output: './src/sdl' }).run(),
-]);
-```
-
-# Features
-
-## Multiple Generators
-
-- 🏗️ **Multiple Generators** - Support for Nexus, SDL, and GraphQL Modules
-- 🎯 **Type Safety** - Full TypeScript support with generated types
-- 🔧 **Customizable** - Extensive configuration options
-- 📝 **Admin UI** - Generate admin interfaces automatically
-- 🚀 **Performance** - Optimized code generation
-- 🔄 **Incremental** - Smart updates without overwriting custom code
-
-## Available Queries and Mutations
-
-```typescript
-type QueriesAndMutations =
-  | 'findUnique'
-  | 'findFirst'
-  | 'findMany'
-  | 'findCount'
-  | 'aggregate'
-  | 'createOne'
-  | 'createMany'
-  | 'updateOne'
-  | 'updateMany'
-  | 'deleteOne'
-  | 'deleteMany'
-  | 'upsertOne';
-```
-
-## TypeScript Support
-
-This package is written in TypeScript and provides comprehensive type definitions:
-
-```typescript
-import type { GeneratorOptions, QueriesAndMutations, AdminPagesOptions } from '@paljs/generator';
-
-const options: GeneratorOptions = {
-  output: './src/graphql',
   prismaName: 'prisma',
-  excludeFields: ['password'],
-  excludeModels: [],
-  excludeFieldsByModel: {},
-  excludeQueriesAndMutations: [],
-  excludeQueriesAndMutationsByModel: {},
-};
+});
 ```
 
-# Configuration
+### 3. Run prisma generate
 
-## GeneratorOptions Interface
+```bash
+npx prisma generate
+```
+
+## Configuration Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `generateTypes` | `boolean` | `true` | Generate typed helpers for PrismaSelect |
+| `generateGraphQL` | `boolean` | `false` | Generate Nexus GraphQL types |
+| `nexusOutput` | `string` | `'./nexus'` | Output directory for Nexus files |
+| `generateAdmin` | `boolean \| AdminConfig` | `false` | Generate admin UI configuration |
+| `prismaName` | `string` | `'prisma'` | Name of Prisma client variable |
+| `excludeFields` | `string[]` | `[]` | Fields to exclude globally |
+| `excludeInputFields` | `string[]` | `[]` | Fields to exclude from inputs |
+| `excludeQueriesAndMutations` | `string[]` | `[]` | Operations to exclude |
+| `disableQueries` | `boolean` | `false` | Disable all queries |
+| `disableMutations` | `boolean` | `false` | Disable all mutations |
+| `models` | `Record<string, ModelConfig>` | `{}` | Per-model configuration |
+
+### Admin Configuration
 
 ```typescript
-interface GeneratorOptions {
-  // Output directory for generated files
-  output: string;
-
-  // Prisma client instance name
-  prismaName: string;
-
-  // Models to include (default: all models)
-  models?: string[];
-
-  // Generate JavaScript instead of TypeScript
-  javaScript?: boolean;
-
-  // Fields to exclude globally
-  excludeFields: string[];
-
-  // Models to exclude with specific operations
-  excludeModels: Array<{
-    name: string;
-    queries?: boolean;
-    mutations?: boolean;
-  }>;
-
-  // Disable all queries or mutations
-  disableQueries?: boolean;
-  disableMutations?: boolean;
-
-  // Fields to exclude per model
-  excludeFieldsByModel: {
-    [modelName: string]: string[];
-  };
-
-  // Queries/mutations to exclude globally
-  excludeQueriesAndMutations: QueriesAndMutations[];
-
-  // Queries/mutations to exclude per model
-  excludeQueriesAndMutationsByModel: {
-    [modelName: string]: QueriesAndMutations[];
-  };
-
-  // Exclude input fields
-  excludeInputFields?: string[];
-
-  // Custom input filter function
-  filterInputs?: (input: DMMF.InputType) => DMMF.SchemaArg[];
-
-  // Disable field update operations input
-  doNotUseFieldUpdateOperationsInput?: boolean;
-
-  // Return generated code as text instead of writing files
-  backAsText?: boolean;
+generateAdmin: {
+  enabled: true,
+  output: './admin',
+  routerType: 'app', // 'app' | 'pages'
+  models: ['User', 'Post'], // undefined = all models
 }
 ```
 
-## AdminPagesOptions Interface
+### Per-Model Configuration
 
 ```typescript
-interface AdminPagesOptions {
-  // Models to generate admin pages for
-  models?: string[];
-
-  // Custom page template content (use #{id} as placeholder for model name)
-  pageContent?: string;
-
-  // Output directory path
-  outPut?: string;
-
-  // Return generated content as text instead of writing files
-  backAsText?: boolean;
-
-  // Router type for Next.js
-  routerType?: 'pages' | 'app';
+models: {
+  User: {
+    excludeFields: ['internalNotes'],
+    excludeQueriesAndMutations: ['deleteOne'],
+    disableMutations: false,
+    queries: true,
+    mutations: true,
+    admin: {
+      hide: false,
+      displayField: 'email',
+      listFields: ['email', 'name', 'createdAt'],
+    },
+  },
+  AuditLog: {
+    exclude: true, // Exclude entirely
+  },
 }
 ```
 
-### Router Type Options
+## Generated Output
 
-- **`'pages'`** (default): Generates files for Next.js Pages Router
+```
+generated/paljs/
+├── index.ts                  # Main exports
+├── dmmf/
+│   ├── index.ts              # DMMF TypeScript export
+│   └── dmmf.json             # DMMF as JSON
+├── types/
+│   └── index.ts              # Typed helpers for PrismaSelect
+├── nexus/                    # If generateGraphQL enabled
+│   ├── index.ts
+│   ├── InputTypes.ts
+│   ├── User/
+│   │   ├── type.ts
+│   │   ├── queries/
+│   │   └── mutations/
+│   └── Post/
+└── admin/                    # If generateAdmin enabled
+    ├── schema.json           # Admin UI configuration
+    └── models/               # Next.js pages
+```
 
-  - Creates: `pages/admin/models/[Model].tsx`
-  - Uses React functional components with default export
+## Usage
 
-- **`'app'`**: Generates files for Next.js App Router
-  - Creates: `app/admin/models/[Model]/page.tsx`
-  - Automatically generates layout files (`layout.tsx`)
-  - Uses default exported function components
+### Using Generated Types with PrismaSelect
 
-# License
+```typescript
+import { PrismaSelect } from '@paljs/plugins';
+import type { UserFields, ModelsObject, ModelName } from './generated/paljs';
 
-MIT License - see the LICENSE file for details.
+// Typed PrismaSelect
+const select = new PrismaSelect<'User', ModelsObject>(info);
+const users = await prisma.user.findMany(select.value);
+```
+
+### Using Generated Nexus Types
+
+```typescript
+import { makeSchema } from 'nexus';
+import * as types from './generated/paljs/nexus';
+
+const schema = makeSchema({
+  types,
+  outputs: {
+    schema: './schema.graphql',
+    typegen: './nexus-typegen.ts',
+  },
+});
+```
+
+### Using Admin Schema
+
+```typescript
+import adminSchema from './generated/paljs/admin/schema.json';
+import { PrismaTable } from '@paljs/admin';
+
+function UserAdmin() {
+  return <PrismaTable model="User" />;
+}
+```
+
+## Requirements
+
+- Prisma 7.x
+- Node.js 18+
+- TypeScript 5+
+
+## License
+
+MIT

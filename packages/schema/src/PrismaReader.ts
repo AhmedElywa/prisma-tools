@@ -1,5 +1,4 @@
 import { existsSync, readFileSync } from 'fs';
-import { chalk, log } from '@paljs/display';
 import type { Field } from '@paljs/types';
 
 export class PrismaReader {
@@ -42,8 +41,8 @@ export class PrismaReader {
 
   checkIfSchemaExit() {
     if (!existsSync(this.path)) {
-      log.error(`Error: ${chalk.blue('schema.prisma')} file not found in ${chalk.blue(this.path)}`);
-      process.exit();
+      console.error(`Error: schema.prisma file not found in ${this.path}`);
+      process.exit(1);
     }
   }
 

@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import type React from 'react';
 import { useRef, useState } from 'react';
 import { UPDATE_MODEL } from '../SchemaQueries';

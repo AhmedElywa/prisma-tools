@@ -1,8 +1,9 @@
 {
   "name": "@paljs/nexus",
-  "version": "8.2.1",
+  "version": "9.0.0-beta.3",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "description": "Nexus plugin for Prisma with PrismaSelect integration - supports Prisma 6 and 7",
   "repository": {
     "type": "git",
     "url": "git@github.com:paljs/prisma-tools.git",
@@ -17,7 +18,6 @@
     "clean": "rimraf dist node_modules/.cache"
   },
   "peerDependencies": {
-    "@prisma/client": "^6",
     "graphql": "^15 || ^16",
     "nexus": "^1"
   },
@@ -41,5 +41,6 @@
     "typescript": "^5.7.2"
   },
   "files": ["dist"],
+  "keywords": ["prisma", "nexus", "graphql", "prisma-7", "paljs"],
   "gitHead": "3d5f31c5d025953338ec694c513894b6a4112e70"
 }

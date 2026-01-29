@@ -1,6 +1,6 @@
 {
 	"name": "admin-nextjs15-example",
-	"version": "0.0.1",
+	"version": "0.0.2-beta.1",
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
@@ -8,8 +8,6 @@
 		"start": "next start",
 		"lint": "next lint",
 		"generate": "prisma generate",
-		"generate:graphql": "pal generate",
-		"generate:all": "npm run generate && npm run generate:graphql",
 		"db:dev": "prisma migrate dev",
 		"db:push": "prisma db push",
 		"db:seed": "prisma db seed",
@@ -32,7 +30,6 @@
 		"@hookform/resolvers": "^3.10.0",
 		"@monaco-editor/react": "^4.7.0",
 		"@paljs/admin": "workspace:*",
-		"@paljs/cli": "workspace:*",
 		"@paljs/generator": "workspace:*",
 		"@paljs/nexus": "workspace:*",
 		"@paljs/types": "workspace:*",

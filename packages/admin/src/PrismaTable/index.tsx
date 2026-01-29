@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import type React from 'react';
 
 import { GET_SCHEMA } from '../SchemaQueries';

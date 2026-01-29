@@ -1,6 +1,0 @@
-node_modules
-dist
-coverage
-examples
-pnpm-lock.yaml
-pnpm-workspace.yaml

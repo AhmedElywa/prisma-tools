@@ -1,14 +1,14 @@
 <div align="center">
   <img src="./header.png" alt="PalJS Header" width="100%" />
-  
+
   <h1>PalJS - Your Prisma GraphQL Toolkit</h1>
-  
+
   <p><strong>A comprehensive toolkit for building modern GraphQL APIs with Prisma</strong></p>
-  
+
   <p>
-    <a href="https://www.npmjs.com/org/paljs"><img src="https://img.shields.io/npm/v/@paljs/cli?label=version&style=flat-square" alt="Version" /></a>
-    <a href="https://github.com/AhmedElywa/prisma-tools/blob/main/LICENSE"><img src="https://img.shields.io/github/license/paljs/prisma-tools?style=flat-square" alt="License" /></a>
-    <a href="https://github.com/AhmedElywa/prisma-tools/stargazers"><img src="https://img.shields.io/github/stars/paljs/prisma-tools?style=flat-square" alt="Stars" /></a>
+    <a href="https://www.npmjs.com/org/paljs"><img src="https://img.shields.io/npm/v/@paljs/generator?label=version&style=flat-square" alt="Version" /></a>
+    <a href="https://github.com/paljs/prisma-tools/blob/main/LICENSE"><img src="https://img.shields.io/github/license/paljs/prisma-tools?style=flat-square" alt="License" /></a>
+    <a href="https://github.com/paljs/prisma-tools/stargazers"><img src="https://img.shields.io/github/stars/paljs/prisma-tools?style=flat-square" alt="Stars" /></a>
     <a href="https://discord.gg/X7yWXrM"><img src="https://img.shields.io/discord/768907308789235752?style=flat-square&logo=discord" alt="Discord" /></a>
   </p>
 </div>
@@ -17,615 +17,346 @@
 
 - [Introduction](#introduction)
 - [Installation](#installation)
-- [Usage](#usage)
-- [Features](#features)
-- [AI-Powered Code Generation with MDC Templates](#-ai-powered-code-generation-with-mdc-templates)
+- [Quick Start](#quick-start)
+- [Packages](#packages)
 - [Configuration](#configuration)
+- [AI-Powered Code Generation](#-ai-powered-code-generation-with-mdc-templates)
 - [License](#license)
 
 ---
 
 # Introduction
 
-PalJS is a powerful toolkit that accelerates GraphQL API development with Prisma. It provides code generation, admin interfaces, query optimization, and project scaffolding tools that let you build production-ready GraphQL APIs in minutes, not hours.
+PalJS is a powerful toolkit that accelerates GraphQL API development with Prisma. Starting with v9, PalJS integrates directly with **Prisma 7+** as a native generator, providing code generation, admin interfaces, and query optimization that runs automatically during `prisma generate`.
 
 ## Why Choose PalJS?
 
-- **⏰ Rapid Development**: Go from Prisma schema to production API in minutes
-- **🛡️ Enterprise Ready**: Built with type safety, security, and scalability in mind
-- **🔌 Framework Agnostic**: Works with Apollo Server, Express, Next.js, and more
-- **📚 Well Documented**: Comprehensive documentation and examples for every package
-- **🌍 Active Community**: Join thousands of developers building with PalJS
-
-## Packages
-
-PalJS is organized as a monorepo with focused packages for different aspects of GraphQL development:
-
-### Core Development Tools
-
-<table>
-  <tr>
-    <td><strong><a href="./packages/cli">@paljs/cli</a></strong></td>
-    <td>Command-line interface for project management and code generation</td>
-    <td><a href="./packages/cli/README.md">📖 Docs</a></td>
-  </tr>
-  <tr>
-    <td><strong><a href="./packages/generator">@paljs/generator</a></strong></td>
-    <td>Powerful code generation engine for GraphQL schemas, resolvers, and types</td>
-    <td><a href="./packages/generator/README.md">📖 Docs</a></td>
-  </tr>
-  <tr>
-    <td><strong><a href="./packages/create">@paljs/create</a></strong></td>
-    <td>Project scaffolding with templates for multiple frameworks and architectures</td>
-    <td><a href="./packages/create/README.md">📖 Docs</a></td>
-  </tr>
-</table>
-
-### GraphQL Integration
-
-<table>
-  <tr>
-    <td><strong><a href="./packages/nexus">@paljs/nexus</a></strong></td>
-    <td>Nexus plugin for Prisma integration with automatic field selection and admin schema</td>
-    <td><a href="./packages/nexus/README.md">📖 Docs</a></td>
-  </tr>
-  <tr>
-    <td><strong><a href="./packages/plugins">@paljs/plugins</a></strong></td>
-    <td>GraphQL plugins for query optimization, field selection, and SDL generation</td>
-    <td><a href="./packages/plugins/README.md">📖 Docs</a></td>
-  </tr>
-</table>
-
-### UI Components
-
-<table>
-  <tr>
-    <td><strong><a href="./packages/admin">@paljs/admin</a></strong></td>
-    <td>React admin UI components with Tailwind CSS, forms, tables, and CRUD operations</td>
-    <td><a href="./packages/admin/README.md">📖 Docs</a></td>
-  </tr>
-</table>
-
-### Schema & Utilities
-
-<table>
-  <tr>
-    <td><strong><a href="./packages/schema">@paljs/schema</a></strong></td>
-    <td>Prisma schema manipulation, conversion tools, and TypeScript generation</td>
-    <td><a href="./packages/schema/README.md">📖 Docs</a></td>
-  </tr>
-  <tr>
-    <td><strong><a href="./packages/utils">@paljs/utils</a></strong></td>
-    <td>Common utilities for DMMF processing, schema validation, and helper functions</td>
-    <td><a href="./packages/utils/README.md">📖 Docs</a></td>
-  </tr>
-  <tr>
-    <td><strong><a href="./packages/types">@paljs/types</a></strong></td>
-    <td>Comprehensive TypeScript type definitions for the entire PalJS ecosystem</td>
-    <td><a href="./packages/types/README.md">📖 Docs</a></td>
-  </tr>
-  <tr>
-    <td><strong><a href="./packages/display">@paljs/display</a></strong></td>
-    <td>Styled console output, progress indicators, and logging utilities for CLI tools</td>
-    <td><a href="./packages/display/README.md">📖 Docs</a></td>
-  </tr>
-</table>
-
-## Architecture
-
-PalJS follows a modular architecture that supports different GraphQL patterns:
-
-```mermaid
-graph TB
-    CLI[📱 PalJS CLI] --> Create[🚀 Project Creation]
-    CLI --> Generate[⚡ Code Generation]
-
-    Create --> Templates[📋 Templates]
-    Templates --> NextJS[Next.js + GraphQL]
-    Templates --> Apollo[Apollo Server]
-    Templates --> Modules[GraphQL Modules]
-
-    Generate --> Schema[🔧 Schema Processing]
-    Generate --> Nexus[🎯 Nexus Integration]
-    Generate --> SDL[📝 SDL Generation]
-    Generate --> Admin[🎨 Admin UI]
-
-    Schema --> Utils[🛠️ Utilities]
-    Schema --> Types[📊 Type Definitions]
-
-    Nexus --> Plugins[🔌 GraphQL Plugins]
-    Plugins --> Optimization[⚡ Query Optimization]
-```
-
----
-
-# 🤖 AI-Powered Code Generation with MDC Templates
-
-**Transform 5 years of code generation expertise into AI-compatible instructions**
-
-PalJS now offers **MDC (Model Data Context) Templates** - comprehensive AI instructions that preserve all the power of our original generators while being maintenance-free and future-proof.
-
-## 🎯 Why MDC Templates?
-
-<table>
-  <tr>
-    <td><strong>🚀 Future-Proof</strong></td>
-    <td>No package dependencies to maintain or update</td>
-  </tr>
-  <tr>
-    <td><strong>🤖 AI-Compatible</strong></td>
-    <td>Works with any AI model that can read instructions</td>
-  </tr>
-  <tr>
-    <td><strong>📚 Human-Readable</strong></td>
-    <td>Easy to understand, customize, and extend</td>
-  </tr>
-  <tr>
-    <td><strong>⚡ Instant Setup</strong></td>
-    <td>No installation required - just copy and use</td>
-  </tr>
-</table>
-
-## 📦 Available MDC Templates
-
-<table>
-  <tr>
-    <td><strong><a href="./mdc-templates/prisma-graphql-generator.md">🎯 GraphQL Operations</a></strong></td>
-    <td>Generate client-side GraphQL fragments, queries, and mutations</td>
-    <td>Frontend Development</td>
-  </tr>
-  <tr>
-    <td><strong><a href="./mdc-templates/prisma-admin-pages-generator.md">🎨 Admin Pages</a></strong></td>
-    <td>Create React admin interfaces with Next.js support</td>
-    <td>Admin Dashboards</td>
-  </tr>
-  <tr>
-    <td><strong><a href="./mdc-templates/prisma-nexus-generator.md">⚡ Nexus Backend</a></strong></td>
-    <td>Build type-safe GraphQL APIs with Nexus framework</td>
-    <td>Type-Safe APIs</td>
-  </tr>
-  <tr>
-    <td><strong><a href="./mdc-templates/prisma-sdl-generator.md">📝 SDL Backend</a></strong></td>
-    <td>Generate SDL-first GraphQL schemas and resolvers</td>
-    <td>Schema-First APIs</td>
-  </tr>
-  <tr>
-    <td><strong><a href="./mdc-templates/prisma-resolver-types-generator.md">🛡️ Resolver Types</a></strong></td>
-    <td>Create TypeScript type definitions for resolvers</td>
-    <td>Type Safety</td>
-  </tr>
-  <tr>
-    <td><strong><a href="./mdc-templates/prisma-graphql-modules-generator.md">🏗️ GraphQL Modules</a></strong></td>
-    <td>Build modular GraphQL with dependency injection</td>
-    <td>Enterprise Scale</td>
-  </tr>
-  <tr>
-    <td><strong><a href="./mdc-templates/prisma-admin-settings-generator.md">⚙️ Admin Settings</a></strong></td>
-    <td>Generate configuration files for admin interfaces</td>
-    <td>UI Configuration</td>
-  </tr>
-</table>
-
-## 🚀 Quick Start with AI
-
-### 1. Choose Your Template
-Pick the template that matches your needs from the table above.
-
-### 2. Prepare Your Context
-```bash
-# Your Prisma schema
-cat prisma/schema.prisma
-
-# Choose configuration options
-export OUTPUT_DIR="src/graphql"
-export MODELS="User,Post,Comment"
-```
-
-### 3. Generate with AI
-```bash
-# Example prompt for ChatGPT/Claude/etc:
-"I need you to generate GraphQL operations for my Prisma models.
-
-Here's the MDC template: [paste template content]
-
-Here's my Prisma schema: [paste schema]
-
-Configuration:
-- Output directory: src/graphql  
-- Models: User, Post, Comment
-- Exclude fields: createdAt, updatedAt
-- Generate TypeScript
-
-Please follow the exact patterns in the template."
-```
-
-### 4. Get Production-Ready Code
-The AI will generate the same high-quality code that PalJS generators created, but without any package dependencies!
-
-## 🎨 Example Output
-
-**Input**: Simple blog schema with User and Post models  
-**Output**: Complete GraphQL operations, admin pages, or backend APIs
-
-```typescript
-// Generated GraphQL operations
-export const USER_FRAGMENT = gql`
-  fragment UserFragment on User {
-    id
-    email
-    name
-    posts {
-      id
-      title
-    }
-  }
-`;
-
-export const FIND_MANY_USERS = gql`
-  query FindManyUsers($where: UserWhereInput) {
-    findManyUsers(where: $where) {
-      ...UserFragment
-    }
-  }
-  ${USER_FRAGMENT}
-`;
-```
-
-## 🔄 Migration from PalJS Generators
-
-Transitioning from the original generators is seamless:
-
-<table>
-  <tr>
-    <th>Original Generator</th>
-    <th>MDC Template</th>
-    <th>Status</th>
-  </tr>
-  <tr>
-    <td><code>@paljs/generator</code> → GraphQL</td>
-    <td><a href="./mdc-templates/prisma-graphql-generator.md">GraphQL Operations</a></td>
-    <td>✅ 100% Compatible</td>
-  </tr>
-  <tr>
-    <td><code>@paljs/generator</code> → Admin</td>
-    <td><a href="./mdc-templates/prisma-admin-pages-generator.md">Admin Pages</a></td>
-    <td>✅ 100% Compatible</td>
-  </tr>
-  <tr>
-    <td><code>@paljs/generator</code> → Nexus</td>
-    <td><a href="./mdc-templates/prisma-nexus-generator.md">Nexus Backend</a></td>
-    <td>✅ 100% Compatible</td>
-  </tr>
-  <tr>
-    <td><code>@paljs/generator</code> → SDL</td>
-    <td><a href="./mdc-templates/prisma-sdl-generator.md">SDL Backend</a></td>
-    <td>✅ 100% Compatible</td>
-  </tr>
-</table>
-
-## 💡 Benefits Over Traditional Generators
-
-| Traditional Generators | MDC Templates |
-|----------------------|---------------|
-| 📦 Package dependencies | 🚀 Zero dependencies |
-| 🔄 Version compatibility issues | ⚡ Always compatible |
-| 🛠️ Maintenance overhead | 🎯 Maintenance-free |
-| 🏗️ Fixed patterns | 🎨 AI-adaptable patterns |
-| 📅 Periodic updates needed | 🔮 Future-proof |
-
-## 📚 Documentation & Examples
-
-- **[Complete Documentation](./mdc-templates/README.md)** - Comprehensive guide and usage instructions
-- **[Practical Examples](./mdc-templates/example-usage.md)** - Real-world scenarios with sample schemas
-- **[Migration Guide](./mdc-templates/README.md#migration-from-original-generators)** - Step-by-step transition guide
+- **Native Prisma Integration**: Runs as part of `prisma generate` - no separate CLI needed
+- **Type-Safe Code Generation**: Generate GraphQL schemas, resolvers, and TypeScript types
+- **Admin UI Ready**: Automatic admin schema generation for the PalJS Admin UI
+- **Query Optimization**: PrismaSelect plugin for efficient field selection
+- **Enterprise Ready**: Built with type safety, security, and scalability in mind
 
 ---
 
 # Installation
 
-Choose one of the following installation methods:
-
-## Global Installation (Recommended)
-
 ```bash
-# Install PalJS CLI globally to use the 'pal' command
-npm install -g @paljs/cli
+# Install the generator (dev dependency)
+npm install -D @paljs/generator prisma
 
-# After global installation, the 'pal' binary is available system-wide
-pal --help
-```
-
-## Use with npx (No Installation Required)
-
-```bash
-# Use npx to run commands without global installation
-npx @paljs/cli --help
+# Install runtime dependencies
+npm install @paljs/plugins @paljs/nexus
 ```
 
 ---
 
-# Usage
+# Quick Start
 
-## Quick Start
+## 1. Add PalJS Generator to Your Prisma Schema
 
-### Create Your First Project
+```prisma
+// prisma/schema.prisma
 
-#### Using Global Installation (`pal` command)
+generator client {
+  provider = "prisma-client-js"
+}
 
-```bash
-# Create a new full-stack project
-pal create my-graphql-app
+generator paljs {
+  provider = "paljs-generator"
+  output   = "../generated/paljs"
+  config   = "../paljs.config.ts"
+}
 
-# Choose your preferred setup:
-# ✔ Project template: full-stack-nextjs
-# ✔ UI framework: Tailwind CSS + PrismaAdmin UI
-# ✔ Package manager: yarn
-# ✔ Initialize git: yes
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
-cd my-graphql-app
-yarn dev
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  password  String
+  posts     Post[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+}
 ```
 
-#### Using npx (Alternative Method)
+## 2. Create Configuration File
 
-```bash
-# Create a new full-stack project without global installation
-npx @paljs/cli create my-graphql-app
+```typescript
+// paljs.config.ts
+import { defineConfig } from '@paljs/generator';
 
-# Same interactive setup process follows
-cd my-graphql-app
-yarn dev
+export default defineConfig({
+  // Generate TypeScript types for PrismaSelect
+  generateTypes: true,
+
+  // Generate Nexus GraphQL types
+  generateGraphQL: true,
+
+  // Generate Admin UI schema and pages
+  generateAdmin: {
+    enabled: true,
+    output: './admin',
+    routerType: 'app', // 'app' for Next.js App Router, 'pages' for Pages Router
+  },
+
+  // Global field exclusions (e.g., sensitive fields)
+  excludeFields: ['password'],
+
+  // Per-model configuration
+  models: {
+    User: {
+      // Exclude specific mutations
+      excludeQueriesAndMutations: ['deleteMany'],
+    },
+  },
+});
 ```
 
-### Generate GraphQL API
-
-#### Using Global Installation
+## 3. Generate Code
 
 ```bash
-# After defining your Prisma schema
-pal generate
-
-# Generates:
-# ✅ GraphQL schema with all CRUD operations
-# ✅ Type-safe resolvers
-# ✅ Admin interface pages
-# ✅ Query optimization utilities
+npx prisma generate
 ```
 
-#### Using npx
+This generates:
+- `generated/paljs/dmmf/` - DMMF data for runtime use
+- `generated/paljs/types/` - TypeScript types for PrismaSelect
+- `generated/paljs/nexus/` - Nexus GraphQL types, queries, and mutations
+- `generated/paljs/admin/` - Admin UI schema and pages
 
-```bash
-# After defining your Prisma schema
-npx @paljs/cli generate
+## 4. Use in Your GraphQL Server
 
-# Same generated output
+```typescript
+// src/graphql/schema.ts
+import { makeSchema } from 'nexus';
+import * as types from '../generated/paljs/nexus';
+
+export const schema = makeSchema({
+  types,
+  outputs: {
+    typegen: './generated/nexus-typegen.ts',
+    schema: './generated/schema.graphql',
+  },
+});
 ```
 
-## 5-Minute Setup
+## 5. Use PrismaSelect for Query Optimization
 
-1. **Install PalJS CLI**
+```typescript
+import { PrismaSelect } from '@paljs/plugins';
+import { dmmf, type ModelsObject } from '../generated/paljs';
 
-   ```bash
-   npm install -g @paljs/cli
-   ```
+// In your resolver
+const select = new PrismaSelect<'User', ModelsObject>(info, {
+  dmmf: [dmmf],
+  defaultFields: {
+    User: { id: true, email: true },
+  },
+  excludeFields: {
+    User: ['password'],
+  },
+});
 
-2. **Create a new project**
-
-   ```bash
-   pal create my-app --example full-stack-nextjs --framework "Tailwind CSS + PrismaAdmin UI"
-   ```
-
-3. **Define your data model**
-
-   ```prisma
-   // prisma/schema.prisma
-   model User {
-     id    Int     @id @default(autoincrement())
-     email String  @unique
-     name  String?
-     posts Post[]
-   }
-   
-   model Post {
-     id        Int     @id @default(autoincrement())
-     title     String
-     content   String?
-     published Boolean @default(false)
-     author    User    @relation(fields: [authorId], references: [id])
-     authorId  Int
-   }
-   ```
-
-4. **Generate GraphQL API**
-
-   ```bash
-   cd my-app
-   pal generate
-   ```
-
-5. **Start developing**
-   ```bash
-   npm run dev
-   ```
-
-## Choose Your Architecture
-
-### Nexus Schema-First
-
-```bash
-pal create my-nexus-api --example apollo-nexus-schema
-```
-
-Perfect for: Type-safe GraphQL with excellent TypeScript integration
-
-### SDL-First
-
-```bash
-pal create my-sdl-api --example apollo-sdl-first
-```
-
-Perfect for: Schema-first development with flexible resolver patterns
-
-### GraphQL Modules
-
-```bash
-pal create my-modular-api --example graphql-modules
-```
-
-Perfect for: Large, scalable applications with modular architecture
-
-### Full-Stack Next.js
-
-```bash
-pal create my-fullstack-app --example full-stack-nextjs
-```
-
-Perfect for: Complete web applications with admin interfaces
-
-## Use Cases
-
-### Rapid Prototyping
-
-- Generate complete GraphQL APIs from Prisma schemas
-- Instant admin interfaces for data management
-- Built-in authentication and authorization patterns
-
-### Enterprise Applications
-
-- Multi-schema support for microservices
-- Type-safe code generation
-- Scalable GraphQL architectures
-
-### Learning & Education
-
-- Best practice templates and examples
-- Comprehensive documentation
-- Community support and tutorials
-
-### API Modernization
-
-- Migrate REST APIs to GraphQL
-- Add admin interfaces to existing databases
-- Optimize query performance automatically
-
-## Migration & Upgrading
-
-### From v7 to v8
-
-```bash
-# Update all PalJS packages
-npm update @paljs/cli @paljs/generator @paljs/nexus
-
-# Regenerate with latest templates
-pal generate --force
-```
-
-### Database Migrations
-
-```bash
-# Generate Prisma migration
-npx prisma migrate dev
-
-# Regenerate GraphQL schema
-pal generate
+const users = await prisma.user.findMany(select.value);
 ```
 
 ---
 
-# Features
+# Packages
 
-## Features
+## Core Packages
 
-- 🔥 **Instant CRUD Generation** - Auto-generate complete GraphQL schemas, resolvers, and mutations
-- 🎨 **Admin UI Components** - Ready-to-use React admin interfaces with full CRUD operations
-- ⚡ **Query Optimization** - Automatic field selection and query optimization for better performance
-- 🏗️ **Project Scaffolding** - Create full-stack applications with modern frameworks and best practices
-- 🎯 **Type Safety** - Full TypeScript support across all packages and generated code
-- 🔧 **Multiple Architectures** - Support for Nexus, SDL-first, and GraphQL Modules approaches
+<table>
+  <tr>
+    <td><strong><a href="./packages/generator">@paljs/generator</a></strong></td>
+    <td>Prisma 7+ native generator for GraphQL schemas, types, and admin UI</td>
+  </tr>
+  <tr>
+    <td><strong><a href="./packages/plugins">@paljs/plugins</a></strong></td>
+    <td>PrismaSelect and other GraphQL plugins for query optimization</td>
+  </tr>
+  <tr>
+    <td><strong><a href="./packages/nexus">@paljs/nexus</a></strong></td>
+    <td>Nexus plugin for Prisma integration with automatic field selection</td>
+  </tr>
+  <tr>
+    <td><strong><a href="./packages/admin">@paljs/admin</a></strong></td>
+    <td>React admin UI components with Tailwind CSS</td>
+  </tr>
+</table>
 
-## Performance & Best Practices
+## Utility Packages
 
-### Query Optimization
-
-- Automatic field selection based on GraphQL queries
-- Reduced database load with smart relationship loading
-- Built-in query complexity analysis
-
-### Security
-
-- Input validation and sanitization
-- Rate limiting and query depth limiting
-- Secure authentication patterns
-
-### Monitoring
-
-- Built-in performance metrics
-- Error tracking and logging
-- Development and production optimizations
-
-## Community & Support
-
-### Resources
-
-- **[Documentation](https://paljs.com)** - Comprehensive guides and API references
-- **[Examples](./packages/create/examples)** - Real-world project templates
-- **[Blog](https://paljs.com/blog)** - Tutorials, tips, and best practices
-
-### Community
-
-- **[Discord](https://discord.gg/X7yWXrM)** - Join our community for help and discussions
-- **[GitHub Issues](https://github.com/AhmedElywa/prisma-tools/issues)** - Report bugs and request features
-- **[Discussions](https://github.com/AhmedElywa/prisma-tools/discussions)** - Ask questions and share ideas
-
-### Contributing
-
-We welcome contributions! See our [Contributing Guide](./CONTRIBUTING.md) for details.
-
-### Professional Support
-
-Need enterprise support? Contact us at **hello@paljs.com**
+<table>
+  <tr>
+    <td><strong><a href="./packages/schema">@paljs/schema</a></strong></td>
+    <td>Prisma schema manipulation and conversion tools</td>
+  </tr>
+  <tr>
+    <td><strong><a href="./packages/utils">@paljs/utils</a></strong></td>
+    <td>Common utilities for DMMF processing</td>
+  </tr>
+  <tr>
+    <td><strong><a href="./packages/types">@paljs/types</a></strong></td>
+    <td>TypeScript type definitions</td>
+  </tr>
+</table>
 
 ---
 
 # Configuration
 
-## Basic Configuration (`paljs.config.js`)
+## Full Configuration Reference
 
-```javascript
-module.exports = {
-  schema: './prisma/schema.prisma',
-  backend: {
-    generator: 'nexus', // 'nexus' | 'sdl' | 'graphql-modules'
-    output: './src/graphql',
-    excludeFields: ['password', 'hash'],
-    excludeModels: [{ name: 'Log', queries: true, mutations: false }],
+```typescript
+// paljs.config.ts
+import { defineConfig } from '@paljs/generator';
+
+export default defineConfig({
+  // === Type Generation ===
+  generateTypes: true,  // Generate TypeScript types for PrismaSelect
+
+  // === GraphQL Generation ===
+  generateGraphQL: true,  // Generate Nexus GraphQL types
+  nexusOutput: './nexus', // Output directory for Nexus files (relative to generator output)
+
+  // === Admin Generation ===
+  generateAdmin: {
+    enabled: true,
+    output: './admin',      // Output directory
+    routerType: 'app',      // 'app' | 'pages'
+    models: ['User', 'Post'], // Optional: limit to specific models
   },
-  frontend: {
-    admin: {
-      models: ['User', 'Post', 'Category'],
-      output: './src/admin/pages',
+
+  // === Global Options ===
+  prismaName: 'prisma',     // Name of Prisma client in context
+
+  // Fields to exclude from all models
+  excludeFields: ['password', 'hash'],
+
+  // Fields to exclude from GraphQL inputs
+  excludeInputFields: ['createdAt', 'updatedAt'],
+
+  // Queries/mutations to exclude globally
+  excludeQueriesAndMutations: ['deleteMany', 'updateMany'],
+
+  // Disable all queries or mutations globally
+  disableQueries: false,
+  disableMutations: false,
+
+  // === Per-Model Configuration ===
+  models: {
+    User: {
+      // Exclude this model entirely from generation
+      exclude: false,
+
+      // Model-specific field exclusions
+      excludeFields: ['internalNotes'],
+
+      // Model-specific query/mutation exclusions
+      excludeQueriesAndMutations: ['deleteMany'],
+
+      // Disable queries or mutations for this model
+      disableQueries: false,
+      disableMutations: false,
+
+      // Admin-specific settings
+      admin: {
+        hide: false,           // Hide from admin UI
+        displayField: 'email', // Field to display in relationships
+        listFields: ['id', 'email', 'name'], // Fields to show in list view
+      },
+    },
+
+    AuditLog: {
+      // Exclude model from GraphQL generation but keep in admin
+      exclude: true,
+    },
+
+    Tag: {
+      // Read-only model (no mutations)
+      disableMutations: true,
     },
   },
-};
+});
 ```
 
-## Multi-Schema Configuration
+---
 
-```javascript
-module.exports = {
-  multiSchema: true,
-  schemas: {
-    user: {
-      schema: './prisma/user.prisma',
-      backend: { generator: 'nexus', output: './src/graphql/user' },
-    },
-    blog: {
-      schema: './prisma/blog.prisma',
-      backend: { generator: 'sdl', output: './src/graphql/blog' },
-    },
-  },
-};
+# AI-Powered Code Generation with MDC Templates
+
+**Transform 5 years of code generation expertise into AI-compatible instructions**
+
+PalJS also offers **MDC (Model Data Context) Templates** - comprehensive AI instructions that preserve all the power of our generators while being maintenance-free.
+
+## Available MDC Templates
+
+<table>
+  <tr>
+    <td><strong><a href="./mdc-templates/prisma-graphql-generator.md">GraphQL Operations</a></strong></td>
+    <td>Generate client-side GraphQL fragments, queries, and mutations</td>
+  </tr>
+  <tr>
+    <td><strong><a href="./mdc-templates/prisma-admin-pages-generator.md">Admin Pages</a></strong></td>
+    <td>Create React admin interfaces with Next.js support</td>
+  </tr>
+  <tr>
+    <td><strong><a href="./mdc-templates/prisma-nexus-generator.md">Nexus Backend</a></strong></td>
+    <td>Build type-safe GraphQL APIs with Nexus framework</td>
+  </tr>
+  <tr>
+    <td><strong><a href="./mdc-templates/prisma-sdl-generator.md">SDL Backend</a></strong></td>
+    <td>Generate SDL-first GraphQL schemas and resolvers</td>
+  </tr>
+</table>
+
+See the [MDC Templates Documentation](./mdc-templates/README.md) for more details.
+
+---
+
+# Migration from v8
+
+## From CLI Workflow to Prisma Generator
+
+**Before (v8):**
+```bash
+npm install -g @paljs/cli
+pal generate
 ```
+
+**After (v9):**
+```bash
+npm install -D @paljs/generator
+npx prisma generate
+```
+
+The new approach:
+- Runs automatically with `prisma generate`
+- No separate CLI installation needed
+- Configuration via `paljs.config.ts` instead of `pal.config.js`
+- Same output, better integration
+
+---
+
+# Community & Support
+
+- **[Discord](https://discord.gg/X7yWXrM)** - Join our community for help and discussions
+- **[GitHub Issues](https://github.com/paljs/prisma-tools/issues)** - Report bugs and request features
+- **[Discussions](https://github.com/paljs/prisma-tools/discussions)** - Ask questions and share ideas
 
 ---
 
@@ -636,10 +367,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <div align="center">
-  <p><strong>Built with ❤️ by the PalJS team</strong></p>
+  <p><strong>Built with love by the PalJS team</strong></p>
   <p>
-    <a href="https://github.com/AhmedElywa/prisma-tools">⭐ Star on GitHub</a> •
-    <a href="https://discord.gg/X7yWXrM">💬 Join Discord</a> •
-    <a href="https://paljs.com">📚 Read Docs</a>
+    <a href="https://github.com/paljs/prisma-tools">Star on GitHub</a> •
+    <a href="https://discord.gg/X7yWXrM">Join Discord</a>
   </p>
 </div>

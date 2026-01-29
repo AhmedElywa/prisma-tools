@@ -76,7 +76,7 @@ query findMany${modelName}(
   findMany${modelName}(where: $where, orderBy: $orderBy, cursor: $cursor, skip: $skip, take: $take) {
     ${fields}
   }
-  findMany${modelName}Count(where: $where)
+  findCount${modelName}(where: $where)
 }
 `;
   }

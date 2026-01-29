@@ -1,5 +1,4 @@
-import { type ApolloError, useLazyQuery, useMutation } from '@apollo/client';
-import type { LazyQueryExecFunction } from '@apollo/client/react/types/types';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
 import React, { useContext, useEffect, useState } from 'react';
 import Modal from '../components/Modal';
 import type { ContextProps, TableParentRecord } from '../types';
@@ -37,8 +36,8 @@ export interface DynamicTableProps {
           };
           data?: any;
           loading: boolean;
-          error?: ApolloError;
-          getData: LazyQueryExecFunction<any, OperationVariables>;
+          error?: Error;
+          getData: (...args: any[]) => any;
         };
       }) => React.ReactNode)
     | null;
@@ -84,10 +83,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     ...page,
   };
 
-  const [getData, { data, loading, error }] = useLazyQuery<any, OperationVariables>(queryDocument(models, model), {
-    variables,
+  const [execQuery, { data, loading, error }] = useLazyQuery(queryDocument(models, model), {
     fetchPolicy: 'no-cache',
   });
+  const getData = React.useCallback(() => execQuery({ variables }), [execQuery, variables]);
   const whereRef = React.useRef(where);
 
   useEffect(() => {
@@ -173,7 +172,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     });
 
   const parentName = modelObject?.fields.find((item) => item.type === parent?.name)?.name;
-  const _data: any[] = data ? data[`findMany${model}`] : [];
+  const _data: any[] = data ? (data as any)[`findMany${model}`] : [];
   return (
     <>
       {children?.({
@@ -223,7 +222,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
           filterHandler={filterHandler}
           sortByHandler={sortByHandler}
           initialFilter={initialFilter}
-          pageCount={data ? Math.ceil(data[`findMany${model}Count`] / page.take) : 0}
+          pageCount={data ? Math.ceil((data as any)[`findCount${model}`] / page.take) : 0}
         />
       )}
     </>

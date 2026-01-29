@@ -87,8 +87,10 @@ test('generate Json object from prisma schema', () => {
             },
             {
               "defaultValue": undefined,
-              "documentation": "// password documentation
-    // password second line documentation",
+              "documentation": 
+    "// password documentation
+    // password second line documentation"
+    ,
               "isId": false,
               "kind": "scalar",
               "list": false,

@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { MagnifyingGlassIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import { useContext, useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
@@ -143,7 +143,7 @@ const defaultInputs: Omit<FormInputs, 'Upload' | 'Editor'> = {
       skip: !(state && typeof state === 'object' && Object.keys(state).length > 0),
     });
 
-    const result = data ? data[`findUnique${field.type}`] : {};
+    const result = data ? (data as any)[`findUnique${field.type}`] : {};
 
     const { control } = useFormContext();
     const {
