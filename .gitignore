@@ -21,3 +21,4 @@ prisma-client
 
 # Editor
 .cursor/
+.vscode/
