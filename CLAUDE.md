@@ -92,14 +92,6 @@ The project uses bun workspaces with packages in `/packages` directory:
    - `admin` - React 19 admin UI components with Tailwind CSS 4, @tanstack/react-table v8, @dnd-kit/sortable
    - Use `bunx shadcn add [component-name]` to add shadcn components
 
-4. **Utilities**
-   - `utils` - Common utilities for DMMF processing (depends on `@prisma/internals`)
-   - `types` - TypeScript type definitions
-
-5. **Legacy (not part of v9 build)**
-   - `schema` - Prisma schema manipulation (legacy only, not in build command)
-   - `generator-legacy` - Old generator (has TS build errors, excluded from build)
-
 ### Key Architectural Patterns
 
 1. **Generator Architecture** (`packages/generator`)
@@ -135,7 +127,6 @@ The project uses bun workspaces with packages in `/packages` directory:
 
 - Each package has its own build process defined in `package.json`
 - Build order is managed through bun workspace dependencies
-- Build command excludes `generator-legacy` and `schema` (legacy packages)
 - `bunfig.toml` configures test exclusions
 
 ### Code Style

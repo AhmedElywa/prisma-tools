@@ -9,10 +9,8 @@
     "@paljs/schema": "8.2.1",
     "@paljs/types": "8.2.1",
     "@paljs/utils": "8.2.1",
-    "admin-nextjs15-example": "0.0.1",
     "admin-test": "1.0.0",
-    "@paljs/example-generator-test": "1.0.0",
-    "@paljs/generator-legacy": "8.2.1"
+    "@paljs/example-generator-test": "1.0.0"
   },
   "changesets": [
     "admin-react-19-beta",

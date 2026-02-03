@@ -28,7 +28,6 @@
     "access": "public"
   },
   "devDependencies": {
-    "@paljs/generator-legacy": "workspace:*",
     "@prisma/generator-helper": "^7.3.0",
     "@prisma/internals": "^7.3.0",
     "@types/node": "20.12.12",
