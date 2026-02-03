@@ -23,7 +23,6 @@
 - [Quick Start](#quick-start)
 - [Packages](#packages)
 - [Configuration](#configuration)
-- [AI-Powered Code Generation](#-ai-powered-code-generation-with-mdc-templates)
 - [License](#license)
 
 ---
@@ -297,37 +296,6 @@ export default defineConfig({
   },
 });
 ```
-
----
-
-# AI-Powered Code Generation with MDC Templates
-
-**Transform 5 years of code generation expertise into AI-compatible instructions**
-
-PalJS also offers **MDC (Model Data Context) Templates** - comprehensive AI instructions that preserve all the power of our generators while being maintenance-free.
-
-## Available MDC Templates
-
-<table>
-  <tr>
-    <td><strong><a href="./mdc-templates/prisma-graphql-generator.md">GraphQL Operations</a></strong></td>
-    <td>Generate client-side GraphQL fragments, queries, and mutations</td>
-  </tr>
-  <tr>
-    <td><strong><a href="./mdc-templates/prisma-admin-pages-generator.md">Admin Pages</a></strong></td>
-    <td>Create React admin interfaces with Next.js support</td>
-  </tr>
-  <tr>
-    <td><strong><a href="./mdc-templates/prisma-nexus-generator.md">Nexus Backend</a></strong></td>
-    <td>Build type-safe GraphQL APIs with Nexus framework</td>
-  </tr>
-  <tr>
-    <td><strong><a href="./mdc-templates/prisma-sdl-generator.md">SDL Backend</a></strong></td>
-    <td>Generate SDL-first GraphQL schemas and resolvers</td>
-  </tr>
-</table>
-
-See the [MDC Templates Documentation](./mdc-templates/README.md) for more details.
 
 ---
 

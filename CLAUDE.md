@@ -172,7 +172,6 @@ The project uses bun workspaces with packages in `/packages` directory:
 - Fix all lint errors before committing
 - Use snapshot testing for generator output validation
 - Follow existing code patterns and conventions
-- MDC templates in `/mdc-templates` provide AI-compatible instructions for code generation
 - Docs site is at `../prisma-tools-docs/` (Next.js 16, auto-deploys to Hetzner via GitHub Actions on push to main)
 - Release plan: `docs/V9-RELEASE-PLAN.md`
 - Migration guide: `docs/MIGRATION-v9.md`
