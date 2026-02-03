@@ -19,9 +19,6 @@
     "clean": "rimraf dist node_modules/.cache"
   },
   "dependencies": {
-    "@paljs/types": "workspace:*",
-    "@paljs/schema": "workspace:*",
-    "@paljs/utils": "workspace:*",
     "pkg-dir": "^5.0.0",
     "pluralize": "^8.0.0",
     "prettier": "^2.8.8"

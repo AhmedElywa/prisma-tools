@@ -5,10 +5,10 @@
 
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { getInputType } from '@paljs/utils';
 import type { DMMF } from '@prisma/generator-helper';
 import type { ResolvedConfig } from '../../config/types.js';
 import { ensureDir } from '../../utils/paths.js';
+import { getInputType } from '../../utils/schema-inputs.js';
 import {
   type MutationType,
   type QueryType,

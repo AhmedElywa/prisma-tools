@@ -1,10 +1,10 @@
 import { existsSync } from 'fs';
 import { join } from 'path';
-import type { AdminSchema } from '@paljs/types';
 import { LowSync } from 'lowdb';
 import { JSONFileSync } from 'lowdb/node';
 import { enumType, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
 import type { NexusAcceptedTypeDef } from 'nexus/dist/builder';
+import type { AdminSchema } from './types/admin-schema.js';
 
 export function adminNexusSchemaSettings(path = 'adminSettings.json') {
   if (existsSync(join(process.cwd(), path)) || existsSync(path)) {

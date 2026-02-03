@@ -1,4 +1,4 @@
-import type { DMMF } from '@paljs/types';
+import type { DMMF } from '@prisma/generator-helper';
 import type { GraphQLResolveInfo } from 'graphql';
 import { parseResolveInfo } from 'graphql-parse-resolve-info';
 

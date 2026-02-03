@@ -31,7 +31,6 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@paljs/utils": "^9.0.0-beta.0",
     "@prisma/generator-helper": "^7.3.0"
   },
   "devDependencies": {

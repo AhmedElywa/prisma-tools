@@ -21,8 +21,6 @@
     "graphql": "^15 || ^16"
   },
   "dependencies": {
-    "@paljs/types": "workspace:*",
-    "@paljs/utils": "workspace:*",
     "graphql-parse-resolve-info": "^4.13.0",
     "graphql-tag": "^2.12.6"
   },
@@ -31,6 +29,8 @@
   },
   "devDependencies": {
     "@paljs/generator-legacy": "workspace:*",
+    "@prisma/generator-helper": "^7.3.0",
+    "@prisma/internals": "^7.3.0",
     "@types/node": "20.12.12",
     "@apollo/server": "^4.10.4",
     "graphql": "^16.8.1",

@@ -1,8 +1,14 @@
+import { readFileSync } from 'fs';
 import { join } from 'path';
 import { ApolloServer, type GraphQLRequest } from '@apollo/server';
 import type { ExecuteOperationOptions, VariableValues } from '@apollo/server/dist/esm/externalTypes/graphql';
-import { getDMMFBySchemaPath } from '@paljs/utils';
+import { getDMMF } from '@prisma/internals';
 import type { DocumentNode, TypedQueryDocumentNode } from 'graphql';
+
+const getDMMFBySchemaPath = async (schemaPath: string) => {
+  const datamodel = readFileSync(schemaPath, 'utf-8');
+  return getDMMF({ datamodel });
+};
 import { parseResolveInfo } from 'graphql-parse-resolve-info';
 import gql from 'graphql-tag';
 import { Generators } from '../../../generator-legacy/dist';

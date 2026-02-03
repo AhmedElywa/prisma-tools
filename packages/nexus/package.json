@@ -23,8 +23,6 @@
   },
   "dependencies": {
     "@paljs/plugins": "workspace:*",
-    "@paljs/types": "workspace:*",
-    "@paljs/utils": "workspace:*",
     "decimal.js": "^10.4.3",
     "fs-extra": "^10.1.0",
     "graphql-scalars": "^1.22.1",
