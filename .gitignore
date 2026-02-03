@@ -15,3 +15,9 @@ prisma-client
 
 # Next.js
 .next/
+
+# Generated code (prisma generate output)
+**/generated/
+
+# Editor
+.cursor/

@@ -1,5 +1,0 @@
-# import UserFields, User from './User.graphql'
-# import PostFields, Post from './Post.graphql'
-# import CommentFields, Comment from './Comment.graphql'
-# import ProfileFields, Profile from './Profile.graphql'
-# import TagFields, Tag from './Tag.graphql'
