@@ -2,10 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Available Slash Commands
-
-- `/admin-architecture` - Loads comprehensive admin tool architecture documentation from `examples/admin-nextjs15/docs/architecture/`
-
 ## Project Overview
 
 PalJS is a comprehensive toolkit for building NodeJS, Prisma, GraphQL, and React applications. It's organized as a monorepo using bun workspaces, providing code generation, admin interfaces, and query optimization tools.

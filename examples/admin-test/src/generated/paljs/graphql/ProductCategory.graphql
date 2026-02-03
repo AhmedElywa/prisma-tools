@@ -1,0 +1,125 @@
+fragment ProductCategoryFields on ProductCategory {
+  id
+  name
+  slug
+  order
+  createdAt
+  parentId
+}
+
+fragment ProductCategory on ProductCategory {
+  ...ProductCategoryFields
+  parent {
+    ...ProductCategoryFields
+  }
+}
+
+query findUniqueProductCategory($where: ProductCategoryWhereUniqueInput!) {
+  findUniqueProductCategory(where: $where) {
+    ...ProductCategory
+  }
+}
+
+query findFirstProductCategory(
+  $where: ProductCategoryWhereInput
+  $orderBy: [ProductCategoryOrderByWithRelationInput!]
+  $cursor: ProductCategoryWhereUniqueInput
+  $take: Int
+  $skip: Int
+  $distinct: [ProductCategoryScalarFieldEnum!]
+) {
+  findFirstProductCategory(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+    distinct: $distinct
+  ) {
+    ...ProductCategory
+  }
+}
+
+query findManyProductCategory(
+  $where: ProductCategoryWhereInput
+  $orderBy: [ProductCategoryOrderByWithRelationInput!]
+  $cursor: ProductCategoryWhereUniqueInput
+  $take: Int
+  $skip: Int
+  $distinct: [ProductCategoryScalarFieldEnum!]
+) {
+  findManyProductCategory(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+    distinct: $distinct
+  ) {
+    ...ProductCategory
+  }
+}
+
+query findManyProductCategoryCount(
+  $where: ProductCategoryWhereInput
+  $orderBy: [ProductCategoryOrderByWithRelationInput!]
+  $cursor: ProductCategoryWhereUniqueInput
+  $take: Int
+  $skip: Int
+) {
+  findManyProductCategoryCount(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+  )
+}
+
+query aggregateProductCategory($where: ProductCategoryWhereInput) {
+  aggregateProductCategory(where: $where) {
+    _count {
+      _all
+    }
+  }
+}
+
+mutation createOneProductCategory($data: ProductCategoryCreateInput!) {
+  createOneProductCategory(data: $data) {
+    ...ProductCategory
+  }
+}
+
+mutation updateOneProductCategory($data: ProductCategoryUpdateInput!, $where: ProductCategoryWhereUniqueInput!) {
+  updateOneProductCategory(data: $data, where: $where) {
+    ...ProductCategory
+  }
+}
+
+mutation upsertOneProductCategory(
+  $where: ProductCategoryWhereUniqueInput!
+  $create: ProductCategoryCreateInput!
+  $update: ProductCategoryUpdateInput!
+) {
+  upsertOneProductCategory(where: $where, create: $create, update: $update) {
+    ...ProductCategory
+  }
+}
+
+mutation deleteOneProductCategory($where: ProductCategoryWhereUniqueInput!) {
+  deleteOneProductCategory(where: $where) {
+    ...ProductCategory
+  }
+}
+
+mutation updateManyProductCategory($data: ProductCategoryUpdateManyMutationInput!, $where: ProductCategoryWhereInput) {
+  updateManyProductCategory(data: $data, where: $where) {
+    count
+  }
+}
+
+mutation deleteManyProductCategory($where: ProductCategoryWhereInput) {
+  deleteManyProductCategory(where: $where) {
+    count
+  }
+}

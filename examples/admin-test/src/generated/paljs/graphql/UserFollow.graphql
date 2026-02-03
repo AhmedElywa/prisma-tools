@@ -1,0 +1,126 @@
+fragment UserFollowFields on UserFollow {
+  id
+  followerId
+  followingId
+  createdAt
+}
+
+fragment UserFollow on UserFollow {
+  ...UserFollowFields
+  follower {
+    ...UserFields
+  }
+  following {
+    ...UserFields
+  }
+}
+
+query findUniqueUserFollow($where: UserFollowWhereUniqueInput!) {
+  findUniqueUserFollow(where: $where) {
+    ...UserFollow
+  }
+}
+
+query findFirstUserFollow(
+  $where: UserFollowWhereInput
+  $orderBy: [UserFollowOrderByWithRelationInput!]
+  $cursor: UserFollowWhereUniqueInput
+  $take: Int
+  $skip: Int
+  $distinct: [UserFollowScalarFieldEnum!]
+) {
+  findFirstUserFollow(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+    distinct: $distinct
+  ) {
+    ...UserFollow
+  }
+}
+
+query findManyUserFollow(
+  $where: UserFollowWhereInput
+  $orderBy: [UserFollowOrderByWithRelationInput!]
+  $cursor: UserFollowWhereUniqueInput
+  $take: Int
+  $skip: Int
+  $distinct: [UserFollowScalarFieldEnum!]
+) {
+  findManyUserFollow(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+    distinct: $distinct
+  ) {
+    ...UserFollow
+  }
+}
+
+query findManyUserFollowCount(
+  $where: UserFollowWhereInput
+  $orderBy: [UserFollowOrderByWithRelationInput!]
+  $cursor: UserFollowWhereUniqueInput
+  $take: Int
+  $skip: Int
+) {
+  findManyUserFollowCount(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+  )
+}
+
+query aggregateUserFollow($where: UserFollowWhereInput) {
+  aggregateUserFollow(where: $where) {
+    _count {
+      _all
+    }
+  }
+}
+
+mutation createOneUserFollow($data: UserFollowCreateInput!) {
+  createOneUserFollow(data: $data) {
+    ...UserFollow
+  }
+}
+
+mutation updateOneUserFollow($data: UserFollowUpdateInput!, $where: UserFollowWhereUniqueInput!) {
+  updateOneUserFollow(data: $data, where: $where) {
+    ...UserFollow
+  }
+}
+
+mutation upsertOneUserFollow(
+  $where: UserFollowWhereUniqueInput!
+  $create: UserFollowCreateInput!
+  $update: UserFollowUpdateInput!
+) {
+  upsertOneUserFollow(where: $where, create: $create, update: $update) {
+    ...UserFollow
+  }
+}
+
+mutation deleteOneUserFollow($where: UserFollowWhereUniqueInput!) {
+  deleteOneUserFollow(where: $where) {
+    ...UserFollow
+  }
+}
+
+mutation updateManyUserFollow($data: UserFollowUpdateManyMutationInput!, $where: UserFollowWhereInput) {
+  updateManyUserFollow(data: $data, where: $where) {
+    count
+  }
+}
+
+mutation deleteManyUserFollow($where: UserFollowWhereInput) {
+  deleteManyUserFollow(where: $where) {
+    count
+  }
+}

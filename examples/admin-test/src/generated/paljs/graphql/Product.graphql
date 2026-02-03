@@ -1,0 +1,133 @@
+fragment ProductFields on Product {
+  id
+  name
+  sku
+  description
+  price
+  comparePrice
+  costPrice
+  quantity
+  weight
+  isActive
+  isFeatured
+  createdAt
+  updatedAt
+  brandId
+}
+
+fragment Product on Product {
+  ...ProductFields
+  brand {
+    ...BrandFields
+  }
+}
+
+query findUniqueProduct($where: ProductWhereUniqueInput!) {
+  findUniqueProduct(where: $where) {
+    ...Product
+  }
+}
+
+query findFirstProduct(
+  $where: ProductWhereInput
+  $orderBy: [ProductOrderByWithRelationInput!]
+  $cursor: ProductWhereUniqueInput
+  $take: Int
+  $skip: Int
+  $distinct: [ProductScalarFieldEnum!]
+) {
+  findFirstProduct(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+    distinct: $distinct
+  ) {
+    ...Product
+  }
+}
+
+query findManyProduct(
+  $where: ProductWhereInput
+  $orderBy: [ProductOrderByWithRelationInput!]
+  $cursor: ProductWhereUniqueInput
+  $take: Int
+  $skip: Int
+  $distinct: [ProductScalarFieldEnum!]
+) {
+  findManyProduct(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+    distinct: $distinct
+  ) {
+    ...Product
+  }
+}
+
+query findManyProductCount(
+  $where: ProductWhereInput
+  $orderBy: [ProductOrderByWithRelationInput!]
+  $cursor: ProductWhereUniqueInput
+  $take: Int
+  $skip: Int
+) {
+  findManyProductCount(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+  )
+}
+
+query aggregateProduct($where: ProductWhereInput) {
+  aggregateProduct(where: $where) {
+    _count {
+      _all
+    }
+  }
+}
+
+mutation createOneProduct($data: ProductCreateInput!) {
+  createOneProduct(data: $data) {
+    ...Product
+  }
+}
+
+mutation updateOneProduct($data: ProductUpdateInput!, $where: ProductWhereUniqueInput!) {
+  updateOneProduct(data: $data, where: $where) {
+    ...Product
+  }
+}
+
+mutation upsertOneProduct(
+  $where: ProductWhereUniqueInput!
+  $create: ProductCreateInput!
+  $update: ProductUpdateInput!
+) {
+  upsertOneProduct(where: $where, create: $create, update: $update) {
+    ...Product
+  }
+}
+
+mutation deleteOneProduct($where: ProductWhereUniqueInput!) {
+  deleteOneProduct(where: $where) {
+    ...Product
+  }
+}
+
+mutation updateManyProduct($data: ProductUpdateManyMutationInput!, $where: ProductWhereInput) {
+  updateManyProduct(data: $data, where: $where) {
+    count
+  }
+}
+
+mutation deleteManyProduct($where: ProductWhereInput) {
+  deleteManyProduct(where: $where) {
+    count
+  }
+}

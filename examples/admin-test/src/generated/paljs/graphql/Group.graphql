@@ -1,0 +1,122 @@
+fragment GroupFields on Group {
+  id
+  name
+  description
+  isPrivate
+  createdAt
+  updatedAt
+}
+
+fragment Group on Group {
+  ...GroupFields
+}
+
+query findUniqueGroup($where: GroupWhereUniqueInput!) {
+  findUniqueGroup(where: $where) {
+    ...Group
+  }
+}
+
+query findFirstGroup(
+  $where: GroupWhereInput
+  $orderBy: [GroupOrderByWithRelationInput!]
+  $cursor: GroupWhereUniqueInput
+  $take: Int
+  $skip: Int
+  $distinct: [GroupScalarFieldEnum!]
+) {
+  findFirstGroup(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+    distinct: $distinct
+  ) {
+    ...Group
+  }
+}
+
+query findManyGroup(
+  $where: GroupWhereInput
+  $orderBy: [GroupOrderByWithRelationInput!]
+  $cursor: GroupWhereUniqueInput
+  $take: Int
+  $skip: Int
+  $distinct: [GroupScalarFieldEnum!]
+) {
+  findManyGroup(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+    distinct: $distinct
+  ) {
+    ...Group
+  }
+}
+
+query findManyGroupCount(
+  $where: GroupWhereInput
+  $orderBy: [GroupOrderByWithRelationInput!]
+  $cursor: GroupWhereUniqueInput
+  $take: Int
+  $skip: Int
+) {
+  findManyGroupCount(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+  )
+}
+
+query aggregateGroup($where: GroupWhereInput) {
+  aggregateGroup(where: $where) {
+    _count {
+      _all
+    }
+  }
+}
+
+mutation createOneGroup($data: GroupCreateInput!) {
+  createOneGroup(data: $data) {
+    ...Group
+  }
+}
+
+mutation updateOneGroup($data: GroupUpdateInput!, $where: GroupWhereUniqueInput!) {
+  updateOneGroup(data: $data, where: $where) {
+    ...Group
+  }
+}
+
+mutation upsertOneGroup(
+  $where: GroupWhereUniqueInput!
+  $create: GroupCreateInput!
+  $update: GroupUpdateInput!
+) {
+  upsertOneGroup(where: $where, create: $create, update: $update) {
+    ...Group
+  }
+}
+
+mutation deleteOneGroup($where: GroupWhereUniqueInput!) {
+  deleteOneGroup(where: $where) {
+    ...Group
+  }
+}
+
+mutation updateManyGroup($data: GroupUpdateManyMutationInput!, $where: GroupWhereInput) {
+  updateManyGroup(data: $data, where: $where) {
+    count
+  }
+}
+
+mutation deleteManyGroup($where: GroupWhereInput) {
+  deleteManyGroup(where: $where) {
+    count
+  }
+}

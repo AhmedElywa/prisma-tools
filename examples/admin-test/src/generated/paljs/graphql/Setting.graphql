@@ -1,0 +1,117 @@
+fragment SettingFields on Setting {
+  id
+  key
+  value
+  type
+  group
+  createdAt
+  updatedAt
+}
+
+fragment Setting on Setting {
+  ...SettingFields
+}
+
+query findUniqueSetting($where: SettingWhereUniqueInput!) {
+  findUniqueSetting(where: $where) {
+    ...Setting
+  }
+}
+
+query findFirstSetting(
+  $where: SettingWhereInput
+  $orderBy: [SettingOrderByWithRelationInput!]
+  $cursor: SettingWhereUniqueInput
+  $take: Int
+  $skip: Int
+  $distinct: [SettingScalarFieldEnum!]
+) {
+  findFirstSetting(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+    distinct: $distinct
+  ) {
+    ...Setting
+  }
+}
+
+query findManySetting(
+  $where: SettingWhereInput
+  $orderBy: [SettingOrderByWithRelationInput!]
+  $cursor: SettingWhereUniqueInput
+  $take: Int
+  $skip: Int
+  $distinct: [SettingScalarFieldEnum!]
+) {
+  findManySetting(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+    distinct: $distinct
+  ) {
+    ...Setting
+  }
+}
+
+query findManySettingCount(
+  $where: SettingWhereInput
+  $orderBy: [SettingOrderByWithRelationInput!]
+  $cursor: SettingWhereUniqueInput
+  $take: Int
+  $skip: Int
+) {
+  findManySettingCount(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+  )
+}
+
+query aggregateSetting($where: SettingWhereInput) {
+  aggregateSetting(where: $where) {
+    _count {
+      _all
+    }
+  }
+}
+
+mutation createOneSetting($data: SettingCreateInput!) {
+  createOneSetting(data: $data) {
+    ...Setting
+  }
+}
+
+mutation updateOneSetting($data: SettingUpdateInput!, $where: SettingWhereUniqueInput!) {
+  updateOneSetting(data: $data, where: $where) {
+    ...Setting
+  }
+}
+
+mutation upsertOneSetting(
+  $where: SettingWhereUniqueInput!
+  $create: SettingCreateInput!
+  $update: SettingUpdateInput!
+) {
+  upsertOneSetting(where: $where, create: $create, update: $update) {
+    ...Setting
+  }
+}
+
+mutation deleteOneSetting($where: SettingWhereUniqueInput!) {
+  deleteOneSetting(where: $where) {
+    ...Setting
+  }
+}
+
+mutation updateManySetting($data: SettingUpdateManyMutationInput!, $where: SettingWhereInput) {
+  updateManySetting(data: $data, where: $where) {
+    count
+  }
+}

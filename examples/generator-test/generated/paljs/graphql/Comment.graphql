@@ -1,0 +1,115 @@
+fragment CommentFields on Comment {
+  id
+  content
+  createdAt
+  postId
+  authorId
+}
+
+fragment Comment on Comment {
+  ...CommentFields
+  post {
+    ...PostFields
+  }
+  author {
+    ...UserFields
+  }
+}
+
+query findUniqueComment($where: CommentWhereUniqueInput!) {
+  findUniqueComment(where: $where) {
+    ...Comment
+  }
+}
+
+query findFirstComment(
+  $where: CommentWhereInput
+  $orderBy: [CommentOrderByWithRelationInput!]
+  $cursor: CommentWhereUniqueInput
+  $take: Int
+  $skip: Int
+  $distinct: [CommentScalarFieldEnum!]
+) {
+  findFirstComment(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+    distinct: $distinct
+  ) {
+    ...Comment
+  }
+}
+
+query findManyComment(
+  $where: CommentWhereInput
+  $orderBy: [CommentOrderByWithRelationInput!]
+  $cursor: CommentWhereUniqueInput
+  $take: Int
+  $skip: Int
+  $distinct: [CommentScalarFieldEnum!]
+) {
+  findManyComment(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+    distinct: $distinct
+  ) {
+    ...Comment
+  }
+}
+
+query findManyCommentCount(
+  $where: CommentWhereInput
+  $orderBy: [CommentOrderByWithRelationInput!]
+  $cursor: CommentWhereUniqueInput
+  $take: Int
+  $skip: Int
+) {
+  findManyCommentCount(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+  )
+}
+
+query aggregateComment($where: CommentWhereInput) {
+  aggregateComment(where: $where) {
+    _count {
+      _all
+    }
+  }
+}
+
+mutation createOneComment($data: CommentCreateInput!) {
+  createOneComment(data: $data) {
+    ...Comment
+  }
+}
+
+mutation updateOneComment($data: CommentUpdateInput!, $where: CommentWhereUniqueInput!) {
+  updateOneComment(data: $data, where: $where) {
+    ...Comment
+  }
+}
+
+mutation upsertOneComment(
+  $where: CommentWhereUniqueInput!
+  $create: CommentCreateInput!
+  $update: CommentUpdateInput!
+) {
+  upsertOneComment(where: $where, create: $create, update: $update) {
+    ...Comment
+  }
+}
+
+mutation deleteOneComment($where: CommentWhereUniqueInput!) {
+  deleteOneComment(where: $where) {
+    ...Comment
+  }
+}

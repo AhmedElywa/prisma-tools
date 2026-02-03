@@ -1,0 +1,130 @@
+fragment MessageFields on Message {
+  id
+  subject
+  content
+  read
+  priority
+  createdAt
+  senderId
+  receiverId
+}
+
+fragment Message on Message {
+  ...MessageFields
+  sender {
+    ...UserFields
+  }
+  receiver {
+    ...UserFields
+  }
+}
+
+query findUniqueMessage($where: MessageWhereUniqueInput!) {
+  findUniqueMessage(where: $where) {
+    ...Message
+  }
+}
+
+query findFirstMessage(
+  $where: MessageWhereInput
+  $orderBy: [MessageOrderByWithRelationInput!]
+  $cursor: MessageWhereUniqueInput
+  $take: Int
+  $skip: Int
+  $distinct: [MessageScalarFieldEnum!]
+) {
+  findFirstMessage(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+    distinct: $distinct
+  ) {
+    ...Message
+  }
+}
+
+query findManyMessage(
+  $where: MessageWhereInput
+  $orderBy: [MessageOrderByWithRelationInput!]
+  $cursor: MessageWhereUniqueInput
+  $take: Int
+  $skip: Int
+  $distinct: [MessageScalarFieldEnum!]
+) {
+  findManyMessage(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+    distinct: $distinct
+  ) {
+    ...Message
+  }
+}
+
+query findManyMessageCount(
+  $where: MessageWhereInput
+  $orderBy: [MessageOrderByWithRelationInput!]
+  $cursor: MessageWhereUniqueInput
+  $take: Int
+  $skip: Int
+) {
+  findManyMessageCount(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+  )
+}
+
+query aggregateMessage($where: MessageWhereInput) {
+  aggregateMessage(where: $where) {
+    _count {
+      _all
+    }
+  }
+}
+
+mutation createOneMessage($data: MessageCreateInput!) {
+  createOneMessage(data: $data) {
+    ...Message
+  }
+}
+
+mutation updateOneMessage($data: MessageUpdateInput!, $where: MessageWhereUniqueInput!) {
+  updateOneMessage(data: $data, where: $where) {
+    ...Message
+  }
+}
+
+mutation upsertOneMessage(
+  $where: MessageWhereUniqueInput!
+  $create: MessageCreateInput!
+  $update: MessageUpdateInput!
+) {
+  upsertOneMessage(where: $where, create: $create, update: $update) {
+    ...Message
+  }
+}
+
+mutation deleteOneMessage($where: MessageWhereUniqueInput!) {
+  deleteOneMessage(where: $where) {
+    ...Message
+  }
+}
+
+mutation updateManyMessage($data: MessageUpdateManyMutationInput!, $where: MessageWhereInput) {
+  updateManyMessage(data: $data, where: $where) {
+    count
+  }
+}
+
+mutation deleteManyMessage($where: MessageWhereInput) {
+  deleteManyMessage(where: $where) {
+    count
+  }
+}

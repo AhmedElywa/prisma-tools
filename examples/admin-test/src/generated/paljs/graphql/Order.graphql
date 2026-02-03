@@ -1,0 +1,132 @@
+fragment OrderFields on Order {
+  id
+  orderNumber
+  status
+  subtotal
+  tax
+  shipping
+  total
+  notes
+  shippingAddress
+  billingAddress
+  createdAt
+  updatedAt
+  customerId
+}
+
+fragment Order on Order {
+  ...OrderFields
+  customer {
+    ...UserFields
+  }
+}
+
+query findUniqueOrder($where: OrderWhereUniqueInput!) {
+  findUniqueOrder(where: $where) {
+    ...Order
+  }
+}
+
+query findFirstOrder(
+  $where: OrderWhereInput
+  $orderBy: [OrderOrderByWithRelationInput!]
+  $cursor: OrderWhereUniqueInput
+  $take: Int
+  $skip: Int
+  $distinct: [OrderScalarFieldEnum!]
+) {
+  findFirstOrder(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+    distinct: $distinct
+  ) {
+    ...Order
+  }
+}
+
+query findManyOrder(
+  $where: OrderWhereInput
+  $orderBy: [OrderOrderByWithRelationInput!]
+  $cursor: OrderWhereUniqueInput
+  $take: Int
+  $skip: Int
+  $distinct: [OrderScalarFieldEnum!]
+) {
+  findManyOrder(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+    distinct: $distinct
+  ) {
+    ...Order
+  }
+}
+
+query findManyOrderCount(
+  $where: OrderWhereInput
+  $orderBy: [OrderOrderByWithRelationInput!]
+  $cursor: OrderWhereUniqueInput
+  $take: Int
+  $skip: Int
+) {
+  findManyOrderCount(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+  )
+}
+
+query aggregateOrder($where: OrderWhereInput) {
+  aggregateOrder(where: $where) {
+    _count {
+      _all
+    }
+  }
+}
+
+mutation createOneOrder($data: OrderCreateInput!) {
+  createOneOrder(data: $data) {
+    ...Order
+  }
+}
+
+mutation updateOneOrder($data: OrderUpdateInput!, $where: OrderWhereUniqueInput!) {
+  updateOneOrder(data: $data, where: $where) {
+    ...Order
+  }
+}
+
+mutation upsertOneOrder(
+  $where: OrderWhereUniqueInput!
+  $create: OrderCreateInput!
+  $update: OrderUpdateInput!
+) {
+  upsertOneOrder(where: $where, create: $create, update: $update) {
+    ...Order
+  }
+}
+
+mutation deleteOneOrder($where: OrderWhereUniqueInput!) {
+  deleteOneOrder(where: $where) {
+    ...Order
+  }
+}
+
+mutation updateManyOrder($data: OrderUpdateManyMutationInput!, $where: OrderWhereInput) {
+  updateManyOrder(data: $data, where: $where) {
+    count
+  }
+}
+
+mutation deleteManyOrder($where: OrderWhereInput) {
+  deleteManyOrder(where: $where) {
+    count
+  }
+}

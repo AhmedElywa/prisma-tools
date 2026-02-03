@@ -1,0 +1,129 @@
+fragment CategoryFields on Category {
+  id
+  name
+  slug
+  description
+  color
+  order
+  isActive
+  createdAt
+  updatedAt
+  parentId
+}
+
+fragment Category on Category {
+  ...CategoryFields
+  parent {
+    ...CategoryFields
+  }
+}
+
+query findUniqueCategory($where: CategoryWhereUniqueInput!) {
+  findUniqueCategory(where: $where) {
+    ...Category
+  }
+}
+
+query findFirstCategory(
+  $where: CategoryWhereInput
+  $orderBy: [CategoryOrderByWithRelationInput!]
+  $cursor: CategoryWhereUniqueInput
+  $take: Int
+  $skip: Int
+  $distinct: [CategoryScalarFieldEnum!]
+) {
+  findFirstCategory(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+    distinct: $distinct
+  ) {
+    ...Category
+  }
+}
+
+query findManyCategory(
+  $where: CategoryWhereInput
+  $orderBy: [CategoryOrderByWithRelationInput!]
+  $cursor: CategoryWhereUniqueInput
+  $take: Int
+  $skip: Int
+  $distinct: [CategoryScalarFieldEnum!]
+) {
+  findManyCategory(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+    distinct: $distinct
+  ) {
+    ...Category
+  }
+}
+
+query findManyCategoryCount(
+  $where: CategoryWhereInput
+  $orderBy: [CategoryOrderByWithRelationInput!]
+  $cursor: CategoryWhereUniqueInput
+  $take: Int
+  $skip: Int
+) {
+  findManyCategoryCount(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+  )
+}
+
+query aggregateCategory($where: CategoryWhereInput) {
+  aggregateCategory(where: $where) {
+    _count {
+      _all
+    }
+  }
+}
+
+mutation createOneCategory($data: CategoryCreateInput!) {
+  createOneCategory(data: $data) {
+    ...Category
+  }
+}
+
+mutation updateOneCategory($data: CategoryUpdateInput!, $where: CategoryWhereUniqueInput!) {
+  updateOneCategory(data: $data, where: $where) {
+    ...Category
+  }
+}
+
+mutation upsertOneCategory(
+  $where: CategoryWhereUniqueInput!
+  $create: CategoryCreateInput!
+  $update: CategoryUpdateInput!
+) {
+  upsertOneCategory(where: $where, create: $create, update: $update) {
+    ...Category
+  }
+}
+
+mutation deleteOneCategory($where: CategoryWhereUniqueInput!) {
+  deleteOneCategory(where: $where) {
+    ...Category
+  }
+}
+
+mutation updateManyCategory($data: CategoryUpdateManyMutationInput!, $where: CategoryWhereInput) {
+  updateManyCategory(data: $data, where: $where) {
+    count
+  }
+}
+
+mutation deleteManyCategory($where: CategoryWhereInput) {
+  deleteManyCategory(where: $where) {
+    count
+  }
+}

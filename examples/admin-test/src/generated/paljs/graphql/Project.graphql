@@ -1,0 +1,125 @@
+fragment ProjectFields on Project {
+  id
+  name
+  description
+  startDate
+  endDate
+  budget
+  isActive
+  createdAt
+  updatedAt
+}
+
+fragment Project on Project {
+  ...ProjectFields
+}
+
+query findUniqueProject($where: ProjectWhereUniqueInput!) {
+  findUniqueProject(where: $where) {
+    ...Project
+  }
+}
+
+query findFirstProject(
+  $where: ProjectWhereInput
+  $orderBy: [ProjectOrderByWithRelationInput!]
+  $cursor: ProjectWhereUniqueInput
+  $take: Int
+  $skip: Int
+  $distinct: [ProjectScalarFieldEnum!]
+) {
+  findFirstProject(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+    distinct: $distinct
+  ) {
+    ...Project
+  }
+}
+
+query findManyProject(
+  $where: ProjectWhereInput
+  $orderBy: [ProjectOrderByWithRelationInput!]
+  $cursor: ProjectWhereUniqueInput
+  $take: Int
+  $skip: Int
+  $distinct: [ProjectScalarFieldEnum!]
+) {
+  findManyProject(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+    distinct: $distinct
+  ) {
+    ...Project
+  }
+}
+
+query findManyProjectCount(
+  $where: ProjectWhereInput
+  $orderBy: [ProjectOrderByWithRelationInput!]
+  $cursor: ProjectWhereUniqueInput
+  $take: Int
+  $skip: Int
+) {
+  findManyProjectCount(
+    where: $where
+    orderBy: $orderBy
+    cursor: $cursor
+    take: $take
+    skip: $skip
+  )
+}
+
+query aggregateProject($where: ProjectWhereInput) {
+  aggregateProject(where: $where) {
+    _count {
+      _all
+    }
+  }
+}
+
+mutation createOneProject($data: ProjectCreateInput!) {
+  createOneProject(data: $data) {
+    ...Project
+  }
+}
+
+mutation updateOneProject($data: ProjectUpdateInput!, $where: ProjectWhereUniqueInput!) {
+  updateOneProject(data: $data, where: $where) {
+    ...Project
+  }
+}
+
+mutation upsertOneProject(
+  $where: ProjectWhereUniqueInput!
+  $create: ProjectCreateInput!
+  $update: ProjectUpdateInput!
+) {
+  upsertOneProject(where: $where, create: $create, update: $update) {
+    ...Project
+  }
+}
+
+mutation deleteOneProject($where: ProjectWhereUniqueInput!) {
+  deleteOneProject(where: $where) {
+    ...Project
+  }
+}
+
+mutation updateManyProject($data: ProjectUpdateManyMutationInput!, $where: ProjectWhereInput) {
+  updateManyProject(data: $data, where: $where) {
+    count
+  }
+}
+
+mutation deleteManyProject($where: ProjectWhereInput) {
+  deleteManyProject(where: $where) {
+    count
+  }
+}
