@@ -9,3 +9,9 @@ bun.lockb
 
 # Prisma
 prisma-client
+
+# Playwright MCP
+.playwright-mcp/
+
+# Next.js
+.next/
