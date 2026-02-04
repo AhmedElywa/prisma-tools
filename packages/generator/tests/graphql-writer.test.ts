@@ -527,8 +527,17 @@ describe('GraphQL Writer', () => {
       const userPath = join(tempDir.path, 'graphql', 'User.graphql');
       const content = readFileSync(userPath, 'utf-8');
 
-      expect(content).toContain('query findManyUserCount(');
-      expect(content).toContain('findManyUserCount(');
+      // findCount query uses PascalCase model name
+      expect(content).toContain('query findCountUser(');
+      expect(content).toContain('findCountUser(');
+
+      // Extract just the findCount query to verify it doesn't have cursor/distinct
+      const findCountMatch = content.match(/query findCountUser\([^)]*\)/s);
+      expect(findCountMatch).toBeTruthy();
+      const findCountDef = findCountMatch![0];
+      // Verify cursor and distinct are not included (fixed in #238/#237)
+      expect(findCountDef).not.toContain('$cursor');
+      expect(findCountDef).not.toContain('$distinct');
 
       tempDir.cleanup();
     });

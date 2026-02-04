@@ -1,6 +1,17 @@
 import tag from 'graphql-tag';
 import type { AdminSchemaModel } from '../types';
 
+/**
+ * Convert string to PascalCase
+ * Handles snake_case, kebab-case, and already PascalCase strings
+ */
+function toPascalCase(str: string): string {
+  return str
+    .split(/[_-]/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join('');
+}
+
 const getFields = (models: AdminSchemaModel[], modelName: string, update = false) => {
   const model = models.find((item) => item.id === modelName);
   if (!model) {
@@ -56,27 +67,28 @@ const allScalar = (model?: AdminSchemaModel) => {
 };
 export const queryDocument = (models: AdminSchemaModel[], modelName: string, findUnique = false, update = false) => {
   const fields = getFields(models, modelName, update);
+  const model = toPascalCase(modelName);
   if (findUnique) {
     return tag`
-query findUnique${modelName}($where: ${modelName}WhereUniqueInput!) {
-  findUnique${modelName}(where: $where) {
+query findUnique${model}($where: ${modelName}WhereUniqueInput!) {
+  findUnique${model}(where: $where) {
     ${fields}
   }
 }
 `;
   } else {
     return tag`
-query findMany${modelName}(
+query findMany${model}(
   $where: ${modelName}WhereInput
   $orderBy: [${modelName}OrderByWithRelationInput!]
   $cursor: ${modelName}WhereUniqueInput
   $skip: Int
   $take: Int
 ) {
-  findMany${modelName}(where: $where, orderBy: $orderBy, cursor: $cursor, skip: $skip, take: $take) {
+  findMany${model}(where: $where, orderBy: $orderBy, cursor: $cursor, skip: $skip, take: $take) {
     ${fields}
   }
-  findCount${modelName}(where: $where)
+  findCount${model}(where: $where)
 }
 `;
   }
@@ -84,26 +96,27 @@ query findMany${modelName}(
 
 export const mutationDocument = (
   models: AdminSchemaModel[],
-  model: string,
+  modelName: string,
   mutation: 'create' | 'update' | 'delete',
 ) => {
-  const fields = getFields(models, model, true);
-  const modelObject = models.find((item) => item.id === model);
+  const fields = getFields(models, modelName, true);
+  const modelObject = models.find((item) => item.id === modelName);
+  const model = toPascalCase(modelName);
   switch (mutation) {
     case 'create':
-      return tag`mutation createOne${model}($data: ${model}CreateInput!) {
+      return tag`mutation createOne${model}($data: ${modelName}CreateInput!) {
   createOne${model}(data: $data) {
     ${modelObject?.idField || allScalar(modelObject)}
   }
 }`;
     case 'delete':
-      return tag`mutation deleteOne${model} ($where: ${model}WhereUniqueInput!) {
+      return tag`mutation deleteOne${model} ($where: ${modelName}WhereUniqueInput!) {
   deleteOne${model} (where: $where) {
     ${modelObject?.idField || allScalar(modelObject)}
   }
 }`;
     case 'update':
-      return tag`mutation updateOne${model} ($where: ${model}WhereUniqueInput!, $data: ${model}UpdateInput!) {
+      return tag`mutation updateOne${model} ($where: ${modelName}WhereUniqueInput!, $data: ${modelName}UpdateInput!) {
   updateOne${model} (where: $where, data: $data) {
     ${fields}
   }

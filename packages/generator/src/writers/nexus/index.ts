@@ -176,9 +176,19 @@ function generateModelType(model: DMMF.Model, datamodel: DMMF.Datamodel, config:
   const fields = model.fields.filter((f) => !excludedFields.includes(f.name));
 
   const hasList = fields.some((f) => f.isList);
-  const imports = hasList ? "import { objectType, list } from 'nexus';" : "import { objectType } from 'nexus';";
+  const hasRelationList = fields.some((f) => f.isList && f.kind === 'object');
+  const imports = hasRelationList
+    ? "import { objectType, list } from 'nexus';"
+    : hasList
+      ? "import { objectType, list } from 'nexus';"
+      : "import { objectType } from 'nexus';";
 
-  const fieldDefinitions = fields.map((field) => generateFieldDefinition(field)).join('\n    ');
+  const prismaName = config.prismaName || 'prisma';
+  const modelLower = toCamelCase(model.name);
+  const idField = model.fields.find((f) => f.isId)?.name || 'id';
+  const fieldDefinitions = fields
+    .map((field) => generateFieldDefinition(field, modelLower, prismaName, idField))
+    .join('\n    ');
 
   const description = model.documentation ? `\n  description: \`${escapeBackticks(model.documentation)}\`,` : '';
 
@@ -200,7 +210,7 @@ export const ${model.name} = objectType({
 /**
  * Generate field definition for Nexus objectType
  */
-function generateFieldDefinition(field: DMMF.Field): string {
+function generateFieldDefinition(field: DMMF.Field, modelLower: string, prismaName: string, idField: string): string {
   const modifier = field.isList ? '.list' : !field.isRequired ? '.nullable' : '';
   const description = field.documentation ? `, { description: \`${escapeBackticks(field.documentation)}\` }` : '';
 
@@ -217,8 +227,30 @@ function generateFieldDefinition(field: DMMF.Field): string {
   if (field.documentation) {
     options.push(`description: \`${escapeBackticks(field.documentation)}\``);
   }
+
   if (field.kind === 'object') {
-    options.push(`resolve(root: any) { return root.${field.name}; }`);
+    if (field.isList) {
+      // List relation - add args for filtering, ordering, and pagination
+      options.push(`args: {
+        where: '${field.type}WhereInput',
+        orderBy: list('${field.type}OrderByWithRelationInput'),
+        cursor: '${field.type}WhereUniqueInput',
+        take: 'Int',
+        skip: 'Int',
+        distinct: list('${field.type}ScalarFieldEnum'),
+      }`);
+      options.push(`resolve(root: any, args: any, { ${prismaName}, select }: any) {
+        return ${prismaName}.${modelLower}.findUnique({
+          where: { ${idField}: root.${idField} },
+        }).${field.name}({
+          ...args,
+          ...select,
+        });
+      }`);
+    } else {
+      // Single relation - simple resolver
+      options.push(`resolve(root: any) { return root.${field.name}; }`);
+    }
   }
 
   return `t${modifier}.field('${field.name}', { ${options.join(', ')} });`;
@@ -244,10 +276,13 @@ function generateQueries(
   for (const queryType of allQueries) {
     if (excludedOps.includes(queryType)) continue;
 
+    // findCount uses findMany args but cursor/distinct are not supported by count()
+    const excludeArgs = queryType === 'findCount' ? countUnsupportedArgs : [];
     const args = getInputArgs(
       schema,
       'Query',
       queryType === 'findCount' ? `findMany${modelName}` : `${queryType}${modelName}`,
+      excludeArgs,
     );
     const content = applyTemplate(queryTemplates[queryType], modelName, prismaName, args);
     files.set(queryType, content);
@@ -285,9 +320,14 @@ function generateMutations(
 }
 
 /**
+ * Arguments that are not supported by Prisma's count() method
+ */
+const countUnsupportedArgs = ['cursor', 'distinct'];
+
+/**
  * Get input arguments for a query/mutation
  */
-function getInputArgs(schema: DMMF.Schema, typeName: string, fieldName: string): string {
+function getInputArgs(schema: DMMF.Schema, typeName: string, fieldName: string, excludeArgs: string[] = []): string {
   const outputType = schema.outputObjectTypes.prisma.find((t) => t.name === typeName);
   const field = outputType?.fields.find((f) => f.name === fieldName);
 
@@ -295,7 +335,13 @@ function getInputArgs(schema: DMMF.Schema, typeName: string, fieldName: string):
     return '';
   }
 
-  const argsLines = field.args.map((arg) => {
+  const filteredArgs = field.args.filter((arg) => !excludeArgs.includes(arg.name));
+
+  if (!filteredArgs.length) {
+    return '';
+  }
+
+  const argsLines = filteredArgs.map((arg) => {
     let type = `'${getArgType(arg)}'`;
 
     if (arg.inputTypes[0]?.isList) {
@@ -322,17 +368,38 @@ function getArgType(arg: DMMF.SchemaArg): string {
 }
 
 /**
+ * Convert string to PascalCase
+ * Handles snake_case, kebab-case, and already PascalCase strings
+ */
+function toPascalCase(str: string): string {
+  return str
+    .split(/[_-]/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join('');
+}
+
+/**
+ * Convert string to camelCase
+ * Handles snake_case, kebab-case, and already camelCase strings
+ */
+function toCamelCase(str: string): string {
+  const pascal = toPascalCase(str);
+  return pascal.charAt(0).toLowerCase() + pascal.slice(1);
+}
+
+/**
  * Apply template replacements
  */
 function applyTemplate(template: string, modelName: string, prismaName: string, args: string): string {
-  const modelLower = modelName.charAt(0).toLowerCase() + modelName.slice(1);
-  const modelUpper = modelName.charAt(0).toUpperCase() + modelName.slice(1);
+  // Use PascalCase/camelCase for GraphQL naming conventions
+  const modelPascal = toPascalCase(modelName);
+  const modelCamel = toCamelCase(modelName);
 
   return (
     template
       .replace(/#{ModelName}/g, modelName)
-      .replace(/#{Model}/g, modelUpper)
-      .replace(/#{model}/g, modelLower)
+      .replace(/#{Model}/g, modelPascal)
+      .replace(/#{model}/g, modelCamel)
       .replace(/#{prisma}/g, prismaName)
       .replace(/#{args}/g, args)
       .trim() + '\n'
@@ -382,7 +449,13 @@ function generateInputTypes(schema: DMMF.Schema, config: ResolvedConfig): string
       const inputType = getInputType(field);
       const type = (inputType?.type ?? 'String') as string;
       const modifier = field.isRequired ? '.nonNull' : inputType?.isList ? '.list' : '';
-      lines.push(`    t${modifier}.field('${field.name}', { type: '${type}' });`);
+
+      // Use lazy type resolution for self-referential types (AND, OR, NOT in WhereInput)
+      // to prevent TypeScript excessive stack depth errors
+      const isSelfReference = type === input.name;
+      const typeDeclaration = isSelfReference ? `() => '${type}'` : `'${type}'`;
+
+      lines.push(`    t${modifier}.field('${field.name}', { type: ${typeDeclaration} });`);
     }
 
     lines.push('  },');

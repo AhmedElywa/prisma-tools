@@ -2,6 +2,34 @@ import type { DMMF } from '@prisma/generator-helper';
 import type { GraphQLResolveInfo } from 'graphql';
 import { parseResolveInfo } from 'graphql-parse-resolve-info';
 
+/**
+ * Result type for Prisma select objects
+ * Used by findMany, findUnique, and other queries
+ */
+export interface PrismaSelectResult {
+  select?: Record<string, boolean | PrismaSelectResult>;
+  where?: Record<string, unknown>;
+  orderBy?: Record<string, unknown> | Record<string, unknown>[];
+  skip?: number;
+  take?: number;
+  cursor?: Record<string, unknown>;
+  distinct?: string[];
+  [key: string]: unknown;
+}
+
+/**
+ * Context passed to defaultFields and excludeFields functions
+ * Provides information about the current position in the query tree
+ */
+export interface FieldsContext {
+  /** Current model name being processed */
+  modelName: string;
+  /** Parent model name (undefined for root query) */
+  parentModel?: string;
+  /** Nesting depth (0 for root query) */
+  depth: number;
+}
+
 export interface PrismaSelectOptions<
   ModelName extends string,
   ModelsObject extends Record<ModelName, Record<string, any>>,
@@ -12,8 +40,12 @@ export interface PrismaSelectOptions<
    * const defaultFields = {
    *    User: { id: true, name: true },
    *    Post: { id: true, body: true },
-   *    // Function to conditionally add fields
-   *    Account: (select) => select.name ? { firstname: true, lastname: true } : {}
+   *    // Function to conditionally add fields based on current selection
+   *    Account: (select) => select.name ? { firstname: true, lastname: true } : {},
+   *    // Function with context for conditional fields based on parent model
+   *    Post: (select, ctx) => ctx.parentModel === 'User'
+   *      ? { id: true, title: true }  // When fetched from User
+   *      : { id: true, title: true, content: true }  // When fetched directly
    * }
    */
   defaultFields?: {
@@ -21,7 +53,10 @@ export interface PrismaSelectOptions<
       | {
           [field in keyof ModelsObject[model]]?: boolean;
         }
-      | ((select: any) => { [field in keyof ModelsObject[model]]?: boolean });
+      | ((
+          select: Record<string, unknown>,
+          context: FieldsContext,
+        ) => { [field in keyof ModelsObject[model]]?: boolean });
   };
   /**
    * Object with models and fields to exclude, even if requested in GraphQL query.
@@ -30,13 +65,15 @@ export interface PrismaSelectOptions<
    *    User: ['password', 'hash'],
    *    Post: ['internalNotes'],
    *    // Function to conditionally exclude fields
-   *    Account: (select) => select.isAdmin ? [] : ['secretKey']
+   *    Account: (select) => select.isAdmin ? [] : ['secretKey'],
+   *    // Function with context
+   *    User: (select, ctx) => ctx.depth > 1 ? ['posts'] : []  // Limit nesting
    * }
    */
   excludeFields?: {
     [model in ModelName]?:
       | (keyof ModelsObject[model] | string)[]
-      | ((select: any) => (keyof ModelsObject[model] | string)[]);
+      | ((select: Record<string, unknown>, context: FieldsContext) => (keyof ModelsObject[model] | string)[]);
   };
   /**
    * Array of DMMF objects for field validation and filtering.
@@ -65,6 +102,38 @@ export interface PrismaSelectOptions<
    * Invalid fields may be passed to Prisma (causing runtime errors).
    */
   dmmf?: Pick<DMMF.Document, 'datamodel'>[];
+
+  /**
+   * Interceptor function to modify `where` clauses for all queries.
+   * Useful for implementing global filters like soft deletes, tenant isolation, or access control.
+   *
+   * @example Soft delete filter
+   * ```typescript
+   * new PrismaSelect(info, {
+   *   whereInterceptor: (where, modelName) => ({
+   *     ...where,
+   *     deletedAt: null,  // Only return non-deleted records
+   *   }),
+   * });
+   * ```
+   *
+   * @example Tenant isolation
+   * ```typescript
+   * new PrismaSelect(info, {
+   *   whereInterceptor: (where, modelName, ctx) => {
+   *     if (ctx.isRoot) {
+   *       return { ...where, tenantId: currentTenantId };
+   *     }
+   *     return where;
+   *   },
+   * });
+   * ```
+   */
+  whereInterceptor?: (
+    where: Record<string, unknown>,
+    modelName: string,
+    context: { parentModel?: string; isRoot: boolean },
+  ) => Record<string, unknown>;
 }
 
 /**
@@ -141,7 +210,7 @@ export class PrismaSelect<
     private options?: PrismaSelectOptions<ModelName, ModelsObject>,
   ) {}
 
-  get value() {
+  get value(): PrismaSelectResult {
     const returnType = this.info.returnType.toString().replace(/]/g, '').replace(/\[/g, '').replace(/!/g, '');
     this.isAggregate = returnType.includes('Aggregate');
     return this.valueWithFilter(returnType);
@@ -190,19 +259,19 @@ export class PrismaSelect<
     return model?.fields.find((item) => item.name === name);
   }
 
-  static isObject(item: any) {
-    return item && typeof item === 'object' && !Array.isArray(item);
+  static isObject(item: unknown): item is Record<string, unknown> {
+    return item !== null && typeof item === 'object' && !Array.isArray(item);
   }
 
-  static mergeDeep(target: any, ...sources: any[]): any {
+  static mergeDeep<T extends Record<string, unknown>>(target: T, ...sources: Record<string, unknown>[]): T {
     if (!sources.length) return target;
-    const source: any = sources.shift();
+    const source = sources.shift();
 
     if (PrismaSelect.isObject(target) && PrismaSelect.isObject(source)) {
       for (const key in source) {
         if (PrismaSelect.isObject(source[key])) {
           if (!target[key]) Object.assign(target, { [key]: {} });
-          PrismaSelect.mergeDeep(target[key], source[key]);
+          PrismaSelect.mergeDeep(target[key] as Record<string, unknown>, source[key] as Record<string, unknown>);
         } else {
           Object.assign(target, { [key]: source[key] });
         }
@@ -242,23 +311,32 @@ export class PrismaSelect<
    * { select: { id: true, comments: { select: { id: true } } } }
    *
    **/
-  valueOf(field: string, filterBy?: string, mergeObject: any = {}) {
+  valueOf<M extends ModelName = ModelName>(
+    field: string,
+    filterBy?: M | string,
+    mergeObject: Record<string, unknown> = {},
+  ): PrismaSelectResult {
     const splitItem = field.split('.');
-    let newValue: Record<string, any> = this.getSelect(this.fields);
+    let newValue: Record<string, unknown> = this.getSelect(this.fields);
     for (const field of splitItem) {
       if (this.isAggregate && Object.prototype.hasOwnProperty.call(newValue, field)) {
-        newValue = newValue[field];
+        newValue = newValue[field] as Record<string, unknown>;
       } else if (
         !this.isAggregate &&
         Object.prototype.hasOwnProperty.call(newValue, 'select') &&
-        Object.prototype.hasOwnProperty.call(newValue.select, field)
+        Object.prototype.hasOwnProperty.call((newValue as { select: Record<string, unknown> }).select, field)
       ) {
-        newValue = newValue.select[field];
+        newValue = (newValue as { select: Record<string, unknown> }).select[field] as Record<string, unknown>;
       } else {
         return {};
       }
     }
-    return filterBy ? PrismaSelect.mergeDeep(this.filterBy(filterBy, newValue), mergeObject) : newValue;
+    return filterBy
+      ? (PrismaSelect.mergeDeep(
+          this.filterBy(filterBy, newValue, { modelName: filterBy, depth: 0 }),
+          mergeObject,
+        ) as PrismaSelectResult)
+      : (newValue as PrismaSelectResult);
   }
 
   /**
@@ -272,61 +350,103 @@ export class PrismaSelect<
    * const select = new PrismaSelect(info).valueWithFilter('User');
    *
    **/
-  valueWithFilter(modelName: string) {
-    return this.filterBy(modelName, this.getSelect(this.fields));
+  valueWithFilter<M extends ModelName = ModelName>(modelName: M | string): PrismaSelectResult {
+    return this.filterBy(modelName as string, this.getSelect(this.fields), {
+      modelName: modelName as string,
+      depth: 0,
+    });
   }
 
-  private filterBy(modelName: string, selectObject: any) {
+  private filterBy(
+    modelName: string,
+    selectObject: Record<string, unknown>,
+    context: FieldsContext = { modelName, depth: 0 },
+  ): PrismaSelectResult {
     const model = this.model(modelName);
-    if (model && typeof selectObject === 'object') {
-      let defaultFields = {};
+    const selectFields = selectObject.select as Record<string, unknown> | undefined;
+
+    if (model && typeof selectObject === 'object' && selectFields) {
+      let defaultFields: Record<string, boolean> = {};
       if (this.defaultFields && this.defaultFields[modelName]) {
         const modelFields = this.defaultFields[modelName];
-        defaultFields = typeof modelFields === 'function' ? modelFields(selectObject.select) : modelFields;
+        defaultFields = (
+          typeof modelFields === 'function' ? modelFields(selectFields, context) : modelFields
+        ) as Record<string, boolean>;
       }
-      const filteredObject = {
-        ...selectObject,
-        select: { ...defaultFields },
+      const filteredSelect: Record<string, unknown> = { ...defaultFields };
+
+      // Apply whereInterceptor if present and there's a where clause
+      let processedSelectObject = selectObject;
+      if (this.options?.whereInterceptor && selectObject.where) {
+        const interceptedWhere = this.options.whereInterceptor(
+          selectObject.where as Record<string, unknown>,
+          modelName,
+          { parentModel: context.parentModel, isRoot: context.depth === 0 },
+        );
+        processedSelectObject = { ...selectObject, where: interceptedWhere };
+      }
+
+      const filteredObject: PrismaSelectResult = {
+        ...processedSelectObject,
+        select: filteredSelect as Record<string, boolean | PrismaSelectResult>,
       };
 
-      for (const key in selectObject.select) {
+      for (const key in selectFields) {
         if (this.excludeFields && this.excludeFields[modelName]) {
-          const modelFields = this.excludeFields[modelName];
-          const excludeFields = typeof modelFields === 'function' ? modelFields(selectObject.select) : modelFields;
+          const modelExcludeFields = this.excludeFields[modelName];
+          const excludeFields = (
+            typeof modelExcludeFields === 'function' ? modelExcludeFields(selectFields, context) : modelExcludeFields
+          ) as string[];
           if (excludeFields.includes(key)) continue;
         }
 
         if (this.allowedProps.includes(key)) {
-          filteredObject.select[key] = selectObject.select[key];
+          filteredSelect[key] = selectFields[key];
           continue;
         }
 
         const field = this.field(key, model);
-        if (field) {
-          if (field.kind !== 'object') {
-            filteredObject.select[key] = true;
-            continue;
-          }
 
-          const subModelFilter = this.filterBy(field.type, selectObject.select[key]);
-          if (subModelFilter === true) {
-            filteredObject.select[key] = true;
-            continue;
-          }
+        // Field not found in DMMF - this is a computed field (resolved by custom resolver)
+        // Pass it through unchanged unless excluded
+        if (!field) {
+          filteredSelect[key] = selectFields[key];
+          continue;
+        }
 
-          if (Object.keys(subModelFilter.select).length > 0) {
-            filteredObject.select[key] = subModelFilter;
-          }
+        // Scalar or enum field - just select it
+        if (field.kind !== 'object') {
+          filteredSelect[key] = true;
+          continue;
+        }
+
+        // Relation field - recursively filter with updated context
+        const childContext: FieldsContext = {
+          modelName: field.type,
+          parentModel: modelName,
+          depth: context.depth + 1,
+        };
+        const subModelFilter = this.filterBy(field.type, selectFields[key] as Record<string, unknown>, childContext);
+
+        // Handle custom scalars or unsupported types that don't return an object with select
+        if (typeof subModelFilter !== 'object' || subModelFilter === null || !('select' in subModelFilter)) {
+          filteredSelect[key] = selectFields[key];
+          continue;
+        }
+
+        const subSelect = subModelFilter.select as Record<string, unknown> | undefined;
+        if (subSelect && Object.keys(subSelect).length > 0) {
+          filteredSelect[key] = subModelFilter;
         }
       }
       return filteredObject;
     } else {
-      return selectObject;
+      return selectObject as PrismaSelectResult;
     }
   }
 
-  private getArgs(args?: Record<string, unknown>) {
-    const filteredArgs: Record<string, any> = {};
+  private getArgs(args?: Record<string, unknown>): Record<string, unknown> {
+    const filteredArgs: Record<string, unknown> = {};
     if (args) {
       this.availableArgs.forEach((key) => {
         if (args[key]) {
@@ -337,8 +457,11 @@ export class PrismaSelect<
     return filteredArgs;
   }
 
-  private getSelect(fields: PrismaSelect['fields'], parent = true) {
-    const selectObject: any = this.isAggregate ? {} : { select: {}, ...(parent ? {} : this.getArgs(fields?.args)) };
+  private getSelect(fields: PrismaSelect['fields'], parent = true): Record<string, unknown> {
+    const selectFields: Record<string, unknown> = {};
+    const baseArgs = parent ? {} : this.getArgs(fields?.args);
+    const selectObject: Record<string, unknown> = this.isAggregate ? {} : { select: selectFields, ...baseArgs };
+
     if (fields) {
       Object.keys(fields.fieldsByTypeName).forEach((type) => {
         const fieldsByTypeName = fields.fieldsByTypeName[type];
@@ -348,13 +471,13 @@ export class PrismaSelect<
             if (this.isAggregate) {
               selectObject[fieldName] = true;
             } else {
-              selectObject.select[fieldName] = true;
+              selectFields[fieldName] = true;
             }
           } else {
             if (this.isAggregate) {
               selectObject[fieldName] = this.getSelect(fieldsByTypeName[key], false);
             } else {
-              selectObject.select[fieldName] = this.getSelect(fieldsByTypeName[key], false);
+              selectFields[fieldName] = this.getSelect(fieldsByTypeName[key], false);
             }
           }
         });

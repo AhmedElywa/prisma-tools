@@ -9,6 +9,17 @@ import type { DMMF } from '@prisma/generator-helper';
 import type { ResolvedConfig } from '../../config/types.js';
 import { ensureDir } from '../../utils/paths.js';
 
+/**
+ * Convert string to PascalCase
+ * Handles snake_case, kebab-case, and already PascalCase strings
+ */
+function toPascalCase(str: string): string {
+  return str
+    .split(/[_-]/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join('');
+}
+
 export interface GraphQLWriterOptions {
   outputDir: string;
   dmmf: DMMF.Document;
@@ -112,8 +123,9 @@ function generateModelFragment(model: DMMF.Model, excludedFields: string[]): str
  * Generate findUnique query
  */
 function generateFindUniqueQuery(modelName: string): string {
-  return `query findUnique${modelName}($where: ${modelName}WhereUniqueInput!) {
-  findUnique${modelName}(where: $where) {
+  const model = toPascalCase(modelName);
+  return `query findUnique${model}($where: ${modelName}WhereUniqueInput!) {
+  findUnique${model}(where: $where) {
     ...${modelName}
   }
 }`;
@@ -123,7 +135,8 @@ function generateFindUniqueQuery(modelName: string): string {
  * Generate findFirst query
  */
 function generateFindFirstQuery(modelName: string): string {
-  return `query findFirst${modelName}(
+  const model = toPascalCase(modelName);
+  return `query findFirst${model}(
   $where: ${modelName}WhereInput
   $orderBy: [${modelName}OrderByWithRelationInput!]
   $cursor: ${modelName}WhereUniqueInput
@@ -131,7 +144,7 @@ function generateFindFirstQuery(modelName: string): string {
   $skip: Int
   $distinct: [${modelName}ScalarFieldEnum!]
 ) {
-  findFirst${modelName}(
+  findFirst${model}(
     where: $where
     orderBy: $orderBy
     cursor: $cursor
@@ -148,7 +161,8 @@ function generateFindFirstQuery(modelName: string): string {
  * Generate findMany query
  */
 function generateFindManyQuery(modelName: string): string {
-  return `query findMany${modelName}(
+  const model = toPascalCase(modelName);
+  return `query findMany${model}(
   $where: ${modelName}WhereInput
   $orderBy: [${modelName}OrderByWithRelationInput!]
   $cursor: ${modelName}WhereUniqueInput
@@ -156,7 +170,7 @@ function generateFindManyQuery(modelName: string): string {
   $skip: Int
   $distinct: [${modelName}ScalarFieldEnum!]
 ) {
-  findMany${modelName}(
+  findMany${model}(
     where: $where
     orderBy: $orderBy
     cursor: $cursor
@@ -171,19 +185,19 @@ function generateFindManyQuery(modelName: string): string {
 
 /**
  * Generate findCount query
+ * Note: Prisma's count() doesn't support cursor or distinct arguments
  */
 function generateFindCountQuery(modelName: string): string {
-  return `query findMany${modelName}Count(
+  const model = toPascalCase(modelName);
+  return `query findCount${model}(
   $where: ${modelName}WhereInput
   $orderBy: [${modelName}OrderByWithRelationInput!]
-  $cursor: ${modelName}WhereUniqueInput
   $take: Int
   $skip: Int
 ) {
-  findMany${modelName}Count(
+  findCount${model}(
     where: $where
     orderBy: $orderBy
-    cursor: $cursor
     take: $take
     skip: $skip
   )
@@ -194,8 +208,9 @@ function generateFindCountQuery(modelName: string): string {
  * Generate aggregate query
  */
 function generateAggregateQuery(modelName: string): string {
-  return `query aggregate${modelName}($where: ${modelName}WhereInput) {
-  aggregate${modelName}(where: $where) {
+  const model = toPascalCase(modelName);
+  return `query aggregate${model}($where: ${modelName}WhereInput) {
+  aggregate${model}(where: $where) {
     _count {
       _all
     }
@@ -207,8 +222,9 @@ function generateAggregateQuery(modelName: string): string {
  * Generate createOne mutation
  */
 function generateCreateOneMutation(modelName: string): string {
-  return `mutation createOne${modelName}($data: ${modelName}CreateInput!) {
-  createOne${modelName}(data: $data) {
+  const model = toPascalCase(modelName);
+  return `mutation createOne${model}($data: ${modelName}CreateInput!) {
+  createOne${model}(data: $data) {
     ...${modelName}
   }
 }`;
@@ -218,8 +234,9 @@ function generateCreateOneMutation(modelName: string): string {
  * Generate updateOne mutation
  */
 function generateUpdateOneMutation(modelName: string): string {
-  return `mutation updateOne${modelName}($data: ${modelName}UpdateInput!, $where: ${modelName}WhereUniqueInput!) {
-  updateOne${modelName}(data: $data, where: $where) {
+  const model = toPascalCase(modelName);
+  return `mutation updateOne${model}($data: ${modelName}UpdateInput!, $where: ${modelName}WhereUniqueInput!) {
+  updateOne${model}(data: $data, where: $where) {
     ...${modelName}
   }
 }`;
@@ -229,12 +246,13 @@ function generateUpdateOneMutation(modelName: string): string {
  * Generate upsertOne mutation
  */
 function generateUpsertOneMutation(modelName: string): string {
-  return `mutation upsertOne${modelName}(
+  const model = toPascalCase(modelName);
+  return `mutation upsertOne${model}(
   $where: ${modelName}WhereUniqueInput!
   $create: ${modelName}CreateInput!
   $update: ${modelName}UpdateInput!
 ) {
-  upsertOne${modelName}(where: $where, create: $create, update: $update) {
+  upsertOne${model}(where: $where, create: $create, update: $update) {
     ...${modelName}
   }
 }`;
@@ -244,8 +262,9 @@ function generateUpsertOneMutation(modelName: string): string {
  * Generate deleteOne mutation
  */
 function generateDeleteOneMutation(modelName: string): string {
-  return `mutation deleteOne${modelName}($where: ${modelName}WhereUniqueInput!) {
-  deleteOne${modelName}(where: $where) {
+  const model = toPascalCase(modelName);
+  return `mutation deleteOne${model}($where: ${modelName}WhereUniqueInput!) {
+  deleteOne${model}(where: $where) {
     ...${modelName}
   }
 }`;
@@ -255,8 +274,9 @@ function generateDeleteOneMutation(modelName: string): string {
  * Generate updateMany mutation
  */
 function generateUpdateManyMutation(modelName: string): string {
-  return `mutation updateMany${modelName}($data: ${modelName}UpdateManyMutationInput!, $where: ${modelName}WhereInput) {
-  updateMany${modelName}(data: $data, where: $where) {
+  const model = toPascalCase(modelName);
+  return `mutation updateMany${model}($data: ${modelName}UpdateManyMutationInput!, $where: ${modelName}WhereInput) {
+  updateMany${model}(data: $data, where: $where) {
     count
   }
 }`;
@@ -266,8 +286,9 @@ function generateUpdateManyMutation(modelName: string): string {
  * Generate deleteMany mutation
  */
 function generateDeleteManyMutation(modelName: string): string {
-  return `mutation deleteMany${modelName}($where: ${modelName}WhereInput) {
-  deleteMany${modelName}(where: $where) {
+  const model = toPascalCase(modelName);
+  return `mutation deleteMany${model}($where: ${modelName}WhereInput) {
+  deleteMany${model}(where: $where) {
     count
   }
 }`;
