@@ -176,19 +176,9 @@ function generateModelType(model: DMMF.Model, datamodel: DMMF.Datamodel, config:
   const fields = model.fields.filter((f) => !excludedFields.includes(f.name));
 
   const hasList = fields.some((f) => f.isList);
-  const hasRelationList = fields.some((f) => f.isList && f.kind === 'object');
-  const imports = hasRelationList
-    ? "import { objectType, list } from 'nexus';"
-    : hasList
-      ? "import { objectType, list } from 'nexus';"
-      : "import { objectType } from 'nexus';";
+  const imports = hasList ? "import { objectType, list } from 'nexus';" : "import { objectType } from 'nexus';";
 
-  const prismaName = config.prismaName || 'prisma';
-  const modelLower = toCamelCase(model.name);
-  const idField = model.fields.find((f) => f.isId)?.name || 'id';
-  const fieldDefinitions = fields
-    .map((field) => generateFieldDefinition(field, modelLower, prismaName, idField))
-    .join('\n    ');
+  const fieldDefinitions = fields.map((field) => generateFieldDefinition(field)).join('\n    ');
 
   const description = model.documentation ? `\n  description: \`${escapeBackticks(model.documentation)}\`,` : '';
 
@@ -210,7 +200,7 @@ export const ${model.name} = objectType({
 /**
  * Generate field definition for Nexus objectType
  */
-function generateFieldDefinition(field: DMMF.Field, modelLower: string, prismaName: string, idField: string): string {
+function generateFieldDefinition(field: DMMF.Field): string {
   const modifier = field.isList ? '.list' : !field.isRequired ? '.nullable' : '';
   const description = field.documentation ? `, { description: \`${escapeBackticks(field.documentation)}\` }` : '';
 
@@ -227,30 +217,8 @@ function generateFieldDefinition(field: DMMF.Field, modelLower: string, prismaNa
   if (field.documentation) {
     options.push(`description: \`${escapeBackticks(field.documentation)}\``);
   }
-
   if (field.kind === 'object') {
-    if (field.isList) {
-      // List relation - add args for filtering, ordering, and pagination
-      options.push(`args: {
-        where: '${field.type}WhereInput',
-        orderBy: list('${field.type}OrderByWithRelationInput'),
-        cursor: '${field.type}WhereUniqueInput',
-        take: 'Int',
-        skip: 'Int',
-        distinct: list('${field.type}ScalarFieldEnum'),
-      }`);
-      options.push(`resolve(root: any, args: any, { ${prismaName}, select }: any) {
-        return ${prismaName}.${modelLower}.findUnique({
-          where: { ${idField}: root.${idField} },
-        }).${field.name}({
-          ...args,
-          ...select,
-        });
-      }`);
-    } else {
-      // Single relation - simple resolver
-      options.push(`resolve(root: any) { return root.${field.name}; }`);
-    }
+    options.push(`resolve(root: any) { return root.${field.name}; }`);
   }
 
   return `t${modifier}.field('${field.name}', { ${options.join(', ')} });`;
