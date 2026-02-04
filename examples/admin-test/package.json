@@ -1,6 +1,6 @@
 {
   "name": "admin-test",
-  "version": "1.0.1-beta.2",
+  "version": "1.0.1",
   "type": "module",
   "private": true,
   "scripts": {

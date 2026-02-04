@@ -1,5 +1,47 @@
 # @paljs/admin
 
+## 9.0.0
+
+### Major Changes
+
+- d1f0440: Major update: React 19 support and dependency upgrades
+
+  - **BREAKING**: Updated React to version 19.1.0
+  - **BREAKING**: Replaced `react-beautiful-dnd` with `@dnd-kit/sortable` for drag-and-drop functionality
+  - **BREAKING**: Migrated from `react-table` v7 to `@tanstack/react-table` v8
+  - Updated Tailwind CSS to version 4.1.11 with new @tailwindcss/cli package
+  - Improved TypeScript types throughout the package, removing all `any` types
+  - Added peer dependencies for React 18/19 compatibility
+  - Added accessibility attributes to drag-and-drop interfaces
+  - Added error boundaries for better error handling in drag-and-drop operations
+  - Fixed tsconfig.build.json configuration
+
+  This is a beta release for testing React 19 compatibility. Please test thoroughly before using in production.
+
+- PalJS v9.0.0 Stable Release
+
+  ## Breaking Changes
+
+  - **Native Prisma 7 Generator**: Now runs as part of `prisma generate`, replacing the CLI
+  - **React 19 Admin UI**: Rebuilt with Tailwind CSS 4, @tanstack/react-table v8, @dnd-kit/sortable
+  - **Typed PrismaSelect**: Generated `ModelsObject` type eliminates `any` casts
+  - **New Config API**: Use `defineConfig()` in `paljs.config.ts`
+
+  ## Removed Packages
+
+  - `@paljs/cli` - Replaced by native Prisma generator
+  - `@paljs/create` - Use create-next-app instead
+  - `@paljs/display` - No longer needed
+  - `@paljs/types` - Inlined into consuming packages
+  - `@paljs/utils` - Inlined into consuming packages
+  - `@paljs/schema` - No longer needed with Prisma 7
+
+  ## New Features
+
+  - Config file discovery in project root (not just prisma/ directory)
+  - Version string read from package.json
+  - Full Prisma 7 compatibility
+
 ## 9.0.0-beta.3
 
 ### Patch Changes

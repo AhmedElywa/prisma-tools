@@ -1,5 +1,47 @@
 # @paljs/plugins
 
+## 9.0.0
+
+### Major Changes
+
+- 31b8fd6: Major update: Typed PrismaSelect for Prisma 7
+
+  - **BREAKING**: Updated for Prisma 7 compatibility
+  - Typed PrismaSelect for query optimization
+
+- PalJS v9.0.0 Stable Release
+
+  ## Breaking Changes
+
+  - **Native Prisma 7 Generator**: Now runs as part of `prisma generate`, replacing the CLI
+  - **React 19 Admin UI**: Rebuilt with Tailwind CSS 4, @tanstack/react-table v8, @dnd-kit/sortable
+  - **Typed PrismaSelect**: Generated `ModelsObject` type eliminates `any` casts
+  - **New Config API**: Use `defineConfig()` in `paljs.config.ts`
+
+  ## Removed Packages
+
+  - `@paljs/cli` - Replaced by native Prisma generator
+  - `@paljs/create` - Use create-next-app instead
+  - `@paljs/display` - No longer needed
+  - `@paljs/types` - Inlined into consuming packages
+  - `@paljs/utils` - Inlined into consuming packages
+  - `@paljs/schema` - No longer needed with Prisma 7
+
+  ## New Features
+
+  - Config file discovery in project root (not just prisma/ directory)
+  - Version string read from package.json
+  - Full Prisma 7 compatibility
+
+### Patch Changes
+
+- 31b8fd6: Fix workspace protocol references in published packages
+- 505ea30: Remove deprecated @paljs/types, @paljs/utils, and @paljs/schema packages
+
+  - Inlined necessary utilities directly into consuming packages
+  - Removed unused dependencies
+  - Simplified package structure
+
 ## 9.0.0-beta.4
 
 ### Patch Changes

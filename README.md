@@ -14,7 +14,7 @@
   </p>
 </div>
 
-> **v9 Beta Available!** PalJS v9 is a major rewrite featuring a native Prisma 7 generator, React 19 admin UI with Tailwind CSS 4, and typed PrismaSelect. [Try the beta](#try-the-v9-beta) | [Migration Guide](./docs/MIGRATION-v9.md)
+> **v9 Released!** PalJS v9 is a major rewrite featuring a native Prisma 7 generator, React 19 admin UI with Tailwind CSS 4, and typed PrismaSelect. [What's New](#whats-new-in-v9) | [Migration Guide](./docs/MIGRATION-v9.md)
 
 ## Table of Contents
 
@@ -201,22 +201,6 @@ const users = await prisma.user.findMany(select.value);
   </tr>
 </table>
 
-## Utility Packages
-
-<table>
-  <tr>
-    <td><strong><a href="./packages/schema">@paljs/schema</a></strong></td>
-    <td>Prisma schema manipulation and conversion tools</td>
-  </tr>
-  <tr>
-    <td><strong><a href="./packages/utils">@paljs/utils</a></strong></td>
-    <td>Common utilities for DMMF processing</td>
-  </tr>
-  <tr>
-    <td><strong><a href="./packages/types">@paljs/types</a></strong></td>
-    <td>TypeScript type definitions</td>
-  </tr>
-</table>
 
 ---
 
@@ -323,11 +307,9 @@ The new approach:
 
 ---
 
-# Try the v9 Beta
+# What's New in v9
 
-PalJS v9 is a ground-up rewrite. Here's what's new and how to try it.
-
-## What's New in v9
+PalJS v9 is a ground-up rewrite with major improvements.
 
 - **Native Prisma 7 Generator** — Runs as part of `prisma generate`, no separate CLI
 - **Typed PrismaSelect** — Generated `ModelsObject` type eliminates `any` casts
@@ -342,14 +324,14 @@ PalJS v9 is a ground-up rewrite. Here's what's new and how to try it.
 - `@paljs/display` — No longer needed
 - SDL and GraphQL Modules generators — Nexus code-first only
 
-## Install the Beta
+## Installation
 
 ```bash
 # Install the generator
-npm install -D @paljs/generator@beta prisma
+npm install -D @paljs/generator prisma
 
 # Install runtime packages
-npm install @paljs/plugins@beta @paljs/nexus@beta @paljs/admin@beta
+npm install @paljs/plugins @paljs/nexus @paljs/admin
 ```
 
 ## Quick Setup
@@ -383,10 +365,6 @@ npx prisma generate
 ```
 
 See the full [Migration Guide](./docs/MIGRATION-v9.md) for upgrading from v8.
-
-## Report Issues
-
-This is a beta release. Please report any issues at [GitHub Issues](https://github.com/paljs/prisma-tools/issues) with the `v9-beta` label.
 
 ---
 
