@@ -347,27 +347,20 @@ function toPascalCase(str: string): string {
 }
 
 /**
- * Convert string to camelCase
- * Handles snake_case, kebab-case, and already camelCase strings
- */
-function toCamelCase(str: string): string {
-  const pascal = toPascalCase(str);
-  return pascal.charAt(0).toLowerCase() + pascal.slice(1);
-}
-
-/**
  * Apply template replacements
  */
 function applyTemplate(template: string, modelName: string, prismaName: string, args: string): string {
-  // Use PascalCase/camelCase for GraphQL naming conventions
+  // #{Model} = PascalCase for GraphQL operation names (e.g., findManyUserProfile)
+  // #{model} = lowercase first char for Prisma client (e.g., prisma.user_profile)
+  // #{ModelName} = original model name for type references
   const modelPascal = toPascalCase(modelName);
-  const modelCamel = toCamelCase(modelName);
+  const modelLower = modelName.charAt(0).toLowerCase() + modelName.slice(1);
 
   return (
     template
       .replace(/#{ModelName}/g, modelName)
       .replace(/#{Model}/g, modelPascal)
-      .replace(/#{model}/g, modelCamel)
+      .replace(/#{model}/g, modelLower)
       .replace(/#{prisma}/g, prismaName)
       .replace(/#{args}/g, args)
       .trim() + '\n'
