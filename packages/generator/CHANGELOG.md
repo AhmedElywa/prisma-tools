@@ -1,5 +1,15 @@
 # @paljs/generator
 
+## 9.0.0-beta.3
+
+### Patch Changes
+
+- Remove deprecated @paljs/types, @paljs/utils, and @paljs/schema packages
+
+  - Inlined necessary utilities directly into consuming packages
+  - Removed unused dependencies
+  - Simplified package structure
+
 ## 9.0.0-beta.2
 
 ### Major Changes

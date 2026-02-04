@@ -1,5 +1,14 @@
 # admin-test
 
+## 1.0.1-beta.2
+
+### Patch Changes
+
+- Updated dependencies
+  - @paljs/generator@9.0.0-beta.3
+  - @paljs/nexus@9.0.0-beta.4
+  - @paljs/plugins@9.0.0-beta.4
+
 ## 1.0.1-beta.1
 
 ### Patch Changes

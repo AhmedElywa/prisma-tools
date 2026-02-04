@@ -64,7 +64,9 @@ bun run --filter @paljs/[package-name] build
 - Publishing workflow:
   1. Add changeset: `bunx changeset` (select packages and bump type)
   2. Version bump: `bunx changeset version`
-  3. Publish: `NPM_CONFIG_OTP=<otp> bunx changeset publish`
+  3. **Build packages**: `bun run build` (required before publish!)
+  4. Publish: `expect -c 'spawn bunx changeset publish; expect "one-time password:"; send "<otp>\r"; expect eof'`
+- **Important**: The `@paljs/admin` package has `publishConfig.directory: "./dist"` — it publishes from `dist/package.json`. You MUST run `bun run build` after version bump to update the version in `dist/package.json`, otherwise npm will reject the publish.
 - **Important**: Changesets resolves `workspace:*` references to real versions during publish. Do NOT use `npm publish` directly — it won't resolve workspace protocol refs.
 - To exit pre-release mode for stable release: `bunx changeset pre exit`
 

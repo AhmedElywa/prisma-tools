@@ -6,9 +6,6 @@
     "@paljs/generator": "8.2.1",
     "@paljs/nexus": "8.2.1",
     "@paljs/plugins": "8.2.1",
-    "@paljs/schema": "8.2.1",
-    "@paljs/types": "8.2.1",
-    "@paljs/utils": "8.2.1",
     "admin-test": "1.0.0",
     "@paljs/example-generator-test": "1.0.0"
   },
@@ -18,6 +15,6 @@
     "generator-v9-beta",
     "nexus-v9-beta",
     "plugins-v9-beta",
-    "types-utils-v9-beta"
+    "remove-deprecated-packages"
   ]
 }

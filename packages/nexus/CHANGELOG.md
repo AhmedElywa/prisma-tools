@@ -1,5 +1,18 @@
 # @paljs/nexus
 
+## 9.0.0-beta.4
+
+### Patch Changes
+
+- Remove deprecated @paljs/types, @paljs/utils, and @paljs/schema packages
+
+  - Inlined necessary utilities directly into consuming packages
+  - Removed unused dependencies
+  - Simplified package structure
+
+- Updated dependencies
+  - @paljs/plugins@9.0.0-beta.4
+
 ## 9.0.0-beta.3
 
 ### Patch Changes
