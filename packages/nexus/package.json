@@ -1,6 +1,6 @@
 {
   "name": "@paljs/nexus",
-  "version": "9.0.0-beta.6",
+  "version": "9.0.0-beta.7",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "description": "Nexus plugin for Prisma with PrismaSelect integration - supports Prisma 6 and 7",

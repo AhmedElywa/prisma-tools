@@ -1,4 +1,6 @@
+import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
 import type { GeneratorManifest, GeneratorOptions } from '@prisma/generator-helper';
 const require = createRequire(import.meta.url);
 const { generatorHandler } = require('@prisma/generator-helper');
@@ -12,7 +14,11 @@ import { writeNexus } from './writers/nexus/index.js';
 import { writeTypes } from './writers/types.js';
 
 const GENERATOR_NAME = 'paljs-generator';
-const GENERATOR_VERSION = '9.0.0-beta.1';
+
+// Read version from package.json
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const packageJson = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), 'utf-8'));
+const GENERATOR_VERSION = packageJson.version;
 
 /**
  * Generator manifest - provides metadata about the generator
@@ -50,8 +56,13 @@ async function onGenerate(options: GeneratorOptions): Promise<void> {
     // Config path specified in generator block
     configPath = resolve(schemaDir, configPathFromGenerator);
   } else {
-    // Search for config in schema directory
+    // Search for config in schema directory first, then project root
     configPath = findConfigPath(schemaDir);
+    if (!configPath) {
+      // Try parent directory (project root) if schema is in a subdirectory like prisma/
+      const projectRoot = dirname(schemaDir);
+      configPath = findConfigPath(projectRoot);
+    }
   }
 
   let config: ResolvedConfig;

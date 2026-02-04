@@ -59,15 +59,22 @@ bun run --filter @paljs/[package-name] build
 
 ### Publishing
 
-- Uses **Changesets** (`@changesets/cli@2.29.8`) for versioning and publishing
+- Uses **Changesets** for versioning only, and **bun publish** for publishing
 - Currently in **pre-release mode** (`beta` tag) — see `.changeset/pre.json`
 - Publishing workflow:
   1. Add changeset: `bunx changeset` (select packages and bump type)
   2. Version bump: `bunx changeset version`
-  3. **Build packages**: `bun run build` (required before publish!)
-  4. Publish: `expect -c 'spawn bunx changeset publish; expect "one-time password:"; send "<otp>\r"; expect eof'`
-- **Important**: The `@paljs/admin` package has `publishConfig.directory: "./dist"` — it publishes from `dist/package.json`. You MUST run `bun run build` after version bump to update the version in `dist/package.json`, otherwise npm will reject the publish.
-- **Important**: Changesets resolves `workspace:*` references to real versions during publish. Do NOT use `npm publish` directly — it won't resolve workspace protocol refs.
+  3. Build packages: `bun run build`
+  4. Publish each package in order (plugins → nexus → generator → admin):
+     ```bash
+     cd packages/plugins && bun publish --otp <otp>
+     cd packages/nexus && bun publish --otp <otp>
+     cd packages/generator && bun publish --otp <otp>
+     cd packages/admin && bun publish --otp <otp>
+     ```
+- **Why bun publish?** `bunx changeset publish` does NOT resolve `workspace:*` refs with bun. Only `bun publish` properly resolves workspace protocol to actual versions during publish.
+- **Important**: The `@paljs/admin` package has `publishConfig.directory: "./dist"` — it publishes from `dist/package.json`. You MUST run `bun run build` after version bump to update the version in `dist/package.json`.
+- **Workspace protocol**: During development, `workspace:*` links to local folders (changes reflect immediately). During `bun publish`, it resolves to actual version numbers.
 - To exit pre-release mode for stable release: `bunx changeset pre exit`
 
 ## Code Architecture

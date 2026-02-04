@@ -1,6 +1,6 @@
 {
   "name": "@paljs/generator",
-  "version": "9.0.0-beta.6",
+  "version": "9.0.0-beta.8",
   "description": "Prisma generator for PalJS - generates types, GraphQL schemas, and admin UI for Prisma 7",
   "type": "module",
   "main": "./dist/index.js",
